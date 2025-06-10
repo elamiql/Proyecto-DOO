@@ -1,14 +1,15 @@
 package org.example;
 
 import java.util.ArrayList;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 class Torneo {
     String nombre;
     String disciplina;
-    ArrayList<Jugador> participantes;
-    ArrayList<Equipo> equipos;
-    String fecha;
+    ArrayList<Jugador> participantes=new ArrayList<>();;
+    ArrayList<Equipo> equipos=new ArrayList<>();;
+    private LocalDateTime fecha;
     String formato;
     boolean activo = false;
 
@@ -16,11 +17,12 @@ class Torneo {
         this.nombre = nombre;
         this.disciplina = disciplina;
         this.participantes = participantes;
-        this.fecha = fecha;
         this.formato=formato;
-
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        this.fecha = LocalDateTime.parse(fecha, formatter);
     }
+
+
 
     public void registrarResultados(Jugador p, boolean sigueActivo) {
         p.setActivo(sigueActivo);
@@ -30,6 +32,44 @@ class Torneo {
     }
     public void addequipo(Equipo equipo){
         equipos.add(equipo);
+    }
+    // Getters
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getDisciplina() {
+        return disciplina;
+    }
+
+    public ArrayList<Jugador> getParticipantes() {
+        return participantes;
+    }
+
+    public ArrayList<Equipo> getEquipos() {
+        return equipos;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fechaStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        this.fecha = LocalDateTime.parse(fechaStr, formatter);
+    }
+
+    public String getFormato() {
+        return formato;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }
 
