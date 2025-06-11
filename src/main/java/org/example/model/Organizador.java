@@ -1,9 +1,7 @@
-package org.example;
-
-
+package org.example.model;
 import java.util.ArrayList;
 
-class Organizador {
+public class Organizador {
     String nombre;
 
     public Organizador(String nombre) {

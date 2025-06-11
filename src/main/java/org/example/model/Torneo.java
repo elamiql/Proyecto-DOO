@@ -1,10 +1,10 @@
-package org.example;
+package org.example.model;
 
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-class Torneo {
+public class Torneo {
     String nombre;
     String disciplina;
     ArrayList<Jugador> participantes=new ArrayList<>();;
@@ -66,7 +66,6 @@ class Torneo {
     public boolean isActivo() {
         return activo;
     }
-
 
     public void setActivo(boolean activo) {
         this.activo = activo;

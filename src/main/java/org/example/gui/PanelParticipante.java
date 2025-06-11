@@ -1,14 +1,14 @@
-package Gui;
+package org.example.gui;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PanelOrganizador extends JPanel {
+public class PanelParticipante extends JPanel {
 
-    public PanelOrganizador(JFrame frame) {
+    public PanelParticipante(JFrame frame) {
         setLayout(new BorderLayout());
 
-        JLabel label = new JLabel("Panel del Organizador", SwingConstants.CENTER);
+        JLabel label = new JLabel("Panel del Participante", SwingConstants.CENTER);
         label.setFont(new Font("Arial", Font.BOLD, 24));
         add(label, BorderLayout.CENTER);
 

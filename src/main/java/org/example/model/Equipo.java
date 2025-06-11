@@ -1,5 +1,4 @@
-package org.example;
-
+package org.example.model;
 import java.util.ArrayList;
 
 public class Equipo extends Participante {

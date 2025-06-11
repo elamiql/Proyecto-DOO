@@ -1,11 +1,12 @@
 package org.example;
-import Gui.PanelPrincipal;
+
+import org.example.gui.*;
+import org.example.model.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
 public class Main {
-
     public static void main(String[] args) {
         ArrayList<Jugador> jugadores = new ArrayList<>();
         Torneo torneo = new Torneo("Los insanos cup", "pelota", jugadores, "10-03-2025 13:14", "brackets");
@@ -25,6 +26,5 @@ public class Main {
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
-
     }
 }
