@@ -8,6 +8,6 @@ public class Jugador extends Participante {
 
     @Override
     public void inscribirse(Torneo torneo) {
-        torneo.addparticipante(this);
+        torneo.addParticipante(this);
     }
 }

@@ -21,9 +21,11 @@ public abstract class Participante {
     public String getNumero() {
         return numero;
     }
+
     public Boolean getActivo(){
         return Activo;
     }
+
     public void setActivo(Boolean activo){
         this.Activo=activo;
     }

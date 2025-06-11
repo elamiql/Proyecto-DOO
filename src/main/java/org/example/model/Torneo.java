@@ -27,10 +27,10 @@ public class Torneo {
     public void registrarResultados(Jugador p, boolean sigueActivo) {
         p.setActivo(sigueActivo);
     }
-    public void addparticipante(Jugador jugador){
+    public void addParticipante(Jugador jugador){
         participantes.add(jugador);
     }
-    public void addequipo(Equipo equipo){
+    public void addEquipo(Equipo equipo){
         equipos.add(equipo);
     }
     // Getters

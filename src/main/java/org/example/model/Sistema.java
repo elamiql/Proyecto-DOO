@@ -21,6 +21,7 @@ public class Sistema {
             System.out.println("El torneo todavía no puede iniciar. Fecha programada: " + fechaTorneo);
         }
     }
+
     public static void GenerarBrackets(Torneo torneo) {
         ArrayList<Jugador> jugadores = torneo.getParticipantes();
 

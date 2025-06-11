@@ -1,4 +1,4 @@
-package org.example;
+package org.example.app;
 
 import org.example.gui.*;
 import org.example.model.*;
@@ -11,9 +11,9 @@ public class Main {
         ArrayList<Jugador> jugadores = new ArrayList<>();
         Torneo torneo = new Torneo("Los insanos cup", "pelota", jugadores, "10-03-2025 13:14", "brackets");
 
-        torneo.addparticipante(new Jugador("Pepe", "98"));
-        torneo.addparticipante(new Jugador("Ana", "32"));
-        torneo.addparticipante(new Jugador("Luis", "77"));
+        torneo.addParticipante(new Jugador("Pepe", "98"));
+        torneo.addParticipante(new Jugador("Ana", "32"));
+        torneo.addParticipante(new Jugador("Luis", "77"));
 
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Sistema de Torneos");
