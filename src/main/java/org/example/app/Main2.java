@@ -9,22 +9,22 @@ public class Main2 {
     public static void main(String[] args) {
         // Crear lista con los 16 equipos de la liga chilena
         ArrayList<Equipo> equiposLiga = new ArrayList<>() {{
-            add(new Equipo("Barcelona", "001", new ArrayList<>()));
+            add(new Equipo("PSG", "001", new ArrayList<>()));
             add(new Equipo("Liverpool", "002", new ArrayList<>()));
-            add(new Equipo("Inter de milan", "018", new ArrayList<>()));
-            add(new Equipo("Borussia Dortmund", "012", new ArrayList<>()));
-            add(new Equipo("Bayern Munich", "003", new ArrayList<>()));
-            add(new Equipo("Club brujas", "005", new ArrayList<>()));
-            add(new Equipo("Paris Saint Germain", "009", new ArrayList<>()));
-            add(new Equipo("Aston Villa", "014", new ArrayList<>()));
-            add(new Equipo("Real Madrid", "010", new ArrayList<>()));
-            add(new Equipo("Atletico Madrid", "004", new ArrayList<>()));
-            add(new Equipo("Arsenal", "017", new ArrayList<>()));
+            add(new Equipo("Club Brujas", "018", new ArrayList<>()));
+            add(new Equipo("Aston Villa", "012", new ArrayList<>()));
+            add(new Equipo("Real Madrid", "003", new ArrayList<>()));
+            add(new Equipo("Atletico Madrid", "005", new ArrayList<>()));
+            add(new Equipo("PSV", "009", new ArrayList<>()));
+            add(new Equipo("Arsenal", "014", new ArrayList<>()));
+            add(new Equipo("Benfica", "010", new ArrayList<>()));
+            add(new Equipo("Barcelona", "004", new ArrayList<>()));
+            add(new Equipo("Borussia Dortmund", "017", new ArrayList<>()));
             add(new Equipo("Lille", "016", new ArrayList<>()));
-            add(new Equipo("PSV", "006", new ArrayList<>()));
-            add(new Equipo("Feyenoord", "011", new ArrayList<>()));
-            add(new Equipo("Leverkusen", "008", new ArrayList<>()));
-            add(new Equipo("Benfica", "007", new ArrayList<>()));
+            add(new Equipo("Bayern Munich", "006", new ArrayList<>()));
+            add(new Equipo("Leverkusen", "011", new ArrayList<>()));
+            add(new Equipo("Feyenoord", "008", new ArrayList<>()));
+            add(new Equipo("Inter de Milan", "007", new ArrayList<>()));
         }};
 
         // Crear torneo con formato ELIMINATORIA
@@ -72,7 +72,5 @@ public class Main2 {
                     " --> Ganador: " + ganador.getNombre());
             ganadoresPrimeraRonda.add(ganador);
         }
-        // Aquí podrías continuar simulando rondas siguientes usando ganadoresPrimeraRonda y así sucesivamente...
-
     }
 }

@@ -11,6 +11,7 @@ public class GenerarCalendario<T extends Participante> {
     private Formato formato;
     private ArrayList<Enfrentamiento> enfrentamientos;
     private List<List<Enfrentamiento>> rondasEliminatorias;
+    private boolean ladosImpresos = false;
 
     public GenerarCalendario(ArrayList<T> participantes, Formato formato){
         this.participantes = participantes;
@@ -85,6 +86,20 @@ public class GenerarCalendario<T extends Participante> {
         ArrayList<T> ladoIzquierdo = new ArrayList<>(participantes.subList(0, total / 2));
         ArrayList<T> ladoDerecho = new ArrayList<>(participantes.subList(total / 2, total));
 
+        if (!ladosImpresos){
+
+            System.out.println("\nLado Izquierdo:");
+            for (int i = 0; i < ladoIzquierdo.size(); i++) {
+                System.out.println("  " + (i+1) + ". " + ladoIzquierdo.get(i).getNombre());
+            }
+
+            System.out.println("\nLado Derecho:");
+            for (int i = 0; i < ladoDerecho.size(); i++) {
+                System.out.println("  " + (i+1) + ". " + ladoDerecho.get(i).getNombre());
+            }
+            ladosImpresos = true;
+        }
+        System.out.println();
         // Generar rondas para cada lado
         List<List<Enfrentamiento>> rondasIzquierda = generarRondasPorLado(ladoIzquierdo, "IZQ");
         List<List<Enfrentamiento>> rondasDerecha = generarRondasPorLado(ladoDerecho, "DER");
