@@ -8,7 +8,7 @@ public class Equipo extends Participante {
     // Constructor recibe nombre, numero y lista de jugadores
     public Equipo(String nombre, String numero, ArrayList<Jugador> jugadores) {
         super(nombre, numero);
-        this.jugadores = new ArrayList<>();
+        this.jugadores = jugadores;
     }
 
     public void addJugador(Jugador jugador){

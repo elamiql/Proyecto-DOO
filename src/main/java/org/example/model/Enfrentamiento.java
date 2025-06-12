@@ -8,9 +8,13 @@ public class Enfrentamiento {
     private Participante ganador;
 
     public Enfrentamiento(Participante p1, Participante p2){
-        if (!p1.getClass().equals(p2.getClass())){
+        if (p1 == null){
+            throw new IllegalArgumentException("Participante1 no puede ser null");
+        }
+        if (p2 != null && !p1.getClass().equals(p2.getClass())){
             throw new IllegalArgumentException("No se puede enfrentar un jugador con un equipo");
         }
+
         this.participante1 = p1;
         this.participante2 = p2;
         this.finalizado = false;

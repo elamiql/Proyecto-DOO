@@ -1,64 +1,60 @@
 package org.example.app;
 
-import org.example.enums.Deporte;
-import org.example.enums.Formato;
 import org.example.model.*;
-
+import org.example.enums.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // Crear algunos jugadores para los equipos
-        Jugador j1 = new Jugador("Juan Pérez", "10");
-        Jugador j2 = new Jugador("Carlos Díaz", "11");
-        Jugador j3 = new Jugador("Pedro Gómez", "9");
-        Jugador j4 = new Jugador("Luis Martínez", "7");
+        // Crear lista con los 20 equipos de la liga chilena
+        ArrayList<Equipo> equiposLiga = new ArrayList<>() {{
+            add(new Equipo("Colo Colo", "001", new ArrayList<>()));
+            add(new Equipo("Universidad de Chile", "002", new ArrayList<>()));
+            add(new Equipo("Deportes Iquique", "018", new ArrayList<>()));
+            add(new Equipo("Palestino", "012", new ArrayList<>()));
+            add(new Equipo("Universidad Católica", "003", new ArrayList<>()));
+            add(new Equipo("Unión Española", "005", new ArrayList<>()));
+            add(new Equipo("Everton", "009", new ArrayList<>()));
+            add(new Equipo("Coquimbo Unido", "014", new ArrayList<>()));
+            add(new Equipo("Ñublense", "010", new ArrayList<>()));
+            add(new Equipo("Audax Italiano", "004", new ArrayList<>()));
+            add(new Equipo("Unión La Calera", "017", new ArrayList<>()));
+            add(new Equipo("Huachipato", "016", new ArrayList<>()));
+            add(new Equipo("Cobresal", "006", new ArrayList<>()));
+            add(new Equipo("O'Higgins", "011", new ArrayList<>()));
+            add(new Equipo("Cobreloa", "008", new ArrayList<>()));
+            add(new Equipo("Copiapo", "007", new ArrayList<>()));
+        }};
 
-        // Crear equipos con jugadores
-        ArrayList<Jugador> jugadoresEquipo1 = new ArrayList<>();
-        jugadoresEquipo1.add(j1);
-
-        ArrayList<Jugador> jugadoresEquipo2 = new ArrayList<>();
-        jugadoresEquipo2.add(j2);
-
-        ArrayList<Jugador> jugadoresEquipo3 = new ArrayList<>();
-        jugadoresEquipo3.add(j3);
-
-        ArrayList<Jugador> jugadoresEquipo4 = new ArrayList<>();
-        jugadoresEquipo4.add(j4);
-
-        Equipo equipo1 = new Equipo("Colo Colo", "001", jugadoresEquipo1);
-        Equipo equipo2 = new Equipo("Universidad de Chile", "002", jugadoresEquipo2);
-        Equipo equipo3 = new Equipo("Universidad Católica", "003", jugadoresEquipo3);
-        Equipo equipo4 = new Equipo("Audax Italiano", "004", jugadoresEquipo4);
-
-        // Crear lista de equipos
-        ArrayList<Equipo> equiposLiga = new ArrayList<>();
-        equiposLiga.add(equipo1);
-        equiposLiga.add(equipo2);
-        equiposLiga.add(equipo3);
-        equiposLiga.add(equipo4);
-
-        // Crear torneo de equipos
-        TorneoEquipo torneoLiga = new TorneoEquipo(
+        // Crear torneo de equipos (ejemplo con formato LIGA)
+        TorneoEquipo torneo = new TorneoEquipo(
                 "Liga Chilena 2025",
                 Deporte.FUTBOL,
                 "01-07-2025 20:00",
                 Formato.LIGA
         );
 
-        // Agregar equipos al torneo
-        for (Equipo e : equiposLiga) {
-            torneoLiga.addParticipante(e);
+        // Inscribir equipos en el torneo
+        for (Equipo equipo : equiposLiga) {
+            torneo.addParticipante(equipo);
         }
 
-        // Generar calendario
-        torneoLiga.generarCalendario();
+        // Imprimir calendario usando la clase GenerarCalendario (si usas esa)
+        GenerarCalendario<Equipo> generador = new GenerarCalendario<>(torneo.getParticipantes(), torneo.getFormato());
+        generador.generar();
+        generador.imprimirCalendario();
 
-        // Si quieres, imprime los participantes
-        System.out.println("\nEquipos inscritos:");
-        for (Equipo e : torneoLiga.getEquipos()) {
-            System.out.println("- " + e.getNombre());
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese el nombre del equipo: ");
+        String equipo = sc.nextLine();
+
+        ArrayList<Enfrentamiento> calendarioFiltrado = generador.filtrarPorEquipo(equipo);
+
+        System.out.println("=== Calendario para "+ equipo + " ===");
+        int n = 1;
+        for (Enfrentamiento partido : calendarioFiltrado){
+            System.out.println("Partido: "+ n++ + ": " + partido);
         }
     }
 }
