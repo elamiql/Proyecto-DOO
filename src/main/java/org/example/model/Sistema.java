@@ -3,7 +3,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.ArrayList;
 
-public class Sistema {
+public class Sistema{
 
     public Sistema() {
     }
@@ -23,7 +23,7 @@ public class Sistema {
     }
 
     public static void GenerarBrackets(Torneo torneo) {
-        ArrayList<Jugador> jugadores = torneo.getParticipantes();
+        ArrayList<Jugador> jugadores = torneo.getJugadores();
 
         // Verificar si hay jugadores suficientes
         if (jugadores == null || jugadores.size() < 2) {
@@ -33,6 +33,7 @@ public class Sistema {
 
         // Mezclar aleatoriamente la lista
         Collections.shuffle(jugadores);
+        //Dependiendo del torneo y del deporte hay reglas pare mezclar,
 
         System.out.println("Brackets generados aleatoriamente:");
 

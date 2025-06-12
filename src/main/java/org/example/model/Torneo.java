@@ -1,57 +1,77 @@
 package org.example.model;
 
+import org.example.enums.*;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Torneo {
-    String nombre;
-    String disciplina;
-    ArrayList<Jugador> participantes=new ArrayList<>();;
-    ArrayList<Equipo> equipos=new ArrayList<>();;
-    private LocalDateTime fecha;
-    String formato;
-    boolean activo = false;
+public abstract class Torneo <T extends Participante>{
+    protected String nombre;
+    protected Disciplina disciplina;
+    protected ArrayList<T> participantes;
+    protected ArrayList<Jugador> jugadores;
+    protected ArrayList<Equipo> equipos;
+    protected Formato formato;
+    protected LocalDateTime fecha;
+    protected boolean activo = false;
 
-    public Torneo(String nombre, String disciplina, ArrayList<Jugador> participantes, String fecha,String formato) {
+    public Torneo(String nombre, Disciplina disciplina, String fecha, Formato formato) {
         this.nombre = nombre;
         this.disciplina = disciplina;
-        this.participantes = participantes;
-        this.formato=formato;
+        this.formato = formato;
+        this.participantes = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         this.fecha = LocalDateTime.parse(fecha, formatter);
+        this.jugadores = new ArrayList<>();
+        this.equipos = new ArrayList<>();
     }
 
+    public void addParticipante(T participante){
+        participantes.add(participante);
 
+        if (participante instanceof Jugador){
+            jugadores.add((Jugador) participante);
+        }
+        else if (participante instanceof Equipo){
+            equipos.add((Equipo) participante);
+        }
+    }
+
+    public ArrayList<T> getParticipantes() {
+        return participantes;
+    }
+
+    public void addJugador(Jugador jugador){
+        jugadores.add(jugador);
+    }
+
+    public ArrayList<Jugador> getJugadores(){
+        return jugadores;
+    }
+
+    public void addEquipo(Equipo equipo){
+        equipos.add(equipo);
+    }
+
+    public ArrayList<Equipo> getEquipos(){
+        return equipos;
+    }
 
     public void registrarResultados(Jugador p, boolean sigueActivo) {
         p.setActivo(sigueActivo);
     }
-    public void addParticipante(Jugador jugador){
-        participantes.add(jugador);
-    }
-    public void addEquipo(Equipo equipo){
-        equipos.add(equipo);
-    }
+
     // Getters
     public String getNombre() {
         return nombre;
     }
 
-    public String getDisciplina() {
-        return disciplina;
-    }
-
-    public ArrayList<Jugador> getParticipantes() {
-        return participantes;
-    }
-
-    public ArrayList<Equipo> getEquipos() {
-        return equipos;
-    }
-
-    public LocalDateTime getFecha() {
+    public LocalDateTime getFecha(){
         return fecha;
+    }
+    
+    public Disciplina getDisciplina() {
+        return disciplina;
     }
 
     public void setFecha(String fechaStr) {
@@ -59,7 +79,7 @@ public class Torneo {
         this.fecha = LocalDateTime.parse(fechaStr, formatter);
     }
 
-    public String getFormato() {
+    public Formato getFormato() {
         return formato;
     }
 
@@ -70,5 +90,7 @@ public class Torneo {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
+
+    public abstract void generarCalendario();
 }
 

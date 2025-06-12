@@ -7,7 +7,7 @@ public class Jugador extends Participante {
     }
 
     @Override
-    public void inscribirse(Torneo torneo) {
-        torneo.addParticipante(this);
+    public void inscribirse(Torneo<?> torneo) {
+        torneo.addJugador(this);
     }
 }
