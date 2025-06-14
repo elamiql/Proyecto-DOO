@@ -14,6 +14,7 @@ public abstract class Torneo <T extends Participante>{
     protected Formato formato;
     protected LocalDateTime fecha;
     protected boolean activo = false;
+    protected ArrayList<Enfrentamiento> enfrentamientos;
 
     public Torneo(String nombre, Disciplina disciplina, String fecha, Formato formato) {
         this.nombre = nombre;
@@ -24,6 +25,7 @@ public abstract class Torneo <T extends Participante>{
         this.fecha = LocalDateTime.parse(fecha, formatter);
         this.jugadores = new ArrayList<>();
         this.equipos = new ArrayList<>();
+        this.enfrentamientos = new ArrayList<>();
     }
 
     public void addParticipante(T participante){
@@ -35,6 +37,10 @@ public abstract class Torneo <T extends Participante>{
         else if (participante instanceof Equipo){
             equipos.add((Equipo) participante);
         }
+    }
+
+    public ArrayList<Enfrentamiento> getEnfrentamientos(){
+        return enfrentamientos;
     }
 
     public ArrayList<T> getParticipantes() {

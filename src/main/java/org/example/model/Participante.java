@@ -27,6 +27,11 @@ public abstract class Participante {
         this.activo = activo;
     }
 
+    @Override
+    public String toString(){
+        return nombre;
+    }
+
     // Cambiar para recibir Torneo como parámetro
     public abstract void inscribirse(Torneo<?> torneo);
 }
