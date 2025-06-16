@@ -45,6 +45,8 @@ public class Main {
         generador.generar();
         generador.imprimirCalendario();
 
+        torneo.generarCalendario();
+
         Scanner sc = new Scanner(System.in);
         System.out.print("Ingrese el nombre del equipo: ");
         String equipo = sc.nextLine();

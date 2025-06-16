@@ -6,16 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.*;
 
-public class GenerarCalendario<T extends Participante> {
+public abstract class GenerarCalendario<T extends Participante> {
 
-    private ArrayList<T> participantes;
-    private Formato formato;
-    private ArrayList<Enfrentamiento> enfrentamientos;
-    private List<List<Enfrentamiento>> rondasEliminatorias;
+    protected ArrayList<T> participantes;
+    protected ArrayList<Enfrentamiento> enfrentamientos;
 
-    public GenerarCalendario(ArrayList<T> participantes, Formato formato){
+    public GenerarCalendario(ArrayList<T> participantes){
         this.participantes = participantes;
-        this.formato = formato;
         this.enfrentamientos = new ArrayList<>();
     }
 
@@ -27,14 +24,62 @@ public class GenerarCalendario<T extends Participante> {
 
         switch (formato){
             case LIGA -> generarLiga();
-            case ELIMINATORIA ->{
+            case ELIMINATORIA -> {
                     generarEliminatoria();
                     crearYGuardarBracket();
             }
-
             default -> throw new UnsupportedOperationException("Formato no soportado: " + formato);
         }
     }
+
+    public final void generarCalendario(){
+        validarParticipantes();
+        generarEnfrentamientos();
+    }
+
+    protected void validarParticipantes(){
+        if (participantes.size() < 2){
+            throw new IllegalArgumentException("Se requieren al menos 2 participantes");
+        }
+    }
+
+    protected abstract void generarEnfrentamientos();
+
+    public void imprimirCalendario(){
+        System.out.println("\n=== Calendario de Enfrentamientos ===");
+
+        if (enfrentamientos.isEmpty()){
+            System.out.println("No se han generado aun");
+            return;
+        }
+        int num = 1;
+        for (Enfrentamiento e : enfrentamientos){
+            System.out.println("Partido " + (num++) + ": " + e);
+        }
+    }
+
+    public ArrayList<Enfrentamiento> filtrarPorParticipante(String nombreParticipante) {
+        ArrayList<Enfrentamiento> filtrados = new ArrayList<>();
+
+        for (Enfrentamiento e : enfrentamientos) {
+            if (e.getParticipante1().getNombre().equalsIgnoreCase(nombreParticipante) ||
+                    e.getParticipante2().getNombre().equalsIgnoreCase(nombreParticipante)) {
+                filtrados.add(e);
+            }
+        }
+        return filtrados;
+    }
+
+    public ArrayList<Enfrentamiento> getEnfrentamientos(){
+        return enfrentamientos;
+    }
+
+    public void limpiarCalendario(){
+        enfrentamientos.clear();
+    }
+
+    // ====================================================================================================== //
+
 
     private void generarLiga(){
         enfrentamientos.clear();
@@ -67,18 +112,6 @@ public class GenerarCalendario<T extends Participante> {
         }
     }
 
-    public void imprimirCalendario(){
-        System.out.println("\n=== Calendario de Enfrentamientos ===");
-
-        if (enfrentamientos.isEmpty()){
-            System.out.println("No se han generado aun");
-            return;
-        }
-        int num = 1;
-        for (Enfrentamiento e : enfrentamientos){
-            System.out.println("Partido " + (num++) + ": " + e);
-        }
-    }
 
     public List<List<Enfrentamiento>> generarBracket(ArrayList<T> participantes) {
         // Validamos que sea potencia de 2
@@ -146,38 +179,7 @@ public class GenerarCalendario<T extends Participante> {
         return rondas;
     }
 
-    public ArrayList<Enfrentamiento> filtrarPorEquipo(String nombreEquipo) {
-        ArrayList<Enfrentamiento> filtrados = new ArrayList<>();
 
-        for (Enfrentamiento e : enfrentamientos) {
-            if (e.getParticipante1().getNombre().equalsIgnoreCase(nombreEquipo) ||
-                    e.getParticipante2().getNombre().equalsIgnoreCase(nombreEquipo)) {
-                filtrados.add(e);
-            }
-        }
-        return filtrados;
-    }
-
-    public void imprimirBracket(){
-        if (rondasEliminatorias == null || rondasEliminatorias.isEmpty()){
-            System.out.println("No se ha generado el bracket");
-            return;
-        }
-
-        int rondaNum = 1;
-        for (List<Enfrentamiento> ronda : rondasEliminatorias){
-            String nombreRonda = getNombreRonda(rondaNum - 1, rondasEliminatorias.size());
-            System.out.println("=== " + nombreRonda + " ===");
-            rondaNum++;
-            int numPartido = 1;
-            for (Enfrentamiento e : ronda){
-                String p1 = (e.getParticipante1() == null) ? "BYE" : e.getParticipante1().getNombre();
-                String p2 = (e.getParticipante2() == null) ? "BYE" : e.getParticipante2().getNombre();
-                System.out.println("Partido " + (numPartido++) + ": " + p1 + " vs " + p2);
-            }
-            System.out.println();
-        }
-    }
 
     public void generarGrupoYEliminatoria(int numGrupos, int clasificadosPorGrupo) {
         limpiarCalendario();
@@ -278,16 +280,28 @@ public class GenerarCalendario<T extends Participante> {
         };
     }
 
-    public void limpiarCalendario(){
-        enfrentamientos.clear();
-        if (rondasEliminatorias!=null){
-            rondasEliminatorias.clear();
+    public void imprimirBracket(){
+        if (rondasEliminatorias == null || rondasEliminatorias.isEmpty()){
+            System.out.println("No se ha generado el bracket");
+            return;
+        }
+
+        int rondaNum = 1;
+        for (List<Enfrentamiento> ronda : rondasEliminatorias){
+            String nombreRonda = getNombreRonda(rondaNum - 1, rondasEliminatorias.size());
+            System.out.println("=== " + nombreRonda + " ===");
+            rondaNum++;
+            int numPartido = 1;
+            for (Enfrentamiento e : ronda){
+                String p1 = (e.getParticipante1() == null) ? "BYE" : e.getParticipante1().getNombre();
+                String p2 = (e.getParticipante2() == null) ? "BYE" : e.getParticipante2().getNombre();
+                System.out.println("Partido " + (numPartido++) + ": " + p1 + " vs " + p2);
+            }
+            System.out.println();
         }
     }
 
-    public ArrayList<Enfrentamiento> getEnfrentamientos(){
-        return enfrentamientos;
-    }
+
 
     public void crearYGuardarBracket(){
         this.rondasEliminatorias = generarBracket(this.participantes);
