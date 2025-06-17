@@ -5,8 +5,18 @@ import java.util.*;
 
 public class TorneoIndividual extends Torneo<Jugador> {
 
+    private int numGrupos;
+    private int clasificadosPorGrupo;
+
     public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato) {
         super(nombre, disciplina, fecha, formato);
+    }
+
+    public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato,
+                        int numGrupos, int clasificadosPorGrupo) {
+        super(nombre, disciplina, fecha, formato);
+        this.numGrupos = numGrupos;
+        this.clasificadosPorGrupo = clasificadosPorGrupo;
     }
 
     public void registrarResultado(Jugador j, boolean sigueActivo) {
@@ -20,21 +30,26 @@ public class TorneoIndividual extends Torneo<Jugador> {
     @Override
     public void generarCalendario() {
         System.out.println("Generando calendario para el torneo: " + getNombre());
-        GenerarCalendario<Jugador> generador = new GenerarCalendario<>(getParticipantes(), getFormato());
+        GenerarCalendario<Jugador> generador;
 
         switch (getFormato()) {
-            case ELIMINATORIA -> {
-                generador.generar();
-                generador.crearYGuardarBracket();
-                generador.imprimirBracket();
-            }
+            case LIGA:
+                generador = new Liga<>(getParticipantes(), true);
+                break;
 
-            case LIGA -> {
-                generador.generar();
-                generador.imprimirCalendario();
-            }
+            case ELIMINATORIA:
+                generador = new Eliminatoria<>(getParticipantes(), true);
+                break;
 
-            default -> System.out.println("Formato no soportado para torneo individual.");
+            case GRUPOS_CON_ELIMINATORIA:
+                generador = new GruposEliminatoria<>(getParticipantes(), numGrupos, clasificadosPorGrupo);
+                break;
+
+            default:
+                System.out.println("Formato no incluido / soportado");
+                return;
         }
+        generador.generarCalendario();
+        generador.imprimirCalendario();
     }
 }

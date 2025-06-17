@@ -2,6 +2,8 @@ package org.example.app;
 
 import org.example.enums.*;
 import org.example.model.*;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Main3 {
@@ -26,26 +28,11 @@ public class Main3 {
             }
         }
 
-        // Crear un torneo custom con formato grupos + eliminatoria
-        TorneoEquipo torneoMundial = new TorneoEquipo(
-                "Mundial Qatar 2022",
-                Deporte.FUTBOL,              // asumiendo tienes un enum Disciplina con FUTBOL
-                "12-06-2025 18:00",
-                Formato.GRUPOS_CON_ELIMINATORIA,
-                8,                             // número de grupos
-                2                              // clasificados por grupo
-        );
+        GruposEliminatoria<Equipo> generador = new GruposEliminatoria<>(mundialEquipos, 8, 2);
 
-        // Añadir equipos al torneo
-        for (Equipo e : mundialEquipos) {
-            torneoMundial.addEquipo(e);
-        }
-
-        // Generar calendario completo (fase grupos + eliminatorias)
-        torneoMundial.generarCalendario();
-
-        // Aquí podrías agregar metodo en TorneoEquipo para imprimir brackets o resultados si quieres
-        // Pero como ejemplo podrías hacer:
-        System.out.println("Calendario generado para el torneo: " + torneoMundial.getNombre());
+        generador.generarCalendario();
+        System.out.println("=== Fase de Grupos ===");
+        generador.imprimirCalendario();
+        ArrayList<Enfrentamiento> enfrentamientos = generador.getEnfrentamientos();
     }
 }

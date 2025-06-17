@@ -41,8 +41,8 @@ public class Main {
         }
 
         // Imprimir calendario usando la clase GenerarCalendario (si usas esa)
-        GenerarCalendario<Equipo> generador = new GenerarCalendario<>(torneo.getParticipantes(), torneo.getFormato());
-        generador.generar();
+        GenerarCalendario<Equipo> generador = new Liga<>(torneo.getParticipantes(), true);
+        generador.generarCalendario();
         generador.imprimirCalendario();
 
         torneo.generarCalendario();
@@ -51,7 +51,7 @@ public class Main {
         System.out.print("Ingrese el nombre del equipo: ");
         String equipo = sc.nextLine();
 
-        ArrayList<Enfrentamiento> calendarioFiltrado = generador.filtrarPorEquipo(equipo);
+        ArrayList<Enfrentamiento> calendarioFiltrado = generador.filtrarPorParticipante(equipo);
 
         System.out.println("=== Calendario para "+ equipo + " ===");
         int n = 1;

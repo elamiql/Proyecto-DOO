@@ -1,6 +1,5 @@
 package org.example.model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,9 +37,9 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         bracket.clear();
 
         ArrayList<T> participantesMezclados = new ArrayList<>(participantes);
-        Collections.shuffle(participantesMezclados);
 
         generarBracketCompleto(participantesMezclados);
+        rondasEliminatorias = bracket;
     }
 
     private void generarBracketCompleto(ArrayList<T> participantes){
@@ -56,7 +55,14 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
                 enfrentamientos.add(enfrentamiento);
 
                 String nombreGanador = "Ganador (" + rondaActual.get(i).getNombre() + " vs " + rondaActual.get(i+1).getNombre() + ")";
-                sgteRonda.add(null);
+                Participante placeHolder = new Participante(nombreGanador, "-1") {
+                    @Override
+                    public void inscribirse(Torneo<?> torneo) {
+                        //nada
+                    }
+                };
+
+                sgteRonda.add((T) placeHolder);
             }
 
             if (rondaActual.size() % 2 !=0){
