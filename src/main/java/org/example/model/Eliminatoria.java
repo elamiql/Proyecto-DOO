@@ -95,4 +95,16 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
     public List<List<Enfrentamiento>> getBracket() {
         return bracket;
     }
+
+    public void setBracket(List<List<Enfrentamiento>> bracket) {
+        this.bracket = bracket;
+    }
+
+    public boolean isRequierePotenciaDeDos() {
+        return requierePotenciaDeDos;
+    }
+
+    public void setRequierePotenciaDeDos(boolean requierePotenciaDeDos) {
+        this.requierePotenciaDeDos = requierePotenciaDeDos;
+    }
 }

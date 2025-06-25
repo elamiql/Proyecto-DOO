@@ -67,20 +67,62 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
     }
 
     private void prepararFaseEliminatoria(){
-        ArrayList<T> clasificados = new ArrayList<>();
+        ArrayList<T> primeros = new ArrayList<>();
+        ArrayList<T> segundos = new ArrayList<>();
+
 
         for (List<T> grupo : grupos){
-            for (int i=0; i<Math.min(clasificadosPorGrupo, grupo.size()); i++){
-                clasificados.add(grupo.get(i));
+            if (grupo.size() > 0){
+                primeros.add(grupo.get(0));
+            }
+            if (grupo.size() > 1){
+                segundos.add(grupo.get(1));
             }
         }
 
-        if (clasificados.size() > 1){
-            generadorEliminatorias = new Eliminatoria<>(clasificados, false);
-            generadorEliminatorias.generarCalendario();
+        List<Enfrentamiento> octavos = new ArrayList<>();
 
-            enfrentamientos.addAll(generadorEliminatorias.getEnfrentamientos());
+        int[][] cruces = {
+                {0, 1}, // A1 vs B2
+                {2, 3}, // C1 vs D2
+                {4, 5}, // E1 vs F2
+                {6, 7}, // G1 vs H2
+                {1, 0}, // B1 vs A2
+                {3, 2}, // D1 vs C2
+                {5, 4}, // F1 vs E2
+                {7, 6}, // H1 vs G2
+        };
+
+        ArrayList<T> clasificados = new ArrayList<>();
+        clasificados.addAll(primeros);
+        clasificados.addAll(segundos);
+
+        generadorEliminatorias = new Eliminatoria<>(clasificados);
+
+        List<T> sgteRonda = new ArrayList<>();
+        List<Enfrentamiento> rondaInicial = new ArrayList<>();
+        for (int[] cruce : cruces) {
+            T primero = primeros.get(cruce[0]);
+            T segundo = segundos.get(cruce[1]);
+
+            Enfrentamiento enf = new Enfrentamiento(primero, segundo);
+            rondaInicial.add(enf);
+            enfrentamientos.add(enf);
+
+            String nombre = "Ganador (" + primero.getNombre() + " vs " + segundo.getNombre() + ")";
+            T placeHolder = (T) new Participante(nombre, "-1"){
+                @Override
+                public void inscribirse(Torneo <?> torneo){}
+            };
+
+            sgteRonda.add(placeHolder);
         }
+        List<List<Enfrentamiento>> rondas = new ArrayList<>();
+        rondas.add(rondaInicial);
+
+        // ✅ Seteamos la ronda inicial a la eliminatoria generada
+        generadorEliminatorias.setBracket(rondas);
+
     }
 
     @Override
