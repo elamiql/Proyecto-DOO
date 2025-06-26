@@ -98,5 +98,11 @@ public abstract class Torneo <T extends Participante>{
     }
 
     public abstract void generarCalendario();
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return nombre + " - " + disciplina.getNombre() + " - " + formato + " - " + fecha.format(formatter);
+    }
 }
+
 

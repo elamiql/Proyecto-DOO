@@ -13,7 +13,7 @@ public class PanelPrincipal extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         btnCrearTorneo = new JButton("Crear Torneo");
-        btnInscribirse = new JButton("Inscribirse a Torneo");
+        btnInscribirse = new JButton("ver Torneo");
 
         Font botonFont = new Font("Arial", Font.BOLD, 18);
         Dimension botonSize = new Dimension(220, 60);
