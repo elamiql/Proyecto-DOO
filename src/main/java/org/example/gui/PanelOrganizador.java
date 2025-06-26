@@ -5,6 +5,7 @@ import org.example.enums.Deporte;
 import org.example.enums.Videojuegos;
 import org.example.enums.Formato;
 import org.example.model.Disciplina;
+import org.example.model.GestorTorneos;
 import org.example.model.Torneo;
 
 
@@ -26,6 +27,7 @@ public class PanelOrganizador extends JPanel {
     private JRadioButton radioIndividual;
     private JRadioButton radioEquipos;
     private JButton btnConfirmar;
+
 
     public PanelOrganizador(JFrame frame) {
         this.frame = frame;
@@ -138,6 +140,7 @@ public class PanelOrganizador extends JPanel {
             CrearTorneoCommand comando = new CrearTorneoCommand(nombre, fecha, disciplina, formato, esIndividual);
             comando.execute();
             Torneo torneo = comando.getTorneoCreado();
+            GestorTorneos.agregarTorneo(torneo);
 
             JOptionPane.showMessageDialog(this, "Torneo creado:\n" + torneo);
 
