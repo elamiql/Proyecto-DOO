@@ -1,13 +1,13 @@
 package org.example.gui;
 
+import org.example.command.CambiarPanelCommand;
 import org.example.command.CrearTorneoCommand;
 import org.example.enums.Deporte;
-import org.example.enums.Videojuegos;
 import org.example.enums.Formato;
+import org.example.enums.Videojuegos;
 import org.example.model.Disciplina;
 import org.example.model.GestorTorneos;
 import org.example.model.Torneo;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +28,6 @@ public class PanelOrganizador extends JPanel {
     private JRadioButton radioEquipos;
     private JButton btnConfirmar;
 
-
     public PanelOrganizador(JFrame frame) {
         this.frame = frame;
         setLayout(new BorderLayout(10, 10));
@@ -40,9 +39,9 @@ public class PanelOrganizador extends JPanel {
         JPanel panelFormulario = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.insets = new Insets(5,5,5,5);
+        gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        //Creacion botones y listas para rellenar informacion
+
         // Nombre
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -101,13 +100,11 @@ public class PanelOrganizador extends JPanel {
 
         panelBotones.add(btnVolver);
         panelBotones.add(btnConfirmar);
-
         add(panelBotones, BorderLayout.SOUTH);
 
         // Acciones
         btnVolver.addActionListener(e -> {
-            frame.setContentPane(new PanelPrincipal(frame));
-            frame.revalidate();
+            new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute();
         });
 
         btnConfirmar.addActionListener(e -> confirmarTorneo());
@@ -133,8 +130,12 @@ public class PanelOrganizador extends JPanel {
             }
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-            LocalDateTime.parse(fecha, formatter); // valida formato
+            LocalDateTime fechaParseada = LocalDateTime.parse(fecha, formatter);
 
+            if (fechaParseada.isBefore(LocalDateTime.now())) {
+                JOptionPane.showMessageDialog(this, "La fecha no puede estar en el pasado", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             boolean esIndividual = radioIndividual.isSelected();
             CrearTorneoCommand comando = new CrearTorneoCommand(nombre, fecha, disciplina, formato, esIndividual);
@@ -143,9 +144,7 @@ public class PanelOrganizador extends JPanel {
             GestorTorneos.agregarTorneo(torneo);
 
             JOptionPane.showMessageDialog(this, "Torneo creado:\n" + torneo);
-
-            frame.setContentPane(new PanelPrincipal(frame));
-            frame.revalidate();
+            new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute();
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Fecha inválida o error al crear el torneo.\nFormato esperado: dd-MM-yyyy HH:mm", "Error", JOptionPane.ERROR_MESSAGE);

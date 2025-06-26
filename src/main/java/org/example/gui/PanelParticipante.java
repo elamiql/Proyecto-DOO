@@ -1,12 +1,12 @@
 package org.example.gui;
 
+import org.example.command.CambiarPanelCommand;
+import org.example.model.GestorTorneos;
+import org.example.model.Torneo;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
-
-import org.example.model.Torneo;
-import org.example.model.GestorTorneos;
 
 public class PanelParticipante extends JPanel {
 
@@ -22,33 +22,26 @@ public class PanelParticipante extends JPanel {
         scrollPane = new JScrollPane(panelLista);
         add(scrollPane, BorderLayout.CENTER);
 
-        cargarTorneos();
+        cargarTorneos(frame);
 
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton btnVolver = new JButton("Volver");
+        btnVolver.addActionListener(e -> new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute());
         panelBotones.add(btnVolver);
         add(panelBotones, BorderLayout.SOUTH);
-
-        btnVolver.addActionListener(e -> {
-            frame.setContentPane(new PanelPrincipal(frame));
-            frame.revalidate();
-        });
     }
 
-    private void cargarTorneos() {
+    private void cargarTorneos(JFrame frame) {
         panelLista.removeAll();
 
         List<Torneo> torneos = GestorTorneos.obtenerTorneos();
         for (Torneo torneo : torneos) {
             JPanel panelTorneo = new JPanel(new BorderLayout(10, 10));
-            JLabel etiqueta = new JLabel(torneo.toString());//Descripcion general de los torneos
+            JLabel etiqueta = new JLabel(torneo.toString());
 
             JButton btnVer = new JButton("Ver");
             btnVer.addActionListener(e -> {
-                //Te lleva a un panel de detalles del torneo aun sin hacer
-                JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-                //topFrame.setContentPane(new PanelDetalleTorneo(topFrame, torneo));
-                topFrame.revalidate();
+                //new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
             });
 
             panelTorneo.add(etiqueta, BorderLayout.CENTER);
@@ -62,4 +55,3 @@ public class PanelParticipante extends JPanel {
         panelLista.repaint();
     }
 }
-
