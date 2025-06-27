@@ -41,7 +41,7 @@ public class PanelParticipante extends JPanel {
 
             JButton btnVer = new JButton("Ver");
             btnVer.addActionListener(e -> {
-                //new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
+                new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
             });
 
             panelTorneo.add(etiqueta, BorderLayout.CENTER);

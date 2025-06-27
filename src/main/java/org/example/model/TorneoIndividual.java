@@ -23,9 +23,7 @@ public class TorneoIndividual extends Torneo<Jugador> {
         j.setActivo(sigueActivo);
     }
 
-    public void addJugador(Jugador jugador) {
-        addParticipante(jugador);
-    }
+
 
     @Override
     public void generarCalendario() {

@@ -17,7 +17,7 @@ public class Main5 {
         TorneoIndividual torneo1 = new TorneoIndividual(
                 "Copa América",
                 Deporte.FUTBOL,
-                "25-07-2025 18:00",
+                "25-07-2024 18:00",
                 Formato.ELIMINATORIA);
 
         TorneoEquipo torneo2 = new TorneoEquipo(
