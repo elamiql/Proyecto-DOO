@@ -56,7 +56,7 @@ public class Main {
         System.out.println("=== Calendario para "+ equipo + " ===");
         int n = 1;
         for (Enfrentamiento partido : calendarioFiltrado){
-            System.out.println("Partido: "+ n++ + ": " + partido);
+            System.out.println("Partido: " + n++ + ": " + partido);
         }
     }
 }

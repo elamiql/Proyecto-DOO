@@ -32,13 +32,47 @@ public class Main5 {
                 "15-08-2025 10:00",
                 Formato.GRUPOS_CON_ELIMINATORIA);
 
+        TorneoEquipo torneo4 = new TorneoEquipo("Fifa World Cup Qatar 2022",
+                Deporte.FUTBOL,
+                "10-07-2026 11:00",
+                Formato.GRUPOS_CON_ELIMINATORIA,
+                8,
+                2);
+
+        // Grupos del Mundial de Qatar 2022
+        String[][] gruposQatar = {
+                {"Paises Bajos", "Senegal", "Ecuador", "Qatar"},        // Grupo A
+                {"Inglaterra", "EEUU", "Irán", "Gales"},                // Grupo B
+                {"Argentina", "Polonia", "México", "Arabia Saudita"},   // Grupo C
+                {"Francia", "Australia", "Túnez", "Dinamarca"},         // Grupo D
+                {"Japón", "España", "Alemania", "Costa Rica"},          // Grupo E
+                {"Marruecos", "Croacia", "Bélgica", "Canadá"},          // Grupo F
+                {"Brasil", "Suiza", "Camerún", "Serbia"},               // Grupo G
+                {"Portugal", "Corea del Sur", "Uruguay", "Ghana"}       // Grupo H
+        };
+
+        // Inscribir equipos al Mundial
+        int contador = 1;
+        for (String[] grupo : gruposQatar) {
+            for (String nombre : grupo) {
+                // Crear jugadores ficticios (2 por equipo)
+                Jugador j1 = new Jugador(nombre + " Jugador 1", String.format("Q%02d", contador++));
+                Jugador j2 = new Jugador(nombre + " Jugador 2", String.format("Q%02d", contador++));
+
+                // Crear equipo e inscribirlo
+                Equipo equipo = new Equipo(nombre, nombre.substring(0, Math.min(3, nombre.length())).toUpperCase(), new ArrayList<>(List.of(j1, j2)));
+                equipo.inscribirse(torneo4);
+            }
+        }
+
         // Agregar torneos a gestor
         GestorTorneos.agregarTorneo(torneo1);
         GestorTorneos.agregarTorneo(torneo2);
         GestorTorneos.agregarTorneo(torneo3);
+        GestorTorneos.agregarTorneo(torneo4);
 
 
-// Crear jugadores
+        // Crear jugadores
         Jugador j1 = new Jugador("Alice", "001");
         Jugador j2 = new Jugador("Bob", "002");
         Jugador j3 = new Jugador("Charlie", "003");
@@ -85,7 +119,8 @@ public class Main5 {
         equipoH.inscribirse(torneoTest);
 
 // Generar calendario
-        torneoTest.generarCalendario();
+        torneo4.generarCalendario();
+        torneo4.setActivo(false);
 
 // Agregar al gestor
         GestorTorneos.agregarTorneo(torneoTest);

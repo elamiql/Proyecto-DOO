@@ -92,18 +92,20 @@ public abstract class Torneo <T extends Participante>{
         this.activo = activo;
     }
 
-    public abstract void generarCalendario();
     public void actualizarEstado() {
         if (!activo && !LocalDateTime.now().isBefore(fecha)) {
             activo = true;
             System.out.println("Torneo " + nombre + " activado!");
         }
     }
+
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         return nombre + " - " + disciplina.getNombre() + " - " + formato + " - " + fecha.format(formatter);
     }
+
+    public abstract void generarCalendario();
 }
 
 

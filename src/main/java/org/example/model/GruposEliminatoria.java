@@ -45,18 +45,20 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
             grupos.add(new ArrayList<>());
         }
 
-        for (int i=0; i<participantes.size(); i++){
-            int grupoIndex = i%numeroGrupos;
-            grupos.get(grupoIndex).add(participantes.get(i));
+        int z=0;
+        for (int i=0; i<numeroGrupos; i++){
+            for (int j=0; j<participantes.size()/numeroGrupos; j++){
+                grupos.get(i).add(participantes.get(z));
+                z++;
+            }
         }
     }
 
     private void generarFaseGrupos(){
         generadoresGrupos.clear();
 
-        for (int i=0; i<grupos.size(); i++){
-            List<T> grupo = grupos.get(i);
-            if (grupo.size() > 1){
+        for (List<T> grupo : grupos) {
+            if (grupo.size() > 1) {
                 Liga<T> generadorGrupo = new Liga<>(new ArrayList<>(grupo), false);
                 generadorGrupo.generarCalendario();
 
@@ -66,19 +68,37 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         }
     }
 
-    private void prepararFaseEliminatoria(){
-        ArrayList<T> clasificados = new ArrayList<>();
+    private void prepararFaseEliminatoria() {
+        ArrayList<T> clasificadosOrdenados = new ArrayList<>();
 
-        for (List<T> grupo : grupos){
-            for (int i=0; i<Math.min(clasificadosPorGrupo, grupo.size()); i++){
-                clasificados.add(grupo.get(i));
+        int[][] cruces = {
+                {0, 1}, // 1° A vs 2° B
+                {2, 3}, // 1° C vs 2° D
+                {4, 5}, // 1° E vs 2° F
+                {6, 7}, // 1° G vs 2° H
+                {1, 0}, // 1° B vs 2° A
+                {3, 2}, // 1° D vs 2° C
+                {5, 4}, // 1° F vs 2° E
+                {7, 6}  // 1° H vs 2° G
+        };
+
+        for (int[] cruce : cruces) {
+            int grupo1 = cruce[0];
+            int grupo2 = cruce[1];
+
+            if (grupos.size() > grupo1 && grupos.size() > grupo2 && !grupos.get(grupo1).isEmpty() && grupos.get(grupo2).size() >= 2) {
+
+                T primeroGrupo1 = grupos.get(grupo1).get(0);
+                T segundoGrupo2 = grupos.get(grupo2).get(1);
+
+                clasificadosOrdenados.add(primeroGrupo1);
+                clasificadosOrdenados.add(segundoGrupo2);
             }
         }
 
-        if (clasificados.size() > 1){
-            generadorEliminatorias = new Eliminatoria<>(clasificados, false);
+        if (clasificadosOrdenados.size() > 1) {
+            generadorEliminatorias = new Eliminatoria<>(clasificadosOrdenados, false);
             generadorEliminatorias.generarCalendario();
-
             enfrentamientos.addAll(generadorEliminatorias.getEnfrentamientos());
         }
     }

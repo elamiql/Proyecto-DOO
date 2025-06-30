@@ -1,9 +1,6 @@
 package org.example.app;
 
-import org.example.enums.*;
 import org.example.model.*;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Main3 {
@@ -31,8 +28,6 @@ public class Main3 {
         GruposEliminatoria<Equipo> generador = new GruposEliminatoria<>(mundialEquipos, 8, 2);
 
         generador.generarCalendario();
-        System.out.println("=== Fase de Grupos ===");
         generador.imprimirCalendario();
-        ArrayList<Enfrentamiento> enfrentamientos = generador.getEnfrentamientos();
     }
 }

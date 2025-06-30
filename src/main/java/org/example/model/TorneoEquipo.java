@@ -1,14 +1,15 @@
 package org.example.model;
 
 import org.example.enums.*;
-import java.util.*;
 
 public class TorneoEquipo extends Torneo<Equipo> {
-    private int numGrupos = 0;
-    private int clasificadosPorGrupo = 0;
+    private int numGrupos;
+    private int clasificadosPorGrupo;
 
     public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato) {
         super(nombre, disciplina, fecha, formato);
+        this.numGrupos = 8;
+        this.clasificadosPorGrupo = 2;
     }
 
     public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato,

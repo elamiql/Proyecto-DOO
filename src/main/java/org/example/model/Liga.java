@@ -8,7 +8,9 @@ public class Liga<T extends Participante> extends GenerarCalendario<T>{
 
     public Liga(ArrayList<T> participantes, boolean dobleVuelta){
         super(participantes);
+        this.dobleVuelta = dobleVuelta;
     }
+
 
     public Liga(ArrayList<T> participantes){
         this(participantes, true);
@@ -17,16 +19,24 @@ public class Liga<T extends Participante> extends GenerarCalendario<T>{
     @Override
     public void generarEnfrentamientos(){
         enfrentamientos.clear();
-        //IDA
-        for (int i=0; i<participantes.size(); i++){
-            for (int j=i+1; j< participantes.size(); j++){
-                enfrentamientos.add(new Enfrentamiento(participantes.get(i), participantes.get(j)));
+
+        if (dobleVuelta){
+            for (int i=0; i<participantes.size(); i++){
+                for (int j=i+1; j< participantes.size(); j++){
+                    enfrentamientos.add(new Enfrentamiento(participantes.get(i), participantes.get(j)));
+                }
             }
+            for (int i=0; i<participantes.size(); i++){
+                for (int j=i+1; j< participantes.size(); j++){
+                    enfrentamientos.add(new Enfrentamiento(participantes.get(j), participantes.get(i)));
+                    }
+                }
         }
-        //VUELTA
-        for (int i=0; i<participantes.size(); i++){
-            for (int j=i+1; j< participantes.size(); j++){
-                enfrentamientos.add(new Enfrentamiento(participantes.get(j), participantes.get(i)));
+        else {
+            for (int i=0; i<participantes.size(); i++){
+                for (int j=i+1; j< participantes.size(); j++){
+                    enfrentamientos.add(new Enfrentamiento(participantes.get(i), participantes.get(j)));
+                }
             }
         }
     }

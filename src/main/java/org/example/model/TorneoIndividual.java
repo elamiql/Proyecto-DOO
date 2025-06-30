@@ -23,8 +23,6 @@ public class TorneoIndividual extends Torneo<Jugador> {
         j.setActivo(sigueActivo);
     }
 
-
-
     @Override
     public void generarCalendario() {
         System.out.println("Generando calendario para el torneo: " + getNombre());

@@ -58,7 +58,7 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
                 Participante placeHolder = new Participante(nombreGanador, "-1") {
                     @Override
                     public void inscribirse(Torneo<?> torneo) {
-                        //nada
+                        //No hacer nada
                     }
                 };
 
