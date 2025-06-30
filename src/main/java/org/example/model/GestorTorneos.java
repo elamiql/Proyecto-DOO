@@ -11,7 +11,8 @@ public class GestorTorneos {
     }
 
     public static List<Torneo> obtenerTorneos() {
-        return new ArrayList<>(torneos); // copia para evitar modificaciones externas
+        return new ArrayList<>(torneos); //
     }
+
 }
 

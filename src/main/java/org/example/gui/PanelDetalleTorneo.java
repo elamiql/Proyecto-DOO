@@ -1,5 +1,6 @@
 package org.example.gui;
 
+import org.example.command.CambiarPanelCommand;
 import org.example.model.Equipo;
 import org.example.model.Jugador;
 import org.example.model.Torneo;
@@ -78,6 +79,7 @@ public class PanelDetalleTorneo extends JPanel {
                             Jugador jugador=new Jugador(nombre, numero);
                             jugador.inscribirse(torneo);
                             JOptionPane.showMessageDialog(this, "¡Inscripción exitosa!");
+                            new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
 
                         } else {
                             JOptionPane.showMessageDialog(this, "Debes completar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -136,6 +138,7 @@ public class PanelDetalleTorneo extends JPanel {
                         Equipo equipo = new Equipo(nombreEquipo, numeroEquipo, new ArrayList<>(jugadores));
                         equipo.inscribirse(torneo);
                         JOptionPane.showMessageDialog(this, "¡Equipo inscrito con éxito!");
+                        new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
 
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(this, "Número inválido de integrantes.", "Error", JOptionPane.ERROR_MESSAGE);

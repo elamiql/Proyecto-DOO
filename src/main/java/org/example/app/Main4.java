@@ -18,7 +18,7 @@ public class Main4 {
         // Crear e inscribir jugadores
         for (int i = 1; i <= 4; i++) {
             Jugador jugador = new Jugador("Jugador " + i, String.valueOf(i));
-            torneo.addJugador(jugador);
+            //torneo.addJugador(jugador);
         }
 
         // Generar calendario

@@ -15,5 +15,6 @@ public class CambiarPanelCommand implements Command {
     public void execute() {
         frame.setContentPane(nuevoPanel);
         frame.revalidate();
+        frame.repaint();
     }
 }
