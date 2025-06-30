@@ -3,7 +3,7 @@ package org.example.model;
 import java.util.ArrayList;
 
 public class Equipo extends Participante {
-    private ArrayList<Jugador> jugadores;
+    private final ArrayList<Jugador> jugadores;
 
     // Constructor recibe nombre, numero y lista de jugadores
     public Equipo(String nombre, String numero, ArrayList<Jugador> jugadores) {
@@ -25,6 +25,6 @@ public class Equipo extends Participante {
 
     @Override
     public void inscribirse(Torneo<?> torneo) {
-        torneo.addEquipo(this);
+        torneo.addParticipante(this);
     }
 }

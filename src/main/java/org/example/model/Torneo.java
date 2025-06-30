@@ -14,6 +14,7 @@ public abstract class Torneo <T extends Participante>{
     protected Formato formato;
     protected LocalDateTime fecha;
     protected boolean activo = false;
+    protected ArrayList<Enfrentamiento> enfrentamientos;
 
     public Torneo(String nombre, Disciplina disciplina, String fecha, Formato formato) {
         this.nombre = nombre;
@@ -24,10 +25,11 @@ public abstract class Torneo <T extends Participante>{
         this.fecha = LocalDateTime.parse(fecha, formatter);
         this.jugadores = new ArrayList<>();
         this.equipos = new ArrayList<>();
+        this.enfrentamientos = new ArrayList<>();
     }
 
-    public void addParticipante(T participante){
-        participantes.add(participante);
+    public void addParticipante(Participante participante){
+        participantes.add((T) participante);
 
         if (participante instanceof Jugador){
             jugadores.add((Jugador) participante);
@@ -37,21 +39,20 @@ public abstract class Torneo <T extends Participante>{
         }
     }
 
+    public ArrayList<Enfrentamiento> getEnfrentamientos(){
+        return enfrentamientos;
+    }
+
     public ArrayList<T> getParticipantes() {
         return participantes;
     }
 
-    public void addJugador(Jugador jugador){
-        jugadores.add(jugador);
-    }
 
     public ArrayList<Jugador> getJugadores(){
         return jugadores;
     }
 
-    public void addEquipo(Equipo equipo){
-        equipos.add(equipo);
-    }
+
 
     public ArrayList<Equipo> getEquipos(){
         return equipos;
@@ -92,5 +93,17 @@ public abstract class Torneo <T extends Participante>{
     }
 
     public abstract void generarCalendario();
+    public void actualizarEstado() {
+        if (!activo && !LocalDateTime.now().isBefore(fecha)) {
+            activo = true;
+            System.out.println("Torneo " + nombre + " activado!");
+        }
+    }
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return nombre + " - " + disciplina.getNombre() + " - " + formato + " - " + fecha.format(formatter);
+    }
 }
+
 

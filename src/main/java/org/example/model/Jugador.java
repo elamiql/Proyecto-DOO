@@ -8,6 +8,11 @@ public class Jugador extends Participante {
 
     @Override
     public void inscribirse(Torneo<?> torneo) {
-        torneo.addJugador(this);
+        torneo.addParticipante(this);
+    }
+
+    @Override
+    public String toString() {
+        return getNombre(); // Puedes ajustar si quieres que muestre también el número
     }
 }

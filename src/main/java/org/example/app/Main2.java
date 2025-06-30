@@ -40,14 +40,12 @@ public class Main2 {
             torneo.addParticipante(equipo);
         }
 
-        GenerarCalendario<Equipo> generador = new GenerarCalendario<>(torneo.getParticipantes(), torneo.getFormato());
+        GenerarCalendario<Equipo> generador = new Eliminatoria<>(torneo.getParticipantes(), true);
 
-        // Generar el bracket
-        List<List<Enfrentamiento>> bracket = generador.generarBracket(equiposLiga);
-
-        // Imprimir el bracket completo
-        generador.crearYGuardarBracket();
+        generador.generarCalendario();
         generador.imprimirBracket();
+
+        List<List<Enfrentamiento>> bracket = generador.getRondasEliminatorias();
 
         // Simulación simple: elegir aleatoriamente ganador de cada partido en la primera ronda
         Random rnd = new Random();

@@ -2,8 +2,8 @@ package org.example.model;
 
 public class Enfrentamiento {
 
-    private Participante participante1;
-    private Participante participante2;
+    private final Participante participante1;
+    private final Participante participante2;
     private boolean finalizado;
     private Participante ganador;
 

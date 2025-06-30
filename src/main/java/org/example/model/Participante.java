@@ -1,8 +1,8 @@
 package org.example.model;
 
 public abstract class Participante {
-    private String nombre;
-    private String numero;
+    private final String nombre;
+    private final String numero;
     private Boolean activo;
 
     public Participante(String nombre, String numero) {
@@ -25,6 +25,11 @@ public abstract class Participante {
 
     public void setActivo(Boolean activo){
         this.activo = activo;
+    }
+
+    @Override
+    public String toString(){
+        return nombre;
     }
 
     // Cambiar para recibir Torneo como parámetro

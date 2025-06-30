@@ -1,19 +1,21 @@
 package org.example.gui;
 
+import org.example.command.CambiarPanelCommand;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class PanelPrincipal extends JPanel {
 
-    private JButton btnCrearTorneo;
-    private JButton btnInscribirse;
+    private final JButton btnCrearTorneo;
+    private final JButton btnInscribirse;
 
     public PanelPrincipal(JFrame frame) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         btnCrearTorneo = new JButton("Crear Torneo");
-        btnInscribirse = new JButton("Inscribirse a Torneo");
+        btnInscribirse = new JButton("Ver Torneos");
 
         Font botonFont = new Font("Arial", Font.BOLD, 18);
         Dimension botonSize = new Dimension(220, 60);
@@ -33,17 +35,9 @@ public class PanelPrincipal extends JPanel {
         gbc.gridy = 1;
         add(btnInscribirse, gbc);
 
-        // Mostrar PanelOrganizador
-        btnCrearTorneo.addActionListener(e -> {
-            frame.setContentPane(new PanelOrganizador(frame));
-            frame.revalidate();
-        });
 
-        // Mostrar PanelParticipante
-        btnInscribirse.addActionListener(e -> {
-            frame.setContentPane(new PanelParticipante(frame));
-            frame.revalidate();
-        });
+        btnCrearTorneo.addActionListener(e -> new CambiarPanelCommand(frame, new PanelOrganizador(frame)).execute());
+        btnInscribirse.addActionListener(e -> new CambiarPanelCommand(frame, new PanelParticipante(frame)).execute());
 
         setPreferredSize(new Dimension(500, 300));
     }
