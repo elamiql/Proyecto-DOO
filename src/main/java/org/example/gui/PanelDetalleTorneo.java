@@ -148,7 +148,7 @@ public class PanelDetalleTorneo extends JPanel {
         } else {//Si ya empezo mostrar enfrentamientos
             btnAccion = new JButton("Ver Enfrentamientos");
             btnAccion.addActionListener(e -> {
-                JOptionPane.showMessageDialog(this, "Aquí se mostrarían los enfrentamientos del torneo.");
+                new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
 
             });
         }
