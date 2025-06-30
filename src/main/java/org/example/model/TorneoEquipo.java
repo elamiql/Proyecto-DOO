@@ -6,15 +6,15 @@ public class TorneoEquipo extends Torneo<Equipo> {
     private int numGrupos;
     private int clasificadosPorGrupo;
 
-    public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato) {
-        super(nombre, disciplina, fecha, formato);
+    public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato,String c) {
+        super(nombre, disciplina, fecha, formato,c);
         this.numGrupos = 8;
         this.clasificadosPorGrupo = 2;
     }
 
     public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato,
-                        int numGrupos, int clasificadosPorGrupo) {
-        super(nombre, disciplina, fecha, formato);
+                        int numGrupos, int clasificadosPorGrupo,String c) {
+        super(nombre, disciplina, fecha, formato,c);
         this.numGrupos = numGrupos;
         this.clasificadosPorGrupo = clasificadosPorGrupo;
     }

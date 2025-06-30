@@ -14,6 +14,7 @@ import java.util.List;
 public class Main5 {
     public static void main(String[] args) {
         // Crear torneos de prueba
+        /*
         TorneoIndividual torneo1 = new TorneoIndividual(
                 "Copa América",
                 Deporte.FUTBOL,
@@ -71,6 +72,8 @@ public class Main5 {
         GestorTorneos.agregarTorneo(torneo3);
         GestorTorneos.agregarTorneo(torneo4);
 
+         */
+
 
         // Crear jugadores
         Jugador j1 = new Jugador("Alice", "001");
@@ -105,7 +108,7 @@ public class Main5 {
                 "Torneo Test",
                 Deporte.FUTBOL,
                 "01-06-2025 10:00",
-                Formato.GRUPOS_CON_ELIMINATORIA
+                Formato.ELIMINATORIA,"2"
         );
 
 // Inscribir equipos
@@ -118,12 +121,10 @@ public class Main5 {
         equipoG.inscribirse(torneoTest);
         equipoH.inscribirse(torneoTest);
 
-// Generar calendario
-        torneo4.generarCalendario();
-        torneo4.setActivo(false);
 
 // Agregar al gestor
         GestorTorneos.agregarTorneo(torneoTest);
+
         SwingUtilities.invokeLater(() -> new Ventana());
     }
 }

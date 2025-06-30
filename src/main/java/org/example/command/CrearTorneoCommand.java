@@ -17,15 +17,17 @@ public class CrearTorneoCommand implements Command {
     private final Disciplina disciplina;
     private final Formato formato;
     private final boolean esIndividual;
+    private final String contraseña;
 
     private Torneo torneoCreado;
 
-    public CrearTorneoCommand(String nombre, String fecha, Disciplina disciplina, Formato formato, boolean esIndividual) {
+    public CrearTorneoCommand(String nombre, String fecha, Disciplina disciplina, Formato formato, boolean esIndividual,String contraseña) {
         this.nombre = nombre;
         this.fecha = fecha;
         this.disciplina = disciplina;
         this.formato = formato;
         this.esIndividual = esIndividual;
+        this.contraseña=contraseña;
     }
 
     @Override
@@ -34,9 +36,9 @@ public class CrearTorneoCommand implements Command {
         LocalDateTime.parse(fecha, formatter); // valida
 
         if (esIndividual) {
-            torneoCreado = new TorneoIndividual(nombre, disciplina, fecha, formato);
+            torneoCreado = new TorneoIndividual(nombre, disciplina, fecha, formato,contraseña);
         } else {
-            torneoCreado = new TorneoEquipo(nombre, disciplina, fecha, formato);
+            torneoCreado = new TorneoEquipo(nombre, disciplina, fecha, formato,contraseña);
         }
     }
 

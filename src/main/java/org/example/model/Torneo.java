@@ -14,9 +14,10 @@ public abstract class Torneo <T extends Participante>{
     protected Formato formato;
     protected LocalDateTime fecha;
     protected boolean activo = false;
+    protected String contraseña;
     protected ArrayList<Enfrentamiento> enfrentamientos;
 
-    public Torneo(String nombre, Disciplina disciplina, String fecha, Formato formato) {
+    public Torneo(String nombre, Disciplina disciplina, String fecha, Formato formato,String Contraseña) {
         this.nombre = nombre;
         this.disciplina = disciplina;
         this.formato = formato;
@@ -26,6 +27,7 @@ public abstract class Torneo <T extends Participante>{
         this.jugadores = new ArrayList<>();
         this.equipos = new ArrayList<>();
         this.enfrentamientos = new ArrayList<>();
+        this.contraseña=Contraseña;
     }
 
     public void addParticipante(Participante participante){
@@ -51,7 +53,9 @@ public abstract class Torneo <T extends Participante>{
     public ArrayList<Jugador> getJugadores(){
         return jugadores;
     }
-
+    public String getContraseña(){
+        return contraseña;
+    }
 
 
     public ArrayList<Equipo> getEquipos(){
@@ -93,11 +97,19 @@ public abstract class Torneo <T extends Participante>{
     }
 
     public void actualizarEstado() {
-        if (!activo && !LocalDateTime.now().isBefore(fecha)) {
+        if (!activo && fecha.isBefore(java.time.LocalDateTime.now())) {
             activo = true;
-            System.out.println("Torneo " + nombre + " activado!");
+            System.out.println("Torneo activado: " + nombre);
+
+            // ✅ Solo si hay suficientes participantes
+            if (participantes.size() >= 2) {
+                generarCalendario();
+            } else {
+                System.out.println("No se puede generar calendario: menos de 2 participantes");
+            }
         }
     }
+
 
     @Override
     public String toString() {

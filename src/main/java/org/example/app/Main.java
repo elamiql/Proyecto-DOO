@@ -26,7 +26,7 @@ public class Main {
             add(new Equipo("Cobreloa", "008", new ArrayList<>()));
             add(new Equipo("Copiapo", "007", new ArrayList<>()));
         }};
-
+        /*
         // Crear torneo de equipos (ejemplo con formato LIGA)
         TorneoEquipo torneo = new TorneoEquipo(
                 "Liga Chilena 2025",
@@ -58,5 +58,7 @@ public class Main {
         for (Enfrentamiento partido : calendarioFiltrado){
             System.out.println("Partido: " + n++ + ": " + partido);
         }
+
+         */
     }
 }

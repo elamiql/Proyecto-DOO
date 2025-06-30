@@ -8,13 +8,13 @@ public class TorneoIndividual extends Torneo<Jugador> {
     private int numGrupos;
     private int clasificadosPorGrupo;
 
-    public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato) {
-        super(nombre, disciplina, fecha, formato);
+    public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato,String c) {
+        super(nombre, disciplina, fecha, formato,c);
     }
 
     public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato,
-                        int numGrupos, int clasificadosPorGrupo) {
-        super(nombre, disciplina, fecha, formato);
+                        int numGrupos, int clasificadosPorGrupo,String c) {
+        super(nombre, disciplina, fecha, formato,c);
         this.numGrupos = numGrupos;
         this.clasificadosPorGrupo = clasificadosPorGrupo;
     }
@@ -46,6 +46,7 @@ public class TorneoIndividual extends Torneo<Jugador> {
                 return;
         }
         generador.generarCalendario();
+        this.enfrentamientos = generador.getEnfrentamientos();
         generador.imprimirCalendario();
     }
 }

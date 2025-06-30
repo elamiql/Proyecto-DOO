@@ -28,7 +28,7 @@ public class Main2 {
         }};
 
         // Crear torneo con formato ELIMINATORIA
-        TorneoEquipo torneo = new TorneoEquipo(
+        /*TorneoEquipo torneo = new TorneoEquipo(
                 "Champions 2025",
                 Deporte.FUTBOL,
                 "01-07-2025 20:00",
@@ -70,5 +70,7 @@ public class Main2 {
                     " --> Ganador: " + ganador.getNombre());
             ganadoresPrimeraRonda.add(ganador);
         }
+
+         */
     }
 }

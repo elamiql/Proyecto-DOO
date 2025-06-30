@@ -26,7 +26,7 @@ public class PanelOrganizador extends JPanel {
     private JComboBox<Formato> cmbFormato;
     private JRadioButton radioIndividual;
     private JRadioButton radioEquipos;
-    private JButton btnConfirmar;
+    private JPasswordField txtPassword;
 
     public PanelOrganizador(JFrame frame) {
         this.frame = frame;
@@ -87,15 +87,22 @@ public class PanelOrganizador extends JPanel {
         grupo.add(radioEquipos);
         panelTipo.add(radioIndividual);
         panelTipo.add(radioEquipos);
-
         gbc.gridx = 1;
         panelFormulario.add(panelTipo, gbc);
+
+        // Contraseña (opcional)
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panelFormulario.add(new JLabel("Contraseña :"), gbc);
+        txtPassword = new JPasswordField(20);
+        gbc.gridx = 1;
+        panelFormulario.add(txtPassword, gbc);
 
         add(panelFormulario, BorderLayout.CENTER);
 
         // Botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btnConfirmar = new JButton("Confirmar");
+        JButton btnConfirmar = new JButton("Confirmar");
         JButton btnVolver = new JButton("Volver");
 
         panelBotones.add(btnVolver);
@@ -103,9 +110,7 @@ public class PanelOrganizador extends JPanel {
         add(panelBotones, BorderLayout.SOUTH);
 
         // Acciones
-        btnVolver.addActionListener(e -> {
-            new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute();
-        });
+        btnVolver.addActionListener(e -> new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute());
 
         btnConfirmar.addActionListener(e -> confirmarTorneo());
     }
@@ -123,6 +128,8 @@ public class PanelOrganizador extends JPanel {
             String fecha = txtFecha.getText().trim();
             Disciplina disciplina = (Disciplina) cmbDisciplina.getSelectedItem();
             Formato formato = (Formato) cmbFormato.getSelectedItem();
+            String password = new String(txtPassword.getPassword()).trim();
+            boolean esIndividual = radioIndividual.isSelected();
 
             if (nombre.isEmpty() || fecha.isEmpty() || disciplina == null || formato == null) {
                 JOptionPane.showMessageDialog(this, "Por favor completa todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -137,8 +144,8 @@ public class PanelOrganizador extends JPanel {
                 return;
             }
 
-            boolean esIndividual = radioIndividual.isSelected();
-            CrearTorneoCommand comando = new CrearTorneoCommand(nombre, fecha, disciplina, formato, esIndividual);
+            // Crear torneo
+            CrearTorneoCommand comando = new CrearTorneoCommand(nombre, fecha, disciplina, formato, esIndividual, password);
             comando.execute();
             Torneo torneo = comando.getTorneoCreado();
             GestorTorneos.agregarTorneo(torneo);

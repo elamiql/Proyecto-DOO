@@ -8,7 +8,7 @@ import org.example.model.TorneoIndividual;
 public class Main4 {
     public static void main(String[] args) {
         // Crear torneo individual
-        TorneoIndividual torneo = new TorneoIndividual(
+        /*TorneoIndividual torneo = new TorneoIndividual(
                 "Torneo de Ajedrez",
                 Deporte.AJEDREZ,
                 "12-06-2025 18:00",
@@ -23,5 +23,7 @@ public class Main4 {
 
         // Generar calendario
         torneo.generarCalendario();
+
+         */
     }
 }
