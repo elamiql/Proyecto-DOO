@@ -1,5 +1,5 @@
 package org.example.enums;
-import org.example.model.Disciplina;
+import org.example.interfaces.Disciplina;
 
 public enum Deporte implements Disciplina {
     FUTBOL,

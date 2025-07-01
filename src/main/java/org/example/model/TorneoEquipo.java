@@ -1,20 +1,23 @@
 package org.example.model;
 
 import org.example.enums.*;
+import org.example.exceptions.ParticipantesInsuficientesException;
+import org.example.interfaces.Disciplina;
 
 public class TorneoEquipo extends Torneo<Equipo> {
     private int numGrupos;
     private int clasificadosPorGrupo;
 
-    public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato,String c) {
-        super(nombre, disciplina, fecha, formato,c);
+    public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato, String c) {
+        //Constructor por defecto para torneos de equipo de 32 equipos con estilo mundialista
+        super(nombre, disciplina, fecha, formato, c);
         this.numGrupos = 8;
         this.clasificadosPorGrupo = 2;
     }
 
     public TorneoEquipo(String nombre, Disciplina disciplina, String fecha, Formato formato,
-                        int numGrupos, int clasificadosPorGrupo,String c) {
-        super(nombre, disciplina, fecha, formato,c);
+                        int numGrupos, int clasificadosPorGrupo, String c) {
+        super(nombre, disciplina, fecha, formato, c);
         this.numGrupos = numGrupos;
         this.clasificadosPorGrupo = clasificadosPorGrupo;
     }
@@ -29,8 +32,6 @@ public class TorneoEquipo extends Torneo<Equipo> {
 
     @Override
     public void generarCalendario() {
-        System.out.println("Generando calendario para el torneo: " + getNombre());
-
         GenerarCalendario<Equipo> generador;
 
         switch (getFormato()) {
@@ -50,8 +51,7 @@ public class TorneoEquipo extends Torneo<Equipo> {
 
             case GRUPOS_CON_ELIMINATORIA:
                 if (numGrupos <= 0 || clasificadosPorGrupo <= 0) {
-                    System.out.println("Error: numGrupos y clasificadosPorGrupo deben ser mayores que 0");
-                    return;
+                    throw new ParticipantesInsuficientesException("Error: numGrupos y clasificadosPorGrupo deben ser mayores que 0");
                 }
                 generador = new GruposEliminatoria<>(getEquipos(), numGrupos, clasificadosPorGrupo);
                 generador.generarCalendario();
@@ -60,7 +60,7 @@ public class TorneoEquipo extends Torneo<Equipo> {
                 break;
 
             default:
-                System.out.println("Formato no soportado aún.");
+                throw new NumberFormatException("Formato no soportado aún");
         }
     }
 }

@@ -1,6 +1,9 @@
 package org.example.model;
 
+import org.example.exceptions.*;
 import org.example.enums.*;
+import org.example.interfaces.Disciplina;
+
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +20,7 @@ public abstract class Torneo <T extends Participante>{
     protected String contraseña;
     protected ArrayList<Enfrentamiento> enfrentamientos;
 
-    public Torneo(String nombre, Disciplina disciplina, String fecha, Formato formato,String Contraseña) {
+    public Torneo(String nombre, Disciplina disciplina, String fecha, Formato formato, String contraseña) {
         this.nombre = nombre;
         this.disciplina = disciplina;
         this.formato = formato;
@@ -27,7 +30,7 @@ public abstract class Torneo <T extends Participante>{
         this.jugadores = new ArrayList<>();
         this.equipos = new ArrayList<>();
         this.enfrentamientos = new ArrayList<>();
-        this.contraseña=Contraseña;
+        this.contraseña = contraseña;
     }
 
     public void addParticipante(Participante participante){
@@ -99,13 +102,11 @@ public abstract class Torneo <T extends Participante>{
     public void actualizarEstado() {
         if (!activo && fecha.isBefore(java.time.LocalDateTime.now())) {
             activo = true;
-            System.out.println("Torneo activado: " + nombre);
 
-            // ✅ Solo si hay suficientes participantes
             if (participantes.size() >= 2) {
                 generarCalendario();
             } else {
-                System.out.println("No se puede generar calendario: menos de 2 participantes");
+                throw new ParticipantesInsuficientesException("No se puede generar calendario: menos de 2 participantes");
             }
         }
     }

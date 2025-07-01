@@ -1,23 +1,48 @@
 package org.example.model;
 
+import org.example.interfaces.Resultado;
+
 public class Enfrentamiento {
 
     private final Participante participante1;
     private final Participante participante2;
     private boolean finalizado;
     private Participante ganador;
+    private Resultado resultado;
+
 
     public Enfrentamiento(Participante p1, Participante p2){
-        if (p1 == null){
-            throw new IllegalArgumentException("Participante1 no puede ser null");
+
+        if (p1 == null || p2 == null){
+            throw new IllegalArgumentException("Los participantes no pueden ser null");
         }
-        if (p2 != null && !p1.getClass().equals(p2.getClass())){
+        if (!p1.getClass().equals(p2.getClass())){
             throw new IllegalArgumentException("No se puede enfrentar un jugador con un equipo");
         }
 
         this.participante1 = p1;
         this.participante2 = p2;
         this.finalizado = false;
+    }
+
+    public void registrarResultado(Resultado resultado){
+        if (!resultado.esValido()){
+            throw new IllegalArgumentException("Resultado no valido");
+        }
+        this.resultado = resultado;
+
+        Participante ganador = resultado.getGanador();
+        if (ganador != null){
+            setGanador(ganador);
+        }
+        else{
+            this.finalizado = true;
+            this.ganador = null;
+        }
+    }
+
+    public Resultado getResultado(){
+        return resultado;
     }
 
     public Participante getParticipante1(){

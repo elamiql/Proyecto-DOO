@@ -4,7 +4,6 @@ import org.example.command.CambiarPanelCommand;
 import org.example.enums.Deporte;
 import org.example.enums.Videojuegos;
 import org.example.enums.Formato;
-import org.example.model.Disciplina;
 import org.example.model.GestorTorneos;
 import org.example.model.Torneo;
 

@@ -1,20 +1,21 @@
 package org.example.model;
 
 import org.example.enums.*;
-import java.util.*;
+import org.example.exceptions.*;
+import org.example.interfaces.Disciplina;
 
 public class TorneoIndividual extends Torneo<Jugador> {
 
     private int numGrupos;
     private int clasificadosPorGrupo;
 
-    public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato,String c) {
-        super(nombre, disciplina, fecha, formato,c);
+    public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato, String c) {
+        super(nombre, disciplina, fecha, formato, c);
     }
 
     public TorneoIndividual(String nombre, Disciplina disciplina, String fecha, Formato formato,
-                        int numGrupos, int clasificadosPorGrupo,String c) {
-        super(nombre, disciplina, fecha, formato,c);
+                        int numGrupos, int clasificadosPorGrupo, String c) {
+        super(nombre, disciplina, fecha, formato, c);
         this.numGrupos = numGrupos;
         this.clasificadosPorGrupo = clasificadosPorGrupo;
     }
@@ -25,7 +26,6 @@ public class TorneoIndividual extends Torneo<Jugador> {
 
     @Override
     public void generarCalendario() {
-        System.out.println("Generando calendario para el torneo: " + getNombre());
         GenerarCalendario<Jugador> generador;
 
         switch (getFormato()) {
@@ -42,9 +42,9 @@ public class TorneoIndividual extends Torneo<Jugador> {
                 break;
 
             default:
-                System.out.println("Formato no incluido / soportado");
-                return;
+                throw new FormatoInvalidoException("Formato no incluido / soportado");
         }
+
         generador.generarCalendario();
         this.enfrentamientos = generador.getEnfrentamientos();
         generador.imprimirCalendario();

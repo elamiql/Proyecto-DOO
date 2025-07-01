@@ -1,6 +1,6 @@
 package org.example.model;
-import org.example.enums.*;
 
+import org.example.enums.*;
 import java.util.ArrayList;
 public class Liga<T extends Participante> extends GenerarCalendario<T>{
 

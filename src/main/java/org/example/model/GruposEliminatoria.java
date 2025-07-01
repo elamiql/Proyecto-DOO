@@ -71,29 +71,16 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
     private void prepararFaseEliminatoria() {
         ArrayList<T> clasificadosOrdenados = new ArrayList<>();
 
-        int[][] cruces = {
-                {0, 1}, // 1° A vs 2° B
-                {2, 3}, // 1° C vs 2° D
-                {4, 5}, // 1° E vs 2° F
-                {6, 7}, // 1° G vs 2° H
-                {1, 0}, // 1° B vs 2° A
-                {3, 2}, // 1° D vs 2° C
-                {5, 4}, // 1° F vs 2° E
-                {7, 6}  // 1° H vs 2° G
-        };
+        for (int i=0; i<numeroGrupos; i+=2){
+            List<T> grupo1 = grupos.get(i);
+            List<T> grupo2 = grupos.get(i+1);
 
-        for (int[] cruce : cruces) {
-            int grupo1 = cruce[0];
-            int grupo2 = cruce[1];
+            clasificadosOrdenados.add(grupo1.get(0));
+            clasificadosOrdenados.add(grupo2.get(1));
 
-            if (grupos.size() > grupo1 && grupos.size() > grupo2 && !grupos.get(grupo1).isEmpty() && grupos.get(grupo2).size() >= 2) {
+            clasificadosOrdenados.add(grupo2.get(0));
+            clasificadosOrdenados.add(grupo1.get(1));
 
-                T primeroGrupo1 = grupos.get(grupo1).get(0);
-                T segundoGrupo2 = grupos.get(grupo2).get(1);
-
-                clasificadosOrdenados.add(primeroGrupo1);
-                clasificadosOrdenados.add(segundoGrupo2);
-            }
         }
 
         if (clasificadosOrdenados.size() > 1) {

@@ -13,6 +13,6 @@ public class Jugador extends Participante {
 
     @Override
     public String toString() {
-        return getNombre(); // Puedes ajustar si quieres que muestre también el número
+        return getNombre() + " " + getNumero();
     }
 }

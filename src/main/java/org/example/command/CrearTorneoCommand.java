@@ -2,7 +2,7 @@
 package org.example.command;
 
 import org.example.enums.Formato;
-import org.example.model.Disciplina;
+import org.example.interfaces.Disciplina;
 import org.example.model.Torneo;
 import org.example.model.TorneoIndividual;
 import org.example.model.TorneoEquipo;
