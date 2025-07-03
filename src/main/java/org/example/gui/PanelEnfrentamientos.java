@@ -1,10 +1,7 @@
 package org.example.gui;
 
 import org.example.command.CambiarPanelCommand;
-import org.example.model.Enfrentamiento;
-import org.example.model.Torneo;
-import org.example.model.Jugador;
-import org.example.model.Equipo;
+import org.example.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +17,7 @@ public class PanelEnfrentamientos extends JPanel {
         this.frame = frame;
         this.torneo = torneo;
         setLayout(new BorderLayout(10, 10));
+
         panelCentral = new JPanel();
         panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
         panelCentral.setOpaque(false);
@@ -64,21 +62,23 @@ public class PanelEnfrentamientos extends JPanel {
         panelEnfrentamiento.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panelEnfrentamiento.setOpaque(false);
 
-        String texto = "Partido " + num + ": " +
+        String baseTexto = "Partido " + num + ": " +
                 e.getParticipante1().getNombre() + " vs " +
                 e.getParticipante2().getNombre();
 
-        JLabel lbl = new JLabel(texto);
+        JLabel lbl = new JLabel(baseTexto);
         lbl.setFont(new Font("Arial", Font.PLAIN, 16));
         panelEnfrentamiento.add(lbl, BorderLayout.CENTER);
 
-        JButton btnGanador = BotonBuilder.crearBoton(
-                "Seleccionar Ganador",
-                new Color(0, 120, 215),
-                () -> seleccionarGanador(e)
-        );
-
+        JButton btnGanador = new JButton("Seleccionar Ganador");
         panelEnfrentamiento.add(btnGanador, BorderLayout.EAST);
+
+        if (e.getGanador() != null) {
+            lbl.setText(baseTexto + " - Ganador: " + obtenerNombreGanador(e.getGanador()));
+            btnGanador.setEnabled(false);
+        } else {
+            btnGanador.addActionListener(ae -> seleccionarGanador(e));
+        }
 
         return panelEnfrentamiento;
     }
@@ -122,33 +122,74 @@ public class PanelEnfrentamientos extends JPanel {
     }
 
     private void registrarGanador(Enfrentamiento e, String seleccionado) {
-        Object ganadorObj = seleccionado.equals(e.getParticipante1().getNombre())
+        Participante ganador = seleccionado.equals(e.getParticipante1().getNombre())
                 ? e.getParticipante1()
                 : e.getParticipante2();
 
-        String nombreGanador = null;
+        e.setGanador(ganador);
 
-        if (ganadorObj instanceof Jugador jugador) {
-            torneo.registrarResultados(jugador, true);
-            nombreGanador = jugador.getNombre();
-        } else if (ganadorObj instanceof Equipo equipo) {
-            // torneo.registrarResultados(equipo, true); // Si se habilita para equipos
-            nombreGanador = equipo.getNombre();
-        }
+        String nombreGanadorLimpio = limpiarNombreGanador(ganador.getNombre());
+        String patron = "Ganador " + e.getParticipante1().getNombre() + " vs " + e.getParticipante2().getNombre();
 
-        if (nombreGanador != null) {
-            JOptionPane.showMessageDialog(frame,
-                    "Ganador registrado: " + nombreGanador);
-            new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
-        } else {
-            JOptionPane.showMessageDialog(frame,
-                    "Error: tipo de ganador no soportado.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        actualizarEnfrentamientosPosteriores(patron, nombreGanadorLimpio);
+
+        JOptionPane.showMessageDialog(frame, "Ganador registrado: " + nombreGanadorLimpio);
+
+        new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
+    }
+
+    private void actualizarEnfrentamientosPosteriores(String patron, String nombreGanadorLimpio) {
+        List<Enfrentamiento> enfrentamientos = torneo.getEnfrentamientos();
+
+        for (Enfrentamiento enf : enfrentamientos) {
+            boolean actualizado = false;
+
+            // Verificar participante 1
+            if (enf.getParticipante1() != null) {
+                String nombreActual1 = enf.getParticipante1().getNombre();
+                if (nombreActual1.equals(patron) || nombreActual1.contains(patron)) {
+                    String nuevoNombre1 = nombreActual1.replace(patron, nombreGanadorLimpio);
+                    enf.setParticipante1(new ParticipantePlaceholder(nuevoNombre1));
+                    actualizado = true;
+                }
+            }
+
+            // Verificar participante 2
+            if (enf.getParticipante2() != null) {
+                String nombreActual2 = enf.getParticipante2().getNombre();
+                if (nombreActual2.equals(patron) || nombreActual2.contains(patron)) {
+                    String nuevoNombre2 = nombreActual2.replace(patron, nombreGanadorLimpio);
+                    enf.setParticipante2(new ParticipantePlaceholder(nuevoNombre2));
+                    actualizado = true;
+                }
+            }
         }
     }
 
+    private String limpiarNombreGanador(String nombre) {
+        String nombreLimpio = nombre;
+
+        while (nombreLimpio.startsWith("Ganador ")) {
+            nombreLimpio = nombreLimpio.substring(8);
+        }
+        return nombreLimpio;
+    }
+
+    private String obtenerNombreGanador(Object ganador) {
+        if (ganador instanceof Jugador) {
+            return ((Jugador) ganador).getNombre();
+        } else if (ganador instanceof Equipo) {
+            return ((Equipo) ganador).getNombre();
+        }
+        return ganador.toString();
+    }
+
     private void inicializarPanelAbajo() {
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame, torneo));
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.addActionListener(e -> {
+            new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
+        });
+
         JPanel panelAbajo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelAbajo.setOpaque(false);
         panelAbajo.add(btnVolver);
