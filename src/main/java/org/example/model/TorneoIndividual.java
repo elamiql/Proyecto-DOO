@@ -22,6 +22,13 @@ public class TorneoIndividual extends Torneo<Jugador> {
 
     public void registrarResultado(Jugador j, boolean sigueActivo) {
         j.setActivo(sigueActivo);
+        for (Enfrentamiento e : enfrentamientos) {
+            if (e.getGanador() == null &&
+                    (e.getParticipante1() == j || e.getParticipante2() == j)) {
+                e.setGanador(j);
+                break;
+            }
+        }
     }
 
     @Override

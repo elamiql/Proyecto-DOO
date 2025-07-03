@@ -16,10 +16,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PanelOrganizador extends JPanel {
+public class PanelOrganizador extends PanelFondo {
 
     private final JFrame frame;
-
     private JTextField txtNombre;
     private JTextField txtFecha;
     private JComboBox<Disciplina> cmbDisciplina;
@@ -29,90 +28,81 @@ public class PanelOrganizador extends JPanel {
     private JPasswordField txtPassword;
 
     public PanelOrganizador(JFrame frame) {
+        super(Imagen.cargarImagen("/Fondos/Fondo1.jpg"));
         this.frame = frame;
+
         setLayout(new BorderLayout(10, 10));
+        initTitulo();
+        initFormulario();
+        initBotones();
+    }
 
+    private void initTitulo() {
         JLabel labelTitulo = new JLabel("Crear Nuevo Torneo", SwingConstants.CENTER);
-        labelTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+        labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        labelTitulo.setForeground(Color.WHITE);
+        labelTitulo.setOpaque(false);
         add(labelTitulo, BorderLayout.NORTH);
+    }
 
+    private void initFormulario() {
         JPanel panelFormulario = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        panelFormulario.setOpaque(false);
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        gbc.insets = new Insets(5, 5, 5, 5);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Nombre
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panelFormulario.add(new JLabel("Nombre:"), gbc);
-        txtNombre = new JTextField(20);
-        gbc.gridx = 1;
-        panelFormulario.add(txtNombre, gbc);
+        agregarCampo(panelFormulario, gbc, 0, "Nombre:", txtNombre = new JTextField(20));
+        agregarCampo(panelFormulario, gbc, 1, "Fecha (dd-MM-yyyy HH:mm):", txtFecha = new JTextField(20));
 
-        // Fecha
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panelFormulario.add(new JLabel("Fecha (dd-MM-yyyy HH:mm):"), gbc);
-        txtFecha = new JTextField(20);
-        gbc.gridx = 1;
-        panelFormulario.add(txtFecha, gbc);
+        cmbDisciplina = BotonBuilder.crearComboBox(getTodasDisciplinas().toArray(new Disciplina[0]));
+        agregarCampo(panelFormulario, gbc, 2, "Disciplina:", cmbDisciplina);
 
-        // Disciplina
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panelFormulario.add(new JLabel("Disciplina:"), gbc);
-        cmbDisciplina = new JComboBox<>(getTodasDisciplinas().toArray(new Disciplina[0]));
-        gbc.gridx = 1;
-        panelFormulario.add(cmbDisciplina, gbc);
+        cmbFormato = BotonBuilder.crearComboBox(Formato.values());
+        agregarCampo(panelFormulario, gbc, 3, "Formato:", cmbFormato);
 
-        // Formato
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        panelFormulario.add(new JLabel("Formato:"), gbc);
-        cmbFormato = new JComboBox<>(Formato.values());
-        gbc.gridx = 1;
-        panelFormulario.add(cmbFormato, gbc);
-
-        // Tipo de torneo: Individual o Equipos
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        panelFormulario.add(new JLabel("Tipo de Torneo:"), gbc);
-
-        JPanel panelTipo = new JPanel(new FlowLayout(FlowLayout.LEFT));
         radioIndividual = new JRadioButton("Individual", true);
         radioEquipos = new JRadioButton("Por equipos");
+        radioIndividual.setOpaque(false);
+        radioEquipos.setOpaque(false);
+
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(radioIndividual);
         grupo.add(radioEquipos);
-        panelTipo.add(radioIndividual);
-        panelTipo.add(radioEquipos);
-        gbc.gridx = 1;
-        panelFormulario.add(panelTipo, gbc);
 
-        // Contraseña (opcional)
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        panelFormulario.add(new JLabel("Contraseña :"), gbc);
-        txtPassword = new JPasswordField(20);
-        gbc.gridx = 1;
-        panelFormulario.add(txtPassword, gbc);
+        JPanel tipoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        tipoPanel.setOpaque(false);
+        tipoPanel.add(radioIndividual);
+        tipoPanel.add(radioEquipos);
+        agregarCampo(panelFormulario, gbc, 4, "Tipo de Torneo:", tipoPanel);
+
+        agregarCampo(panelFormulario, gbc, 5, "Contraseña:", txtPassword = new JPasswordField(20));
 
         add(panelFormulario, BorderLayout.CENTER);
+    }
 
-        // Botones
+    private void initBotones() {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnConfirmar = new JButton("Confirmar");
-        JButton btnVolver = new JButton("Volver");
+        panelBotones.setOpaque(false);
+
+        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelPrincipal(frame));
+        JButton btnConfirmar = BotonBuilder.crearBoton("✅ Confirmar", new Color(0, 153, 76), this::confirmarTorneo);
 
         panelBotones.add(btnVolver);
         panelBotones.add(btnConfirmar);
         add(panelBotones, BorderLayout.SOUTH);
+    }
 
-        // Acciones
-        btnVolver.addActionListener(e -> new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute());
-
-        btnConfirmar.addActionListener(e -> confirmarTorneo());
+    private void agregarCampo(JPanel panel, GridBagConstraints gbc, int fila, String etiqueta, JComponent campo) {
+        gbc.gridx = 0;
+        gbc.gridy = fila;
+        JLabel label = new JLabel(etiqueta);
+        label.setForeground(Color.WHITE);
+        panel.add(label, gbc);
+        gbc.gridx = 1;
+        panel.add(campo, gbc);
     }
 
     private List<Disciplina> getTodasDisciplinas() {
@@ -144,7 +134,6 @@ public class PanelOrganizador extends JPanel {
                 return;
             }
 
-            // Crear torneo
             CrearTorneoCommand comando = new CrearTorneoCommand(nombre, fecha, disciplina, formato, esIndividual, password);
             comando.execute();
             Torneo torneo = comando.getTorneoCreado();

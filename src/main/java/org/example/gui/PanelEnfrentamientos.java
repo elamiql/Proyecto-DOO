@@ -1,87 +1,105 @@
 package org.example.gui;
 
 import org.example.command.CambiarPanelCommand;
-import org.example.model.*;
+import org.example.model.Enfrentamiento;
+import org.example.model.Torneo;
+import org.example.model.Jugador;
+import org.example.model.Equipo;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 public class PanelEnfrentamientos extends JPanel {
+
     private final JFrame frame;
     private final Torneo<?> torneo;
+    private final JPanel panelCentral;
 
     public PanelEnfrentamientos(JFrame frame, Torneo<?> torneo) {
         this.frame = frame;
         this.torneo = torneo;
-
         setLayout(new BorderLayout(10, 10));
+        panelCentral = new JPanel();
+        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+        panelCentral.setOpaque(false);
 
-        add(crearTitulo(), BorderLayout.NORTH);
-        add(crearPanelCentral(), BorderLayout.CENTER);
-        add(crearPanelAbajo(), BorderLayout.SOUTH);
+        inicializarTitulo();
+        inicializarPanelCentral();
+        inicializarPanelAbajo();
     }
 
-    private JLabel crearTitulo() {
+    private void inicializarTitulo() {
         JLabel titulo = new JLabel("Enfrentamientos del Torneo", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
-        return titulo;
+        add(titulo, BorderLayout.NORTH);
     }
 
-    private JScrollPane crearPanelCentral() {
-        JPanel panelCentral = new JPanel();
-        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
-        List<Enfrentamiento> enfrentamientos = torneo.getEnfrentamientos();
+    private void inicializarPanelCentral() {
+        cargarEnfrentamientos();
+        JScrollPane scroll = new JScrollPane(panelCentral);
+        add(scroll, BorderLayout.CENTER);
+    }
 
+    private void cargarEnfrentamientos() {
+        panelCentral.removeAll();
+
+        List<Enfrentamiento> enfrentamientos = torneo.getEnfrentamientos();
         if (enfrentamientos.isEmpty()) {
-            panelCentral.add(new JLabel("Aún no se han generado enfrentamientos."));
+            JLabel lbl = new JLabel("Aún no se han generado enfrentamientos.");
+            lbl.setFont(new Font("Arial", Font.ITALIC, 16));
+            panelCentral.add(lbl);
         } else {
             int num = 1;
             for (Enfrentamiento e : enfrentamientos) {
-                panelCentral.add(crearPanelEnfrentamiento(num++, e));
+                panelCentral.add(crearPanelEnfrentamiento(e, num++));
             }
         }
-        return new JScrollPane(panelCentral);
+        panelCentral.revalidate();
+        panelCentral.repaint();
     }
 
-    private JPanel crearPanelEnfrentamiento(int num, Enfrentamiento e) {
-        JPanel panel = new JPanel(new BorderLayout());
-        String baseTexto = "Partido " + num + ": " + e.getParticipante1().getNombre() + " vs " + e.getParticipante2().getNombre();
-        JLabel lbl = new JLabel(baseTexto);
+    private JPanel crearPanelEnfrentamiento(Enfrentamiento e, int num) {
+        JPanel panelEnfrentamiento = new JPanel(new BorderLayout(5, 5));
+        panelEnfrentamiento.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panelEnfrentamiento.setOpaque(false);
 
-        JButton btn = crearBotonSeleccionGanador(e, lbl, baseTexto);
-        panel.add(lbl, BorderLayout.CENTER);
-        panel.add(btn, BorderLayout.EAST);
+        String texto = "Partido " + num + ": " +
+                e.getParticipante1().getNombre() + " vs " +
+                e.getParticipante2().getNombre();
 
-        if (e.getGanador() != null) {
-            lbl.setText(baseTexto + " - Ganador: " + obtenerNombreGanador(e.getGanador()));
-            btn.setEnabled(false);
-        }
+        JLabel lbl = new JLabel(texto);
+        lbl.setFont(new Font("Arial", Font.PLAIN, 16));
+        panelEnfrentamiento.add(lbl, BorderLayout.CENTER);
 
-        return panel;
+        JButton btnGanador = BotonBuilder.crearBoton(
+                "Seleccionar Ganador",
+                new Color(0, 120, 215),
+                () -> seleccionarGanador(e)
+        );
+
+        panelEnfrentamiento.add(btnGanador, BorderLayout.EAST);
+
+        return panelEnfrentamiento;
     }
 
-    private JButton crearBotonSeleccionGanador(Enfrentamiento e, JLabel lbl, String baseTexto) {
-        JButton btn = new JButton("Seleccionar Ganador");
+    private void seleccionarGanador(Enfrentamiento e) {
+        String[] opciones = {
+                e.getParticipante1().getNombre(),
+                e.getParticipante2().getNombre()
+        };
 
-        btn.addActionListener(ae -> {
-            String[] opciones = {
-                    e.getParticipante1().getNombre(),
-                    e.getParticipante2().getNombre()
-            };
+        String seleccionado = (String) JOptionPane.showInputDialog(
+                frame,
+                "Selecciona el ganador:",
+                "Ganador del Partido",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
 
-            String seleccionado = (String) JOptionPane.showInputDialog(
-                    frame,
-                    "Selecciona el ganador:",
-                    "Ganador del Partido",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    opciones,
-                    opciones[0]
-            );
-
-            if (seleccionado == null) return;
-
+        if (seleccionado != null) {
             JPasswordField passwordField = new JPasswordField();
             int confirmacion = JOptionPane.showConfirmDialog(
                     frame,
@@ -91,60 +109,49 @@ public class PanelEnfrentamientos extends JPanel {
                     JOptionPane.PLAIN_MESSAGE
             );
 
-            if (confirmacion != JOptionPane.OK_OPTION) return;
-
-            String claveIngresada = new String(passwordField.getPassword());
-            if (!claveIngresada.equals(torneo.getContraseña())) {
-                JOptionPane.showMessageDialog(frame, "Contraseña incorrecta.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+            if (confirmacion == JOptionPane.OK_OPTION) {
+                String claveIngresada = new String(passwordField.getPassword());
+                if (claveIngresada.equals(torneo.getContraseña())) {
+                    registrarGanador(e, seleccionado);
+                } else {
+                    JOptionPane.showMessageDialog(frame,
+                            "Contraseña incorrecta.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
+        }
+    }
 
-            Participante ganador = seleccionado.equals(e.getParticipante1().getNombre())
-                    ? e.getParticipante1()
-                    : e.getParticipante2();
+    private void registrarGanador(Enfrentamiento e, String seleccionado) {
+        Object ganadorObj = seleccionado.equals(e.getParticipante1().getNombre())
+                ? e.getParticipante1()
+                : e.getParticipante2();
 
-            e.setGanador(ganador);
+        String nombreGanador = null;
 
-            // Reemplaza cualquier ocurrencia de "A vs B" en nombres compuestos
-            String marcadorVs = e.getParticipante1().getNombre() + " vs " + e.getParticipante2().getNombre();
-            reemplazarGanadorPorSubstring(torneo.getEnfrentamientos(), marcadorVs, ganador);
+        if (ganadorObj instanceof Jugador jugador) {
+            torneo.registrarResultados(jugador, true);
+            nombreGanador = jugador.getNombre();
+        } else if (ganadorObj instanceof Equipo equipo) {
+            // torneo.registrarResultados(equipo, true); // Si se habilita para equipos
+            nombreGanador = equipo.getNombre();
+        }
 
-            JOptionPane.showMessageDialog(frame, "Ganador registrado: " + seleccionado);
+        if (nombreGanador != null) {
+            JOptionPane.showMessageDialog(frame,
+                    "Ganador registrado: " + nombreGanador);
             new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
-        });
-
-        return btn;
-    }
-
-    private void reemplazarGanadorPorSubstring(List<Enfrentamiento> enfrentamientos, String marcadorVs, Participante ganador) {
-        for (Enfrentamiento enf : enfrentamientos) {
-            if (enf.getParticipante1() != null && enf.getParticipante1().getNombre().contains(marcadorVs)) {
-                String nuevoNombre = enf.getParticipante1().getNombre().replace(marcadorVs, ganador.getNombre());
-                enf.setParticipante1(new ParticipantePlaceholder(nuevoNombre));
-            }
-            if (enf.getParticipante2() != null && enf.getParticipante2().getNombre().contains(marcadorVs)) {
-                String nuevoNombre = enf.getParticipante2().getNombre().replace(marcadorVs, ganador.getNombre());
-                enf.setParticipante2(new ParticipantePlaceholder(nuevoNombre));
-            }
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    "Error: tipo de ganador no soportado.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private String obtenerNombreGanador(Object ganador) {
-        if (ganador instanceof Jugador) {
-            return ((Jugador) ganador).getNombre();
-        } else if (ganador instanceof Equipo) {
-            return ((Equipo) ganador).getNombre();
-        }
-        return ganador.toString(); // También cubre ParticipantePlaceholder
-    }
-
-    private JPanel crearPanelAbajo() {
-        JPanel abajo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnVolver = new JButton("Volver");
-        btnVolver.addActionListener(e -> {
-            new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
-        });
-        abajo.add(btnVolver);
-        return abajo;
+    private void inicializarPanelAbajo() {
+        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame, torneo));
+        JPanel panelAbajo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelAbajo.setOpaque(false);
+        panelAbajo.add(btnVolver);
+        add(panelAbajo, BorderLayout.SOUTH);
     }
 }
