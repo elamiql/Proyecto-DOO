@@ -19,26 +19,25 @@ public class Main5 {
                 "Copa América",
                 Deporte.FUTBOL,
                 "29-06-2025 20:09",
-                Formato.ELIMINATORIA);
+                Formato.ELIMINATORIA,"12");
 
         TorneoEquipo torneo2 = new TorneoEquipo(
                 "Liga Pro de LOL",
                 Videojuegos.LOL,
                 "01-08-2025 20:00",
-                Formato.LIGA);
+                Formato.LIGA,"12");
 
         TorneoIndividual torneo3 = new TorneoIndividual(
                 "Torneo de Ajedrez",
                 Deporte.AJEDREZ,
                 "15-08-2025 10:00",
-                Formato.GRUPOS_CON_ELIMINATORIA);
+                Formato.GRUPOS_CON_ELIMINATORIA,"2");
 
         TorneoEquipo torneo4 = new TorneoEquipo("Fifa World Cup Qatar 2022",
                 Deporte.FUTBOL,
                 "10-07-2026 11:00",
                 Formato.GRUPOS_CON_ELIMINATORIA,
-                8,
-                2);
+                "6");
 
         // Grupos del Mundial de Qatar 2022
         String[][] gruposQatar = {
@@ -71,8 +70,8 @@ public class Main5 {
         GestorTorneos.agregarTorneo(torneo2);
         GestorTorneos.agregarTorneo(torneo3);
         GestorTorneos.agregarTorneo(torneo4);
+        */
 
-         */
 
 
         // Crear jugadores
