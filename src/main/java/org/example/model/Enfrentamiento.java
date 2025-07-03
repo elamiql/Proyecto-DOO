@@ -4,8 +4,8 @@ import org.example.interfaces.Resultado;
 
 public class Enfrentamiento {
 
-    private final Participante participante1;
-    private final Participante participante2;
+    private Participante participante1;
+    private Participante participante2;
     private boolean finalizado;
     private Participante ganador;
     private Resultado resultado;
@@ -59,6 +59,22 @@ public class Enfrentamiento {
 
     public Participante getGanador(){
         return ganador;
+    }
+
+    public void setResultado(Resultado resultado){
+        this.resultado = resultado;
+    }
+
+    public void setParticipante1(Participante p1){
+        this.participante1 = p1;
+    }
+
+    public void setParticipante2(Participante p2){
+        this.participante2 = p2;
+    }
+
+    public void setFinalizado(boolean finalizado) {
+        this.finalizado = finalizado;
     }
 
     public void setGanador(Participante ganador){

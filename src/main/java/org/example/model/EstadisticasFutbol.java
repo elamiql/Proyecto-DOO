@@ -1,7 +1,6 @@
 package org.example.model;
 
 public class EstadisticasFutbol extends EstadisticasParticipante<Participante>{
-
     private int golesFavor;
     private int golesContra;
 

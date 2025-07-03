@@ -2,8 +2,9 @@ package org.example.model;
 
 import org.example.exceptions.*;
 import org.example.enums.*;
-import org.example.interfaces.Disciplina;
+import org.example.interfaces.*;
 
+import java.awt.desktop.OpenFilesEvent;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,6 +49,10 @@ public abstract class Torneo <T extends Participante>{
         return enfrentamientos;
     }
 
+    public void setEnfrentamientos(ArrayList<Enfrentamiento> enfrentamientos){
+        this.enfrentamientos = enfrentamientos;
+    }
+
     public ArrayList<T> getParticipantes() {
         return participantes;
     }
@@ -65,8 +70,22 @@ public abstract class Torneo <T extends Participante>{
         return equipos;
     }
 
-    public void registrarResultados(Jugador p, boolean sigueActivo) {
-        p.setActivo(sigueActivo);
+    public void registrarResultados(Enfrentamiento enf, Resultado resultado){
+        enf.setResultado(resultado);
+
+        Participante ganador  = resultado.getGanador();
+        enf.setGanador(ganador);
+
+    }
+
+    public void registrarGanador(Enfrentamiento enf, Participante ganador){
+        enf.setGanador(ganador);
+
+        Participante perdedor = enf.getParticipante1().equals(ganador) ? enf.getParticipante2() : enf.getParticipante1();
+
+        if (perdedor != null){
+            registrarResultados(enf, enf.getResultado());
+        }
     }
 
     // Getters
