@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.Comparator;
-import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -48,15 +47,15 @@ public class Main {
             int golesVisitante = rnd.nextInt(6);
 
             // Crear resultado de futbol
-            ResultadoFutbol resultado = new ResultadoFutbol(partido.getParticipante1(),partido.getParticipante2(),golesLocal, golesVisitante);
+            ResultadoFutbol resultado = new ResultadoFutbol(partido.getParticipante1(), partido.getParticipante2(), golesLocal, golesVisitante);
 
             // Registrar resultado en enfrentamiento
             partido.registrarResultado(resultado);
 
             // Actualizar estadísticas para ambos equipos
             // Recordar: participante1 es local, participante2 es visitante
-            EstadisticasFutbol estadLocal = liga.tablaEstadisticas.get(partido.getParticipante1());
-            EstadisticasFutbol estadVisitante = liga.tablaEstadisticas.get(partido.getParticipante2());
+            EstadisticasFutbol estadLocal = liga.getTablaEstadisticas().get(partido.getParticipante1());
+            EstadisticasFutbol estadVisitante = liga.getTablaEstadisticas().get(partido.getParticipante2());
 
             estadLocal.registrarResultado(resultado, partido.getParticipante1(), true);
             estadVisitante.registrarResultado(resultado, partido.getParticipante2(), false);
@@ -70,7 +69,7 @@ public class Main {
         System.out.println("Equipo               | PJ |  G |  E |  P | GF  | GC  | DIF | Pts");
         System.out.println("---------------------------------------------------------------");
 
-        liga.tablaEstadisticas.values().stream()
+        liga.getTablaEstadisticas().values().stream()
                 .sorted(Comparator.comparingInt(EstadisticasFutbol::getPuntos).reversed()
                         .thenComparingInt(EstadisticasFutbol::getDiferenciaGoles).reversed()
                         .thenComparingInt(EstadisticasFutbol::getGolesFavor).reversed())

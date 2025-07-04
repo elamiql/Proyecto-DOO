@@ -5,7 +5,7 @@ import java.util.*;
 public class Liga<T extends Participante> extends GenerarCalendario<T>{
 
     private boolean dobleVuelta;
-    public Map<T, EstadisticasFutbol> tablaEstadisticas;
+    private Map<T, EstadisticasFutbol> tablaEstadisticas;
 
     public Liga(ArrayList<T> participantes, boolean dobleVuelta){
         super(participantes);
@@ -48,5 +48,22 @@ public class Liga<T extends Participante> extends GenerarCalendario<T>{
     public void imprimirCalendario() {
         System.out.println("=== Calendario Liga " + (dobleVuelta ? "(Doble Vuelta)" : "(Vuelta Simple)") + " ===");
         super.imprimirCalendario();
+    }
+
+    public Map<T, EstadisticasFutbol> getTablaEstadisticas(){
+        return tablaEstadisticas;
+    }
+
+    @Override
+    public void setEnfrentamientos(ArrayList<Enfrentamiento> enfrentamientos) {
+        super.setEnfrentamientos(enfrentamientos);
+    }
+
+    public void setDobleVuelta(boolean dobleVuelta) {
+        this.dobleVuelta = dobleVuelta;
+    }
+
+    public void setTablaEstadisticas(Map<T, EstadisticasFutbol> tablaEstadisticas) {
+        this.tablaEstadisticas = tablaEstadisticas;
     }
 }

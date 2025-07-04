@@ -8,22 +8,21 @@ import org.example.model.TorneoIndividual;
 public class Main4 {
     public static void main(String[] args) {
         // Crear torneo individual
-        /*TorneoIndividual torneo = new TorneoIndividual(
+        TorneoIndividual torneo = new TorneoIndividual(
                 "Torneo de Ajedrez",
                 Deporte.AJEDREZ,
                 "12-06-2025 18:00",
-                Formato.ELIMINATORIA
+                Formato.ELIMINATORIA,
+                "a"
         );
 
         // Crear e inscribir jugadores
         for (int i = 1; i <= 4; i++) {
             Jugador jugador = new Jugador("Jugador " + i, String.valueOf(i));
-            //torneo.addJugador(jugador);
+            torneo.addParticipante(jugador);
         }
 
         // Generar calendario
         torneo.generarCalendario();
-
-         */
     }
 }

@@ -119,4 +119,20 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
             generadorEliminatorias.imprimirBracket();
         }
     }
+
+    public Eliminatoria<T> getGeneradorEliminatorias(){
+        return generadorEliminatorias;
+    }
+
+    public List<List<T>> getGrupos(){
+        return grupos;
+    }
+
+    public List<Liga<T>> getGeneradoresGrupos(){
+        return generadoresGrupos;
+    }
+
+    public int getNumeroGrupos(){
+        return numeroGrupos;
+    }
 }
