@@ -1,7 +1,7 @@
 package org.example.model;
 
 import org.example.interfaces.Resultado;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,7 @@ class EnfrentamientoTest {
     Resultado empate;
     Enfrentamiento enfrentamiento;
 
-    @org.junit.jupiter.api.BeforeEach
+    @BeforeEach
     void setUp() {
         p1 = new Jugador("participante1","1");
         p2 = new Jugador("participante2","2");
@@ -31,10 +31,8 @@ class EnfrentamientoTest {
     }
 
     @Test
-    void enfrentamientosinerrores() {
+    void enfrentamientoSinErrores() {
         Enfrentamiento enfrentamiento = new Enfrentamiento(p1, p1);
-
-
         assertNotNull(enfrentamiento);
     }
 
@@ -88,7 +86,7 @@ class EnfrentamientoTest {
 
 
 
-    @org.junit.jupiter.api.AfterEach
+    @AfterEach
     void tearDown() {
     }
 }

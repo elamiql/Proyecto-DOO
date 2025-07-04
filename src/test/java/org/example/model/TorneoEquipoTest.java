@@ -29,7 +29,7 @@ class TorneoEquipoTest {
     void generarCalendario_formatoInvalido() {
         TorneoEquipo Torneo_error = new TorneoEquipo("Torneo Error", disciplina,"25-12-2025 14:30", Formato.CUSTOM, "Online");
 
-        assertThrows(NumberFormatException.class, Torneo_error::generarCalendario);
+        assertThrows(FormatoInvalidoException.class, Torneo_error::generarCalendario);
     }
 
     @Test

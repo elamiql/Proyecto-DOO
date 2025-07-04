@@ -1,6 +1,7 @@
 package org.example.model;
 
 import org.example.enums.*;
+import org.example.exceptions.FormatoInvalidoException;
 import org.example.exceptions.ParticipantesInsuficientesException;
 import org.example.interfaces.Disciplina;
 
@@ -56,7 +57,7 @@ public class TorneoEquipo extends Torneo<Equipo> {
                 break;
 
             default:
-                throw new NumberFormatException("Formato no soportado aún");
+                throw new FormatoInvalidoException("Formato no soportado aún");
         }
     }
 }

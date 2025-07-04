@@ -1,6 +1,6 @@
 package org.example.model;
 
-import org.example.interfaces.*;
+import org.example.interfaces.Resultado;
 
 public class ResultadoTenis implements Resultado {
     private int setsJugador1;
@@ -13,23 +13,39 @@ public class ResultadoTenis implements Resultado {
     public ResultadoTenis(Participante jugador1, Participante jugador2, int maxSets) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
-        juegosSetsJugador1 = new int[maxSets];
-        juegosSetsJugador2 = new int[maxSets];
-        setsJugador1 = 0;
-        setsJugador2 = 0;
+        this.juegosSetsJugador1 = new int[maxSets];
+        this.juegosSetsJugador2 = new int[maxSets];
+        this.setsJugador1 = 0;
+        this.setsJugador2 = 0;
     }
 
     public void agregarSet(int setIndex, int juegosJ1, int juegosJ2) {
         juegosSetsJugador1[setIndex] = juegosJ1;
         juegosSetsJugador2[setIndex] = juegosJ2;
 
-        // Recalcular sets ganados (por si cambian sets después)
+        recalcularSets();
+    }
+
+    private void recalcularSets() {
         setsJugador1 = 0;
         setsJugador2 = 0;
         for (int i = 0; i < juegosSetsJugador1.length; i++) {
-            if (juegosSetsJugador1[i] > juegosSetsJugador2[i]) setsJugador1++;
-            else if (juegosSetsJugador2[i] > juegosSetsJugador1[i]) setsJugador2++;
+            int j1 = juegosSetsJugador1[i];
+            int j2 = juegosSetsJugador2[i];
+
+            if (j1 == 0 && j2 == 0) continue;
+
+            if (esSetGanado(j1, j2)) {
+                setsJugador1++;
+            } else if (esSetGanado(j2, j1)) {
+                setsJugador2++;
+            }
         }
+    }
+
+    private boolean esSetGanado(int ganados, int perdidos) {
+        if (ganados >= 6 && ganados - perdidos >= 2 && ganados <= 7) return true;
+        return ganados == 7 && perdidos == 6;
     }
 
     @Override
@@ -38,31 +54,82 @@ public class ResultadoTenis implements Resultado {
         sb.append("Sets: ").append(setsJugador1).append(" - ").append(setsJugador2).append("\n");
         sb.append("Juegos por set:\n");
         for (int i = 0; i < juegosSetsJugador1.length; i++) {
-            if (juegosSetsJugador1[i] == 0 && juegosSetsJugador2[i] == 0) continue;
+            int j1 = juegosSetsJugador1[i];
+            int j2 = juegosSetsJugador2[i];
+            if (j1 == 0 && j2 == 0) continue;
             sb.append("Set ").append(i + 1).append(": ")
-                    .append(juegosSetsJugador1[i]).append(" - ").append(juegosSetsJugador2[i]).append("\n");
+                    .append(j1).append(" - ").append(j2).append("\n");
         }
         return sb.toString();
     }
 
     @Override
     public Participante getGanador() {
-        if (setsJugador1 > setsJugador2){
+        if (!esValido()) return null;
+
+        if (setsJugador1 > setsJugador2) {
             return jugador1;
-        }
-        else if (setsJugador2 > setsJugador1) {
+        } else if (setsJugador2 > setsJugador1) {
             return jugador2;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     @Override
     public boolean esValido() {
-        int maxSetsGanados = Math.max(setsJugador1, setsJugador2);
-        // Validar si alguien ya ganó la mayoría de sets (ej. 2 de 3, 3 de 5)
-        int setsNecesarios = (juegosSetsJugador1.length / 2) + 1;
-        return maxSetsGanados >= setsNecesarios;
+        int maxSets = juegosSetsJugador1.length;
+        int necesarios = (maxSets / 2) + 1;
+        return setsJugador1 >= necesarios || setsJugador2 >= necesarios;
+    }
+
+    //GETTERS Y SETTERS
+
+    public int getSetsJugador1() {
+        return setsJugador1;
+    }
+
+    public int getSetsJugador2() {
+        return setsJugador2;
+    }
+
+    public int[] getJuegosSetsJugador1() {
+        return juegosSetsJugador1;
+    }
+
+    public int[] getJuegosSetsJugador2() {
+        return juegosSetsJugador2;
+    }
+
+    public Participante getJugador1() {
+        return jugador1;
+    }
+
+    public Participante getJugador2() {
+        return jugador2;
+    }
+
+    public void setJuegosSetsJugador1(int[] juegosSetsJugador1) {
+        this.juegosSetsJugador1 = juegosSetsJugador1;
+    }
+
+    public void setJuegosSetsJugador2(int[] juegosSetsJugador2) {
+        this.juegosSetsJugador2 = juegosSetsJugador2;
+    }
+
+    public void setJugador1(Participante jugador1) {
+        this.jugador1 = jugador1;
+    }
+
+    public void setJugador2(Participante jugador2) {
+        this.jugador2 = jugador2;
+    }
+
+    public void setSetsJugador1(int setsJugador1) {
+        this.setsJugador1 = setsJugador1;
+    }
+
+    public void setSetsJugador2(int setsJugador2) {
+        this.setsJugador2 = setsJugador2;
     }
 }

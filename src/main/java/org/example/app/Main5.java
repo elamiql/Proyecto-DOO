@@ -79,7 +79,7 @@ public class Main5 {
         GenerarCalendario<Equipo> generador = new Eliminatoria<>(torneoChampions.getParticipantes(), true);
         generador.generarCalendario();
 
-        // Asignar enfrentamientos generados al torneoChampions (si tu clase TorneoEquipo tiene este método)
+        // Asignar enfrentamientos generados al torneoChampions (si tu clase TorneoEquipo tiene este metodo)
         torneoChampions.setEnfrentamientos(generador.getEnfrentamientos());
 
         // Agregar torneos al gestor

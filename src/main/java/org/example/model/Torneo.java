@@ -70,24 +70,6 @@ public abstract class Torneo <T extends Participante>{
         return equipos;
     }
 
-    public void registrarResultados(Enfrentamiento enf, Resultado resultado){
-        enf.setResultado(resultado);
-
-        Participante ganador  = resultado.getGanador();
-        enf.setGanador(ganador);
-
-    }
-
-    public void registrarGanador(Enfrentamiento enf, Participante ganador){
-        enf.setGanador(ganador);
-
-        Participante perdedor = enf.getParticipante1().equals(ganador) ? enf.getParticipante2() : enf.getParticipante1();
-
-        if (perdedor != null){
-            registrarResultados(enf, enf.getResultado());
-        }
-    }
-
     // Getters
     public String getNombre() {
         return nombre;
