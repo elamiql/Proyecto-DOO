@@ -35,8 +35,12 @@ public abstract class Torneo <T extends Participante>{
     }
 
     public void addParticipante(Participante participante){
-        participantes.add((T) participante);
 
+        if (participantes.contains((T) participante)){
+            throw new ParticipanteDuplicadoException("El participante ya esta inscrito");
+        }
+
+        participantes.add((T) participante);
         if (participante instanceof Jugador){
             jugadores.add((Jugador) participante);
         }

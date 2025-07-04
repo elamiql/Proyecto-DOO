@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.exceptions.ParticipanteNullException;
+
 import java.util.*;
 
 public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
@@ -35,7 +37,6 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         bracket.clear();
 
         ArrayList<T> participantesMezclados = new ArrayList<>(participantes);
-
         generarBracketCompleto(participantesMezclados);
         rondasEliminatorias = bracket;
     }
@@ -47,31 +48,38 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
             List<Enfrentamiento> enfrentamientosRonda = new ArrayList<>();
             ArrayList<T> sgteRonda = new ArrayList<>();
 
-            for (int i=0; i<rondaActual.size()-1; i+=2){
-                Enfrentamiento enfrentamiento = new Enfrentamiento(rondaActual.get(i), rondaActual.get(i+1));
+            for (int i = 0; i < rondaActual.size() - 1; i += 2) {
+                T p1 = rondaActual.get(i);
+                T p2 = rondaActual.get(i + 1);
+
+                Enfrentamiento enfrentamiento = new Enfrentamiento(p1, p2);
                 enfrentamientosRonda.add(enfrentamiento);
                 enfrentamientos.add(enfrentamiento);
 
-                String nombreGanador = "Ganador " + rondaActual.get(i).getNombre() + " vs " + rondaActual.get(i+1).getNombre();
-                Participante placeHolder = new Participante(nombreGanador, "-1") {
-                    @Override
-                    public void inscribirse(Torneo<?> torneo) {
-                        //No hacer nada
-                    }
-                };
+                String nombreGanador = "Ganador " + p1.getNombre() + " vs " + p2.getNombre();
+                Participante placeholder;
 
-                sgteRonda.add((T) placeHolder);
+                if (p1 instanceof Jugador && p2 instanceof Jugador) {
+                    placeholder = new Jugador(nombreGanador, "-1");
+                } else if (p1 instanceof Equipo && p2 instanceof Equipo) {
+                    placeholder = new Equipo(nombreGanador, "-1", new ArrayList<>());
+                } else {
+                    throw new ParticipanteNullException("No se puede enfrentar un jugador con un equipo "
+                            + p1.getClass() + " " + p2.getClass());
+                }
+
+                sgteRonda.add((T) placeholder);
             }
 
-            if (rondaActual.size() % 2 !=0){
+            if (rondaActual.size() % 2 != 0) {
                 T participanteLibre = rondaActual.get(rondaActual.size() - 1);
                 sgteRonda.add(participanteLibre);
-                System.out.println(participanteLibre.getNombre() + " pasa automaticamente a la sgte ronda");
+                System.out.println("[BYE] " + participanteLibre.getNombre() + " avanza automáticamente");
             }
+
             bracket.add(enfrentamientosRonda);
             rondaActual = sgteRonda;
         }
-
     }
 
     public void imprimirBracket() {

@@ -1,5 +1,6 @@
 package org.example.model;
 
+import org.example.exceptions.ParticipanteNullException;
 import org.example.interfaces.Resultado;
 
 public class Enfrentamiento {
@@ -14,10 +15,10 @@ public class Enfrentamiento {
     public Enfrentamiento(Participante p1, Participante p2){
 
         if (p1 == null || p2 == null){
-            throw new IllegalArgumentException("Los participantes no pueden ser null");
+            throw new ParticipanteNullException("Los participantes no pueden ser null");
         }
         if (!p1.getClass().equals(p2.getClass())){
-            throw new IllegalArgumentException("No se puede enfrentar un jugador con un equipo");
+            throw new ParticipanteNullException("No se puede enfrentar un jugador con un equipo " + p1.getClass() + " " + p2.getClass());
         }
 
         this.participante1 = p1;

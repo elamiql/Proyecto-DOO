@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.exceptions.ParticipantesInsuficientesException;
+
 import java.util.ArrayList;
 import java.util.*;
 
@@ -22,7 +24,7 @@ public abstract class GenerarCalendario<T extends Participante> {
 
     protected void validarParticipantes(){
         if (participantes.size() < 2){
-            throw new IllegalArgumentException("Se requieren al menos 2 participantes");
+            throw new ParticipantesInsuficientesException("Se requieren al menos 2 participantes");
         }
     }
 

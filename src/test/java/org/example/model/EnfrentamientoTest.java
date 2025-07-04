@@ -1,92 +1,96 @@
 package org.example.model;
 
+import org.example.exceptions.ParticipanteNullException;
 import org.example.interfaces.Resultado;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class EnfrentamientoTest {
-    Participante p1;
-    Participante p2;
-    Participante p3;
-    Participante equipo;
-    Resultado resultado;
-    Resultado novalido;
-    Resultado empate;
-    Enfrentamiento enfrentamiento;
+
+    private Jugador jugador1;
+    private Jugador jugador2;
+    private Enfrentamiento enfrentamiento;
 
     @BeforeEach
     void setUp() {
-        p1 = new Jugador("participante1","1");
-        p2 = new Jugador("participante2","2");
-        p3 = new Jugador("participante3","3");
-        equipo = new Equipo("equipo","1",new ArrayList<>());
-        resultado = new ResultadoFutbol(p1,p2,3,1);
-        empate = new ResultadoFutbol(p1,p2,1,1);
-        novalido = new ResultadoFutbol(p1,p2,-1,0);
-        enfrentamiento = new Enfrentamiento(p1,p2);
-
+        jugador1 = new Jugador("Juan", "1");
+        jugador2 = new Jugador("Pedro", "2");
+        enfrentamiento = new Enfrentamiento(jugador1, jugador2);
     }
 
     @Test
-    void enfrentamientoSinErrores() {
-        Enfrentamiento enfrentamiento = new Enfrentamiento(p1, p1);
+    void testConstructorValido() {
         assertNotNull(enfrentamiento);
-    }
-
-    @Test
-    void ParticipanteNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Enfrentamiento(null, p2));
-        assertThrows(IllegalArgumentException.class, () -> new Enfrentamiento(p1, null));
-    }
-
-    @Test
-    void ClasesDistintas() {
-        assertThrows(IllegalArgumentException.class, () -> new Enfrentamiento(p1, equipo));
-    }
-
-    @Test
-    void resultado(){
-        enfrentamiento.registrarResultado(resultado);
-
-        assertEquals(p1, enfrentamiento.getGanador());
-    }
-
-    @Test
-    void resultado_empate() {
-        enfrentamiento.registrarResultado(empate);
+        assertEquals(jugador1, enfrentamiento.getParticipante1());
+        assertEquals(jugador2, enfrentamiento.getParticipante2());
+        assertFalse(enfrentamiento.isFinalizado());
         assertNull(enfrentamiento.getGanador());
     }
 
     @Test
-    void resultado_invalido() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            enfrentamiento.registrarResultado(novalido);
-        });
+    void testConstructorConParticipanteNull() {
+        assertThrows(ParticipanteNullException.class,
+                () -> new Enfrentamiento(null, jugador2));
+        assertThrows(ParticipanteNullException.class,
+                () -> new Enfrentamiento(jugador1, null));
     }
 
     @Test
-    void setGanador_conParticipanteValido_funcionaCorrectamente() {
-        enfrentamiento.setGanador(p1);
-
-        assertEquals(p1, enfrentamiento.getGanador(), "El ganador debe ser el jugador1");
+    void testConstructorConDiferentesTipos() {
+        Equipo equipo = new Equipo("Equipo1", "1", new ArrayList<>());
+        assertThrows(ParticipanteNullException.class,
+                () -> new Enfrentamiento(jugador1, equipo));
     }
 
     @Test
-    void setGanador_conParticipanteInvalido_lanzaExcepcion() {
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            enfrentamiento.setGanador(p3);
-        });
-
-        assertEquals("El ganador debe ser uno de los participantes", ex.getMessage());
-        assertNull(enfrentamiento.getGanador(), "No debe haber un ganador asignado");
+    void testSetGanadorValido() {
+        enfrentamiento.setGanador(jugador1);
+        assertEquals(jugador1, enfrentamiento.getGanador());
+        assertTrue(enfrentamiento.isFinalizado());
     }
 
+    @Test
+    void testSetGanadorInvalido() {
+        Jugador jugador3 = new Jugador("Carlos", "3");
+        assertThrows(IllegalArgumentException.class,
+                () -> enfrentamiento.setGanador(jugador3));
+    }
 
+    @Test
+    void testToString() {
+        String expected = "Juan vs Pedro";
+        assertEquals(expected, enfrentamiento.toString());
+    }
 
-    @AfterEach
-    void tearDown() {
+    @Test
+    void testRegistrarResultadoValido() {
+        Resultado resultado = new ResultadoFutbol(jugador1, jugador2, 3, 2) {
+            @Override
+            public boolean esValido() { return true; }
+            @Override
+            public Participante getGanador() { return jugador1; }
+        };
+
+        enfrentamiento.registrarResultado(resultado);
+        assertEquals(resultado, enfrentamiento.getResultado());
+        assertEquals(jugador1, enfrentamiento.getGanador());
+        assertTrue(enfrentamiento.isFinalizado());
+    }
+
+    @Test
+    void testRegistrarResultadoInvalido() {
+        Resultado resultado = new ResultadoFutbol(jugador1, jugador2, 0, -1) {
+            @Override
+            public boolean esValido() { return false; }
+            @Override
+            public Participante getGanador() { return jugador1; }
+        };
+
+        assertThrows(IllegalArgumentException.class,
+                () -> enfrentamiento.registrarResultado(resultado));
     }
 }

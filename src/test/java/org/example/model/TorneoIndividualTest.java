@@ -19,6 +19,8 @@ class TorneoIndividualTest {
                 return "DisciplinaTest";
             }
         };
+        participante1 = new Jugador("J1", "1");
+        participante2 = new Jugador("J2", "2");
     }
 
     @Test
