@@ -9,43 +9,43 @@ import org.example.model.Torneo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PanelParticipante extends JPanel {
+public class PanelParticipante extends PanelFondo {
 
+    private final JFrame frame;
     private JPanel panelLista;
     private JScrollPane scrollPane;
     private JComboBox<String> filtroEstadoCombo;
     private JComboBox<String> filtroDisciplinaCombo;
     private JComboBox<String> filtroFormatoCombo;
 
+
     public PanelParticipante(JFrame frame) {
+        super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
+        this.frame = frame;
         setLayout(new BorderLayout(10, 10));
 
-        // Panel de filtros arriba
+        inicializarPanelSuperior();
+        inicializarPanelLista();
+        inicializarPanelBotones();
+
+        cargarTorneos();
+    }
+
+    private void inicializarPanelSuperior() {
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelSuperior.setOpaque(false);
 
-        filtroEstadoCombo = new JComboBox<>(new String[]{"Todos", "Por empezar", "Empezados"});
-        filtroDisciplinaCombo = new JComboBox<>();
-        filtroFormatoCombo = new JComboBox<>();
+        filtroEstadoCombo = BotonBuilder.crearComboBox(new String[]{"Todos", "Por empezar", "Empezados"});
+        filtroDisciplinaCombo = BotonBuilder.crearComboBox(getDisciplinas());
+        filtroFormatoCombo = BotonBuilder.crearComboBox(getFormatos());
 
-        filtroDisciplinaCombo.addItem("Todas las disciplinas");
-        for (Deporte d : Deporte.values()) {
-            filtroDisciplinaCombo.addItem(d.getNombre());
-        }
-        for (Videojuegos v : Videojuegos.values()) {
-            filtroDisciplinaCombo.addItem(v.getNombre());
-        }
-
-        filtroFormatoCombo.addItem("Todos los formatos");
-        for (Formato f : Formato.values()) {
-            filtroFormatoCombo.addItem(f.name());
-        }
-
-        filtroEstadoCombo.addActionListener(e -> cargarTorneos(frame));
-        filtroDisciplinaCombo.addActionListener(e -> cargarTorneos(frame));
-        filtroFormatoCombo.addActionListener(e -> cargarTorneos(frame));
+        filtroEstadoCombo.addActionListener(e -> cargarTorneos());
+        filtroDisciplinaCombo.addActionListener(e -> cargarTorneos());
+        filtroFormatoCombo.addActionListener(e -> cargarTorneos());
 
         panelSuperior.add(new JLabel("Estado:"));
         panelSuperior.add(filtroEstadoCombo);
@@ -55,25 +55,31 @@ public class PanelParticipante extends JPanel {
         panelSuperior.add(filtroFormatoCombo);
 
         add(panelSuperior, BorderLayout.NORTH);
-
-        // Panel central con lista de torneos
-        panelLista = new JPanel();
-        panelLista.setLayout(new BoxLayout(panelLista, BoxLayout.Y_AXIS));
-        scrollPane = new JScrollPane(panelLista);
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Botón volver
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnVolver = new JButton("Volver");
-        btnVolver.addActionListener(e -> new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute());
-        panelBotones.add(btnVolver);
-        add(panelBotones, BorderLayout.SOUTH);
-
-        // Cargar torneos al iniciar
-        cargarTorneos(frame);
     }
 
-    private void cargarTorneos(JFrame frame) {
+    private void inicializarPanelLista() {
+        panelLista = new JPanel();
+        panelLista.setLayout(new BoxLayout(panelLista, BoxLayout.Y_AXIS));
+        panelLista.setOpaque(false);
+
+        scrollPane = new JScrollPane(panelLista);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+
+        add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void inicializarPanelBotones() {
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelBotones.setOpaque(false);
+
+        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelPrincipal(frame));
+        panelBotones.add(btnVolver);
+
+        add(panelBotones, BorderLayout.SOUTH);
+    }
+
+    private void cargarTorneos() {
         panelLista.removeAll();
 
         List<Torneo> torneos = GestorTorneos.obtenerTorneos();
@@ -82,44 +88,33 @@ public class PanelParticipante extends JPanel {
         String filtroDisciplina = (String) filtroDisciplinaCombo.getSelectedItem();
         String filtroFormato = (String) filtroFormatoCombo.getSelectedItem();
 
-        // Filtrar por estado
+        // Filtros
         if (filtroEstado != null) {
             switch (filtroEstado) {
-                case "Por empezar":
-                    torneos = torneos.stream().filter(t -> !t.isActivo()).collect(Collectors.toList());
-                    break;
-                case "Empezados":
-                    torneos = torneos.stream().filter(Torneo::isActivo).collect(Collectors.toList());
-                    break;
-                case "Todos":
-                default:
-                    break;
+                case "Por empezar" -> torneos = torneos.stream().filter(t -> !t.isActivo()).collect(Collectors.toList());
+                case "Empezados" -> torneos = torneos.stream().filter(Torneo::isActivo).collect(Collectors.toList());
             }
         }
 
-        // Filtrar por disciplina
         if (filtroDisciplina != null && !filtroDisciplina.equals("Todas las disciplinas")) {
             torneos = torneos.stream()
                     .filter(t -> t.getDisciplina().getNombre().equals(filtroDisciplina))
                     .collect(Collectors.toList());
         }
 
-        // Filtrar por formato
         if (filtroFormato != null && !filtroFormato.equals("Todos los formatos")) {
             torneos = torneos.stream()
                     .filter(t -> t.getFormato().name().equals(filtroFormato))
                     .collect(Collectors.toList());
         }
 
-        // Mostrar los torneos filtrados
         for (Torneo torneo : torneos) {
             JPanel panelTorneo = new JPanel(new BorderLayout(10, 10));
-            JLabel etiqueta = new JLabel(torneo.toString());
+            panelTorneo.setOpaque(false);
 
-            JButton btnVer = new JButton("Ver");
-            btnVer.addActionListener(e ->
-                    new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute()
-            );
+            JLabel etiqueta = new JLabel(torneo.toString());
+            JButton btnVer = BotonBuilder.crearBoton("Ver", new Color(0, 153, 204),
+                    () -> new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute());
 
             panelTorneo.add(etiqueta, BorderLayout.CENTER);
             panelTorneo.add(btnVer, BorderLayout.EAST);
@@ -130,5 +125,29 @@ public class PanelParticipante extends JPanel {
 
         panelLista.revalidate();
         panelLista.repaint();
+    }
+
+    private String[] getDisciplinas() {
+        List<String> disciplinas = new ArrayList<>();
+        disciplinas.add("Todas las disciplinas");
+
+        for (Deporte d : Deporte.values()) {
+            disciplinas.add(d.getNombre());
+        }
+
+        for (Videojuegos v : Videojuegos.values()) {
+            disciplinas.add(v.getNombre());
+        }
+
+        return disciplinas.toArray(new String[0]);
+    }
+
+    private String[] getFormatos() {
+        String[] valores = new String[Formato.values().length + 1];
+        valores[0] = "Todos los formatos";
+        for (int i = 0; i < Formato.values().length; i++) {
+            valores[i + 1] = Formato.values()[i].name();
+        }
+        return valores;
     }
 }

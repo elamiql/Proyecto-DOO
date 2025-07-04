@@ -2,12 +2,12 @@ package org.example.app;
 
 import org.example.enums.*;
 import org.example.model.*;
-import java.util.*;
 
+import java.util.*;
 
 public class Main2 {
     public static void main(String[] args) {
-        // Crear lista con los 16 equipos de la liga chilena
+
         ArrayList<Equipo> equiposLiga = new ArrayList<>() {{
             add(new Equipo("PSG", "001", new ArrayList<>()));
             add(new Equipo("Liverpool", "002", new ArrayList<>()));
@@ -27,50 +27,63 @@ public class Main2 {
             add(new Equipo("Inter de Milan", "007", new ArrayList<>()));
         }};
 
-        // Crear torneo con formato ELIMINATORIA
-        /*TorneoEquipo torneo = new TorneoEquipo(
+        TorneoEquipo torneo = new TorneoEquipo(
                 "Champions 2025",
                 Deporte.FUTBOL,
                 "01-07-2025 20:00",
-                Formato.ELIMINATORIA
+                Formato.ELIMINATORIA,
+                "pene"
         );
 
-        // Inscribir equipos
         for (Equipo equipo : equiposLiga) {
             torneo.addParticipante(equipo);
         }
 
         GenerarCalendario<Equipo> generador = new Eliminatoria<>(torneo.getParticipantes(), true);
-
         generador.generarCalendario();
-        generador.imprimirBracket();
 
-        List<List<Enfrentamiento>> bracket = generador.getRondasEliminatorias();
-
-        // Simulación simple: elegir aleatoriamente ganador de cada partido en la primera ronda
+        List<List<Enfrentamiento>> rondas = generador.getRondasEliminatorias();
         Random rnd = new Random();
-        List<Enfrentamiento> rondaActual = bracket.get(0);
-        ArrayList<Equipo> ganadoresPrimeraRonda = new ArrayList<>();
-        System.out.println("=== Simulación: Ganadores primera ronda ===");
-        int partidoNum = 1;
-        for (Enfrentamiento partido : rondaActual) {
-            Equipo p1 = (Equipo) partido.getParticipante1();
-            Equipo p2 = (Equipo) partido.getParticipante2();
 
-            // Si hay bye, pasa automáticamente
-            if (p2 == null) {
-                System.out.println("Partido " + partidoNum++ + ": " + p1.getNombre() + " pasa automáticamente (bye)");
-                ganadoresPrimeraRonda.add(p1);
-                continue;
+        System.out.println("=== Simulación del torneo ===");
+
+        for (int i = 0; i < rondas.size(); i++) {
+            List<Enfrentamiento> ronda = rondas.get(i);
+            System.out.println("\n--- Ronda " + (i + 1) + " ---");
+            for (int j = 0; j < ronda.size(); j++) {
+                Enfrentamiento partido = ronda.get(j);
+                Participante p1 = partido.getParticipante1();
+                Participante p2 = partido.getParticipante2();
+
+                // Caso bye
+                if (p2 == null) {
+                    partido.setGanador(p1);
+                    System.out.println("Partido " + (j + 1) + ": " + p1.getNombre() + " pasa automáticamente (bye)");
+                } else {
+                    Participante ganador = rnd.nextBoolean() ? p1 : p2;
+                    partido.setGanador(ganador);
+                    System.out.println("Partido " + (j + 1) + ": " + p1.getNombre() + " vs " + p2.getNombre()
+                            + " --> Ganador: " + ganador.getNombre());
+                }
+
+                // Reemplazar al ganador en la siguiente ronda si existe
+                if (i + 1 < rondas.size()) {
+                    List<Enfrentamiento> siguienteRonda = rondas.get(i + 1);
+                    int indexEnSiguiente = j / 2;
+                    Enfrentamiento enfrentamientoSiguiente = siguienteRonda.get(indexEnSiguiente);
+
+                    if (j % 2 == 0) {
+                        enfrentamientoSiguiente.setParticipante1(partido.getGanador());
+                    } else {
+                        enfrentamientoSiguiente.setParticipante2(partido.getGanador());
+                    }
+                }
             }
-
-            // Elegir aleatoriamente ganador
-            Equipo ganador = rnd.nextBoolean() ? p1 : p2;
-            System.out.println("Partido " + partidoNum++ + ": " + p1.getNombre() + " vs " + p2.getNombre() +
-                    " --> Ganador: " + ganador.getNombre());
-            ganadoresPrimeraRonda.add(ganador);
         }
 
-         */
+        // Mostrar ganador final
+        Enfrentamiento finalMatch = rondas.get(rondas.size() - 1).get(0);
+        System.out.println("\n=== Campeón del torneo ===");
+        System.out.println("🏆 " + finalMatch.getGanador().getNombre() + " 🏆");
     }
 }

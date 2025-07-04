@@ -1,8 +1,6 @@
 package org.example.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
 
@@ -54,7 +52,7 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
                 enfrentamientosRonda.add(enfrentamiento);
                 enfrentamientos.add(enfrentamiento);
 
-                String nombreGanador = "Ganador (" + rondaActual.get(i).getNombre() + " vs " + rondaActual.get(i+1).getNombre() + ")";
+                String nombreGanador = "Ganador " + rondaActual.get(i).getNombre() + " vs " + rondaActual.get(i+1).getNombre();
                 Participante placeHolder = new Participante(nombreGanador, "-1") {
                     @Override
                     public void inscribirse(Torneo<?> torneo) {
@@ -94,5 +92,9 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
 
     public List<List<Enfrentamiento>> getBracket() {
         return bracket;
+    }
+
+    public List<List<Enfrentamiento>> getRondas() {
+        return rondasEliminatorias;
     }
 }

@@ -20,10 +20,6 @@ public class TorneoIndividual extends Torneo<Jugador> {
         this.clasificadosPorGrupo = clasificadosPorGrupo;
     }
 
-    public void registrarResultado(Jugador j, boolean sigueActivo) {
-        j.setActivo(sigueActivo);
-    }
-
     @Override
     public void generarCalendario() {
         GenerarCalendario<Jugador> generador;
