@@ -118,7 +118,7 @@ public class PanelDetalleTorneo extends JPanel {
             int cantidad = Integer.parseInt(input.trim());
             if (cantidad <= 0) throw new NumberFormatException();
 
-            List<Jugador> jugadores = new ArrayList<>();
+            ArrayList<Jugador> jugadores = new ArrayList<>();
             for (int i = 1; i <= cantidad; i++) {
                 JTextField txtNombre = new JTextField();
                 JTextField txtNumero = new JTextField();

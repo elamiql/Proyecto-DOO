@@ -33,7 +33,7 @@ public class BotonBuilder {
     }
 
     public static JButton crearBotonVolver(JFrame frame, JPanel destino) {
-        return crearBoton("← Volver", new Color(220, 53, 69), () ->
+        return crearBoton("<- Volver", new Color(244, 62, 77), () ->
                 new CambiarPanelCommand(frame, destino).execute()
         );
     }

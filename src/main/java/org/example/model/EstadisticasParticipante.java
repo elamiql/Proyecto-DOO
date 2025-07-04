@@ -1,6 +1,9 @@
 package org.example.model;
 
-public class EstadisticasParticipante<T> {
+import org.example.interfaces.*;
+
+
+public abstract class EstadisticasParticipante<T, R extends Resultado> implements Estadisticas<T, R>{
     private T participante;
     private int partidosJugados;
     private int ganados;
@@ -9,10 +12,6 @@ public class EstadisticasParticipante<T> {
 
     public EstadisticasParticipante(T participante){
         this.participante = participante;
-        this.partidosJugados = 0;
-        this.ganados = 0;
-        this.empatados = 0;
-        this.perdidos = 0;
     }
 
     public void registrarVictoria() {
@@ -45,6 +44,14 @@ public class EstadisticasParticipante<T> {
                 ", E: " + empatados +
                 ", P: " + perdidos;
     }
+
+    @Override
+    public abstract void registrarResultado(R resultado, T participante, boolean esLocal);
+
+    @Override
+    public abstract int getPuntos();
+
+    public abstract String toTablaString();
 
     // Getters y setters
     public T getParticipante() {

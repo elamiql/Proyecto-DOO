@@ -40,7 +40,6 @@ public class TorneoEquipo extends Torneo<Equipo> {
                 generador.generarCalendario();
                 this.enfrentamientos = generador.getEnfrentamientos();
                 break;
-
             case ELIMINATORIA:
                 generador = new Eliminatoria<>(getEquipos(), true);
                 generador.generarCalendario();

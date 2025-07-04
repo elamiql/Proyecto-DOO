@@ -88,7 +88,7 @@ public class PanelOrganizador extends PanelFondo {
         panelBotones.setOpaque(false);
 
         JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelPrincipal(frame));
-        JButton btnConfirmar = BotonBuilder.crearBoton("✅ Confirmar", new Color(0, 153, 76), this::confirmarTorneo);
+        JButton btnConfirmar = BotonBuilder.crearBoton("Confirmar", new Color(0, 153, 76), this::confirmarTorneo);
 
         panelBotones.add(btnVolver);
         panelBotones.add(btnConfirmar);
