@@ -39,7 +39,7 @@ public class EstadisticasParticipante<T> {
 
     @Override
     public String toString() {
-        return "Estadísticas de " + participante +
+        return participante +
                 " - PJ: " + partidosJugados +
                 ", G: " + ganados +
                 ", E: " + empatados +

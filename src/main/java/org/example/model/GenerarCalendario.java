@@ -12,6 +12,7 @@ public abstract class GenerarCalendario<T extends Participante> {
     public GenerarCalendario(ArrayList<T> participantes){
         this.participantes = participantes;
         this.enfrentamientos = new ArrayList<>();
+        this.rondasEliminatorias = new ArrayList<>();
     }
 
     public final void generarCalendario(){
@@ -54,6 +55,10 @@ public abstract class GenerarCalendario<T extends Participante> {
 
     public ArrayList<Enfrentamiento> getEnfrentamientos(){
         return enfrentamientos;
+    }
+
+    public void setEnfrentamientos(ArrayList<Enfrentamiento> enfrentamientos){
+        this.enfrentamientos = enfrentamientos;
     }
 
     public void limpiarCalendario(){

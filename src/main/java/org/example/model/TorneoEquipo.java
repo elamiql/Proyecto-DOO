@@ -39,14 +39,12 @@ public class TorneoEquipo extends Torneo<Equipo> {
                 generador = new Liga<>(getEquipos(), true);
                 generador.generarCalendario();
                 this.enfrentamientos = generador.getEnfrentamientos();
-                generador.imprimirCalendario();
                 break;
 
             case ELIMINATORIA:
                 generador = new Eliminatoria<>(getEquipos(), true);
                 generador.generarCalendario();
                 this.enfrentamientos = generador.getEnfrentamientos();
-                generador.imprimirCalendario();
                 break;
 
             case GRUPOS_CON_ELIMINATORIA:
@@ -56,7 +54,6 @@ public class TorneoEquipo extends Torneo<Equipo> {
                 generador = new GruposEliminatoria<>(getEquipos(), numGrupos, clasificadosPorGrupo);
                 generador.generarCalendario();
                 this.enfrentamientos = generador.getEnfrentamientos();
-                generador.imprimirCalendario();
                 break;
 
             default:
