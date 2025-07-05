@@ -4,21 +4,44 @@ import org.example.exceptions.ParticipanteNullException;
 
 import java.util.*;
 
+/**
+ * Clase que representa un generador de calendario para torneos en formato de eliminación directa.
+ * Genera un bracket eliminatorio completo a partir de una lista de participantes.
+ * Puede configurarse para requerir que el número de participantes sea potencia de dos.
+ * @param <T> Tipo de participante (jugador o equipo) que extiende de {@link Participante}.
+ */
 public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
 
+    /** Lista de rondas, cada una con sus respectivos enfrentamientos, que conforman el bracket del torneo */
     private final List<List<Enfrentamiento>> bracket;
+
+    /** Indica si el torneo requiere una cantidad de participantes igual a una potencia de 2 */
     private final boolean requierePotenciaDeDos;
 
+    /**
+     * Constructor que permite especificar si se requiere una cantidad de participantes que sea potencia de dos.
+     * @param participantes Lista de participantes.
+     * @param requierePotenciaDeDos {@code true} si se debe verificar que la cantidad sea potencia de dos.
+     */
     public Eliminatoria(ArrayList<T> participantes, boolean requierePotenciaDeDos){
         super(participantes);
         this.requierePotenciaDeDos = requierePotenciaDeDos;
         this.bracket = new ArrayList<>();
     }
 
+    /**
+     * Constructor que permite crear una eliminatoria sin requerir que la cantidad de participantes sea potencia de dos.
+     * @param participantes Lista de participantes.
+     */
     public Eliminatoria(ArrayList<T> participantes){
         this(participantes, false);
     }
 
+    /**
+     * Valida la cantidad de participantes antes de generar el calendario.
+     * Si {@code requierePotenciaDeDos} es true, lanza excepción si el número no es potencia de 2.
+     * @throws IllegalArgumentException si la cantidad no es válida.
+     */
     @Override
     protected void validarParticipantes(){
         super.validarParticipantes();
@@ -31,6 +54,10 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         }
     }
 
+    /**
+     * Genera el calendario de enfrentamientos en forma de bracket eliminatorio.
+     * Los participantes son emparejados en rondas sucesivas hasta quedar un solo ganador.
+     */
     @Override
     protected void generarEnfrentamientos(){
         enfrentamientos.clear();
@@ -41,6 +68,12 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         rondasEliminatorias = bracket;
     }
 
+    /**
+     * Genera el bracket completo a partir de los participantes dados.
+     * Crea enfrentamientos y placeholders para las siguientes rondas.
+     * @param participantes Lista inicial de participantes.
+     * @throws ParticipanteNullException si se intenta enfrentar un jugador con un equipo.
+     */
     private void generarBracketCompleto(ArrayList<T> participantes){
         ArrayList<T> rondaActual = new ArrayList<>(participantes);
 
@@ -82,6 +115,9 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         }
     }
 
+    /**
+     * Imprime el bracket del torneo por consola, mostrando enfrentamientos por ronda.
+     */
     public void imprimirBracket() {
         System.out.println("=== Bracket Eliminatorio ===");
 
@@ -98,10 +134,18 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         }
     }
 
+    /**
+     * Devuelve la estructura del bracket completo generado.
+     * @return Lista de rondas, cada una con sus enfrentamientos.
+     */
     public List<List<Enfrentamiento>> getBracket() {
         return bracket;
     }
 
+    /**
+     * Devuelve la lista de rondas eliminatorias (bracket).
+     * @return Lista de rondas eliminatorias.
+     */
     public List<List<Enfrentamiento>> getRondas() {
         return rondasEliminatorias;
     }
