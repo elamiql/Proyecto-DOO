@@ -7,7 +7,7 @@ import org.example.enums.Formato;
 import org.example.enums.Videojuegos;
 import org.example.interfaces.Disciplina;
 import org.example.model.GestorTorneos;
-import org.example.model.Torneo;
+import org.example.exceptions.DatosInvalidosException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -121,29 +121,59 @@ public class PanelOrganizador extends PanelFondo {
             String password = new String(txtPassword.getPassword()).trim();
             boolean esIndividual = radioIndividual.isSelected();
 
-            if (nombre.isEmpty() || fecha.isEmpty() || disciplina == null || formato == null) {
-                JOptionPane.showMessageDialog(this, "Por favor completa todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-            LocalDateTime fechaParseada = LocalDateTime.parse(fecha, formatter);
-
-            if (fechaParseada.isBefore(LocalDateTime.now())) {
-                JOptionPane.showMessageDialog(this, "La fecha no puede estar en el pasado", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+            validarNombre(nombre);
+            validarFecha(fecha);
+            validarPassword(password);
+            if (disciplina == null) throw new DatosInvalidosException("Debes seleccionar una disciplina");
+            if (formato == null) throw new DatosInvalidosException("Debes seleccionar un formato");
 
             CrearTorneoCommand comando = new CrearTorneoCommand(nombre, fecha, disciplina, formato, esIndividual, password);
             comando.execute();
-            Torneo torneo = comando.getTorneoCreado();
-            GestorTorneos.agregarTorneo(torneo);
+            GestorTorneos.agregarTorneo(comando.getTorneoCreado());
 
-            JOptionPane.showMessageDialog(this, "Torneo creado:\n" + torneo);
+            JOptionPane.showMessageDialog(this, "Torneo creado:\n" + comando.getTorneoCreado());
             new CambiarPanelCommand(frame, new PanelPrincipal(frame)).execute();
 
+        } catch (DatosInvalidosException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error en datos", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Fecha inválida o error al crear el torneo.\nFormato esperado: dd-MM-yyyy HH:mm", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void validarPassword(String password) {
+        if (password == null || password.length() < 4) {
+            throw new DatosInvalidosException("La contraseña debe tener al menos 4 caracteres");
+        }
+    }
+
+    private void validarNombre(String nombre) {
+        if (nombre == null || nombre.isEmpty())
+            throw new DatosInvalidosException("El nombre no puede estar vacío");
+
+
+        long countLetras = nombre.chars()
+                .filter(c -> Character.isLetter(c))
+                .count();
+
+        if (countLetras < 4)
+            throw new DatosInvalidosException("El nombre debe tener al menos 4 letras");
+    }
+
+    private void validarFecha(String fecha) {
+        if (fecha == null || fecha.isEmpty())
+            throw new DatosInvalidosException("La fecha no puede estar vacía");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime fechaParseada;
+        try {
+            fechaParseada = LocalDateTime.parse(fecha, formatter);
+        } catch (Exception e) {
+            throw new DatosInvalidosException("Formato de fecha inválido. Debe ser dd-MM-yyyy HH:mm");
+        }
+
+        if (fechaParseada.isBefore(LocalDateTime.now())) {
+            throw new DatosInvalidosException("La fecha no puede estar en el pasado");
         }
     }
 }

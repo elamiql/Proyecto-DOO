@@ -2,6 +2,8 @@ package org.example.gui;
 
 import org.example.command.CambiarPanelCommand;
 import org.example.model.*;
+import org.example.exceptions.DatosInvalidosException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +38,7 @@ public class PanelDetalleTorneo extends JPanel {
         JTextArea area = new JTextArea();
         area.setEditable(false);
         area.setFont(new Font("Monospaced", Font.PLAIN, 15));
-        area.setBackground(new Color(255, 255, 255));
+        area.setBackground(Color.WHITE);
         area.setMargin(new Insets(10, 10, 10, 10));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -92,21 +94,29 @@ public class PanelDetalleTorneo extends JPanel {
         JPanel panel = new JPanel(new GridLayout(2, 2));
         panel.add(new JLabel("Nombre:"));
         panel.add(txtNombre);
-        panel.add(new JLabel("Número:"));
+        panel.add(new JLabel("Número de contacto:"));
         panel.add(txtNumero);
 
         int result = JOptionPane.showConfirmDialog(this, panel, "Inscribirse al Torneo", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            String nombre = txtNombre.getText().trim();
-            String numero = txtNumero.getText().trim();
+            try {
+                String nombre = txtNombre.getText().trim();
+                String numero = txtNumero.getText().trim();
 
-            if (!nombre.isEmpty() && !numero.isEmpty()) {
+                if (nombre.isEmpty() || numero.isEmpty()) {
+                    throw new DatosInvalidosException("Debes completar todos los campos.");
+                }
+
+                validarNombre(nombre);
+                validarNumeroContacto(numero);
+
                 Jugador jugador = new Jugador(nombre, numero);
                 jugador.inscribirse(torneoIndividual);
                 JOptionPane.showMessageDialog(this, "¡Inscripción exitosa!");
                 new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
-            } else {
-                JOptionPane.showMessageDialog(this, "Debes completar todos los campos", "Error", JOptionPane.ERROR_MESSAGE);
+
+            } catch (DatosInvalidosException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -125,7 +135,7 @@ public class PanelDetalleTorneo extends JPanel {
                 JPanel panel = new JPanel(new GridLayout(2, 2));
                 panel.add(new JLabel("Nombre del Jugador " + i + ":"));
                 panel.add(txtNombre);
-                panel.add(new JLabel("Número del Jugador " + i + ":"));
+                panel.add(new JLabel("Número de contacto del Jugador " + i + ":"));
                 panel.add(txtNumero);
 
                 int result = JOptionPane.showConfirmDialog(this, panel, "Integrante " + i, JOptionPane.OK_CANCEL_OPTION);
@@ -135,10 +145,11 @@ public class PanelDetalleTorneo extends JPanel {
                 String numero = txtNumero.getText().trim();
 
                 if (nombre.isEmpty() || numero.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Campos incompletos para el integrante " + i, "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+                    throw new DatosInvalidosException("Campos incompletos para el integrante " + i);
                 }
 
+                validarNombre(nombre);
+                validarNumeroContacto(numero);
                 jugadores.add(new Jugador(nombre, numero));
             }
 
@@ -147,7 +158,7 @@ public class PanelDetalleTorneo extends JPanel {
             JPanel panelEquipo = new JPanel(new GridLayout(2, 2));
             panelEquipo.add(new JLabel("Nombre del equipo:"));
             panelEquipo.add(txtNombreEquipo);
-            panelEquipo.add(new JLabel("Número del equipo:"));
+            panelEquipo.add(new JLabel("Número de contacto del equipo:"));
             panelEquipo.add(txtNumeroEquipo);
 
             int equipoResult = JOptionPane.showConfirmDialog(this, panelEquipo, "Datos del equipo", JOptionPane.OK_CANCEL_OPTION);
@@ -157,17 +168,35 @@ public class PanelDetalleTorneo extends JPanel {
             String numeroEquipo = txtNumeroEquipo.getText().trim();
 
             if (nombreEquipo.isEmpty() || numeroEquipo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Debes ingresar nombre y número del equipo.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                throw new DatosInvalidosException("Debes ingresar nombre y número del equipo.");
             }
 
-            Equipo equipo = new Equipo(nombreEquipo, numeroEquipo, (ArrayList<Jugador>) jugadores);
+            validarNombre(nombreEquipo);
+            validarNumeroContacto(numeroEquipo);
+
+            Equipo equipo = new Equipo(nombreEquipo, numeroEquipo, jugadores);
             equipo.inscribirse(torneo);
             JOptionPane.showMessageDialog(this, "¡Equipo inscrito con éxito!");
             new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Número inválido de integrantes.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (DatosInvalidosException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Validaciones
+    private void validarNombre(String nombre) {
+        long count = nombre.chars().filter(Character::isLetter).count();
+        if (count < 4) {
+            throw new DatosInvalidosException("El nombre debe contener al menos 4 letras.");
+        }
+    }
+
+    private void validarNumeroContacto(String numero) {
+        if (!numero.matches("\\d{8}")) {
+            throw new DatosInvalidosException("El número de contacto debe tener exactamente 8 dígitos.");
         }
     }
 }
