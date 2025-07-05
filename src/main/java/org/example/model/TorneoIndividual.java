@@ -24,6 +24,10 @@ public class TorneoIndividual extends Torneo<Jugador> {
     public void generarCalendario() {
         GenerarCalendario<Jugador> generador;
 
+        if (participantes.size() < 2){
+            throw new ParticipantesInsuficientesException("Se requieren 2 participantes");
+        }
+
         switch (getFormato()) {
             case LIGA:
                 generador = new Liga<>(getParticipantes(), true);

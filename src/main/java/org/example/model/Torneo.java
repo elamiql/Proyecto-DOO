@@ -35,8 +35,12 @@ public abstract class Torneo <T extends Participante>{
     }
 
     public void addParticipante(Participante participante){
-        participantes.add((T) participante);
 
+        if (participantes.contains((T) participante)){
+            throw new ParticipanteDuplicadoException("El participante ya esta inscrito");
+        }
+
+        participantes.add((T) participante);
         if (participante instanceof Jugador){
             jugadores.add((Jugador) participante);
         }
@@ -68,24 +72,6 @@ public abstract class Torneo <T extends Participante>{
 
     public ArrayList<Equipo> getEquipos(){
         return equipos;
-    }
-
-    public void registrarResultados(Enfrentamiento enf, Resultado resultado){
-        enf.setResultado(resultado);
-
-        Participante ganador  = resultado.getGanador();
-        enf.setGanador(ganador);
-
-    }
-
-    public void registrarGanador(Enfrentamiento enf, Participante ganador){
-        enf.setGanador(ganador);
-
-        Participante perdedor = enf.getParticipante1().equals(ganador) ? enf.getParticipante2() : enf.getParticipante1();
-
-        if (perdedor != null){
-            registrarResultados(enf, enf.getResultado());
-        }
     }
 
     // Getters
