@@ -2,14 +2,49 @@ package org.example.model;
 
 import java.util.*;
 
+/**
+ * Clase que representa un sistema de torneo que combina una fase de grupos con una fase eliminatoria.
+ * <p>
+ * Los participantes se dividen en grupos donde juegan en formato liga,
+ * y luego los mejores de cada grupo avanzan a una eliminatoria.
+ * </p>
+ *
+ * @param <T> Tipo de participante que extiende {@link Participante}.
+ */
 public class GruposEliminatoria<T extends Participante> extends GenerarCalendario<T> {
 
+    /**
+     * Número de grupos en la fase de grupos.
+     */
     private final int numeroGrupos;
+
+    /**
+     * Número de participantes que clasifican por grupo a la fase eliminatoria.
+     */
     private final int clasificadosPorGrupo;
+
+    /**
+     * Lista con los grupos creados, cada grupo es una lista de participantes.
+     */
     private final List<List<T>> grupos;
+
+    /**
+     * Lista con los generadores de calendario para cada grupo (fase de liga).
+     */
     private final List<Liga<T>> generadoresGrupos;
+
+    /**
+     * Generador del calendario para la fase eliminatoria posterior a la fase de grupos.
+     */
     private Eliminatoria<T> generadorEliminatorias;
 
+    /**
+     * Constructor que inicializa los grupos y parámetros del torneo.
+     *
+     * @param participantes       Lista de participantes.
+     * @param numeroGrupos        Cantidad de grupos en la fase de grupos.
+     * @param clasificadosPorGrupo Número de participantes que clasifican por grupo.
+     */
     public GruposEliminatoria(ArrayList<T> participantes, int numeroGrupos, int clasificadosPorGrupo){
         super(participantes);
         this.numeroGrupos = numeroGrupos;
@@ -18,6 +53,11 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         this.generadoresGrupos = new ArrayList<>();
     }
 
+    /**
+     * Valida que haya suficientes participantes para formar los grupos y que el número
+     * de clasificados sea al menos 4 para poder hacer la fase eliminatoria.
+     * Llama a la validación base para verificar al menos 2 participantes.
+     */
     @Override
     protected void validarParticipantes(){
         super.validarParticipantes();
@@ -29,6 +69,10 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         }
     }
 
+    /**
+     * Genera los enfrentamientos para la fase de grupos y la fase eliminatoria.
+     * Primero divide participantes en grupos, genera la fase de grupos y luego prepara la eliminatoria.
+     */
     @Override
     protected void generarEnfrentamientos(){
         enfrentamientos.clear();
@@ -38,6 +82,9 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         prepararFaseEliminatoria();
     }
 
+    /**
+     * Divide a los participantes en grupos equilibrados.
+     */
     private void dividirEnGrupos(){
         grupos.clear();
 
@@ -54,6 +101,9 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         }
     }
 
+    /**
+     * Genera la fase de grupos creando calendarios de tipo Liga para cada grupo y agregando sus enfrentamientos.
+     */
     private void generarFaseGrupos(){
         generadoresGrupos.clear();
 
@@ -68,6 +118,10 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         }
     }
 
+    /**
+     * Prepara la fase eliminatoria tomando a los mejores clasificados de cada grupo
+     * y generando un calendario eliminatorio con ellos.
+     */
     private void prepararFaseEliminatoria() {
         ArrayList<T> clasificadosOrdenados = new ArrayList<>();
 
@@ -90,6 +144,10 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         }
     }
 
+    /**
+     * Imprime el calendario completo incluyendo la fase de grupos y la fase eliminatoria.
+     * Muestra los participantes por grupo, los enfrentamientos de cada grupo y el bracket eliminatorio.
+     */
     @Override
     public void imprimirCalendario() {
         System.out.println("=== Calendario Grupos + Eliminatoria ===");
