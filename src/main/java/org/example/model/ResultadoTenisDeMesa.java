@@ -2,14 +2,49 @@ package org.example.model;
 
 import org.example.interfaces.*;
 
+/**
+ * Representa el resultado de un enfrentamiento de tenis de mesa entre dos participantes.
+ * Contiene los sets ganados por cada jugador y los puntos obtenidos en cada set.
+ */
 public class ResultadoTenisDeMesa implements Resultado {
+
+    /**
+     * Sets ganados por el jugador 1.
+     */
     private int setsJugador1;
+
+    /**
+     * Sets ganados por el jugador 2.
+     */
     private int setsJugador2;
+
+    /**
+     * Puntos obtenidos en cada set por el jugador 1.
+     */
     private int[] puntosSetsJugador1;
+
+    /**
+     * Puntos obtenidos en cada set por el jugador 2.
+     */
     private int[] puntosSetsJugador2;
+
+    /**
+     * Participante jugador 1.
+     */
     private Participante jugador1;
+
+    /**
+     * Participante jugador 2.
+     */
     private Participante jugador2;
 
+    /**
+     * Constructor que inicializa el resultado de tenis de mesa con los jugadores y el número máximo de sets.
+     *
+     * @param jugador1 Participante jugador 1.
+     * @param jugador2 Participante jugador 2.
+     * @param maxSets Número máximo de sets posibles en el partido.
+     */
     public ResultadoTenisDeMesa(Participante jugador1, Participante jugador2, int maxSets) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
@@ -19,6 +54,14 @@ public class ResultadoTenisDeMesa implements Resultado {
         setsJugador2 = 0;
     }
 
+    /**
+     * Agrega el resultado de un set específico indicando los puntos obtenidos por cada jugador.
+     * Recalcula los sets ganados.
+     *
+     * @param setIndex índice del set (0 basado).
+     * @param puntosJ1 puntos obtenidos por el jugador 1 en el set.
+     * @param puntosJ2 puntos obtenidos por el jugador 2 en el set.
+     */
     public void agregarSet(int setIndex, int puntosJ1, int puntosJ2) {
         puntosSetsJugador1[setIndex] = puntosJ1;
         puntosSetsJugador2[setIndex] = puntosJ2;
@@ -34,8 +77,17 @@ public class ResultadoTenisDeMesa implements Resultado {
         }
     }
 
+    /**
+     * Determina si el set es válido según las reglas del tenis de mesa:
+     * - Al menos 11 puntos para uno de los jugadores.
+     * - Diferencia mínima de 2 puntos.
+     * - No se permiten puntos negativos.
+     *
+     * @param p1 puntos del jugador 1.
+     * @param p2 puntos del jugador 2.
+     * @return true si el set es válido, false en caso contrario.
+     */
     private boolean esSetValido(int p1, int p2) {
-        // Debe tener al menos 11 puntos y diferencia mínima 2
         if (p1 < 0 || p2 < 0) return false;
         if (p1 < 11 && p2 < 11) return false;
         if (Math.abs(p1 - p2) < 2) return false;
@@ -43,6 +95,11 @@ public class ResultadoTenisDeMesa implements Resultado {
         return false;
     }
 
+    /**
+     * Obtiene un resumen textual del resultado, incluyendo sets ganados y los puntos por set.
+     *
+     * @return resumen del resultado del partido.
+     */
     @Override
     public String getResumen() {
         StringBuilder sb = new StringBuilder();
@@ -56,6 +113,11 @@ public class ResultadoTenisDeMesa implements Resultado {
         return sb.toString();
     }
 
+    /**
+     * Obtiene el participante ganador del partido, si alguno ha ganado la mayoría de los sets.
+     *
+     * @return participante ganador o null si no hay ganador definido.
+     */
     @Override
     public Participante getGanador() {
         int setsNecesarios = (puntosSetsJugador1.length / 2) + 1;
@@ -64,6 +126,11 @@ public class ResultadoTenisDeMesa implements Resultado {
         else return null;
     }
 
+    /**
+     * Verifica si el resultado es válido, es decir, si algún jugador ha ganado la mayoría de sets.
+     *
+     * @return true si el resultado es válido, false en caso contrario.
+     */
     @Override
     public boolean esValido() {
         int setsNecesarios = (puntosSetsJugador1.length / 2) + 1;
@@ -73,6 +140,7 @@ public class ResultadoTenisDeMesa implements Resultado {
     }
 
     // Getters para pruebas
+
     public int getSetsJugador1() {
         return setsJugador1;
     }
