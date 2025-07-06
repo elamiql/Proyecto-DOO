@@ -5,8 +5,22 @@ import org.example.command.CambiarPanelCommand;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Clase utilitaria para la creación de componentes gráficos personalizados, como botones y comboboxes.
+ *
+ * <p>Proporciona métodos estáticos que permiten construir botones estilizados y comboboxes
+ * con una apariencia y comportamiento predefinidos, facilitando la reutilización y la consistencia
+ * en la interfaz gráfica de usuario.</p>
+ */
 public class BotonBuilder {
 
+    /**
+     * Crea un botón personalizado con estilo y una acción asociada.
+     * @param texto       el texto que se mostrará en el botón.
+     * @param colorFondo  el color de fondo del botón.
+     * @param accion      la acción que se ejecutará al hacer clic en el botón.
+     * @return un {@link JButton} configurado con los estilos y acción especificados.
+     */
     public static JButton crearBoton(String texto, Color colorFondo, Runnable accion) {
         JButton boton = new JButton(texto);
         boton.setFont(new Font("Segoe UI", Font.BOLD, 18));
@@ -32,11 +46,24 @@ public class BotonBuilder {
         return boton;
     }
 
+    /**
+     * Crea un botón de "volver" que cambia el panel actual por otro en una ventana dada.
+     * @param frame   la ventana principal donde se realiza el cambio de panel.
+     * @param destino el panel al que se desea volver.
+     * @return un {@link JButton} con estilo y funcionalidad de retorno.
+     */
     public static JButton crearBotonVolver(JFrame frame, JPanel destino) {
         return crearBoton("<- Volver", new Color(244, 62, 77), () ->
                 new CambiarPanelCommand(frame, destino).execute()
         );
     }
+
+    /**
+     * Crea un combo box personalizado con estilo para una lista de elementos.
+     * @param items los elementos que se mostrarán en el combo box.
+     * @param <T>   el tipo de los elementos del combo box.
+     * @return un {@link JComboBox} estilizado que contiene los elementos especificados.
+     */
     public static <T> JComboBox<T> crearComboBox(T[] items) {
         JComboBox<T> comboBox = new JComboBox<>(items);
         comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));

@@ -16,6 +16,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Panel gráfico que permite a un organizador crear un nuevo torneo mediante un formulario.
+ * <p>
+ * El panel permite ingresar nombre, fecha, disciplina, formato, tipo (individual o por equipos)
+ * y contraseña del torneo, validando los datos ingresados y utilizando comandos para crear el torneo.
+ * </p>
+ *
+ * <p>Este panel extiende {@link PanelFondo} para mostrar una imagen de fondo decorativa.</p>
+ */
 public class PanelOrganizador extends PanelFondo {
 
     private final JFrame frame;
@@ -27,6 +36,10 @@ public class PanelOrganizador extends PanelFondo {
     private JRadioButton radioEquipos;
     private JPasswordField txtPassword;
 
+    /**
+     * Crea el panel de creación de torneos.
+     * @param frame el {@link JFrame} principal donde se mostrará el panel.
+     */
     public PanelOrganizador(JFrame frame) {
         super(Imagen.cargarImagen("/Fondos/Fondo1.jpg"));
         this.frame = frame;
@@ -37,6 +50,9 @@ public class PanelOrganizador extends PanelFondo {
         initBotones();
     }
 
+    /**
+     * Inicializa el título del panel.
+     */
     private void initTitulo() {
         JLabel labelTitulo = new JLabel("Crear Nuevo Torneo", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
@@ -45,6 +61,9 @@ public class PanelOrganizador extends PanelFondo {
         add(labelTitulo, BorderLayout.NORTH);
     }
 
+    /**
+     * Inicializa el formulario de ingreso de datos.
+     */
     private void initFormulario() {
         JPanel panelFormulario = new JPanel(new GridBagLayout());
         panelFormulario.setOpaque(false);
@@ -83,6 +102,9 @@ public class PanelOrganizador extends PanelFondo {
         add(panelFormulario, BorderLayout.CENTER);
     }
 
+    /**
+     * Inicializa los botones del panel: confirmar y volver.
+     */
     private void initBotones() {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotones.setOpaque(false);
@@ -95,6 +117,14 @@ public class PanelOrganizador extends PanelFondo {
         add(panelBotones, BorderLayout.SOUTH);
     }
 
+    /**
+     * Agrega un campo con su etiqueta al formulario.
+     * @param panel  el panel que contiene los campos.
+     * @param gbc    restricciones de disposición para {@link GridBagLayout}.
+     * @param fila   la fila donde colocar el campo.
+     * @param etiqueta la etiqueta del campo.
+     * @param campo  el componente del campo.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, int fila, String etiqueta, JComponent campo) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -105,6 +135,10 @@ public class PanelOrganizador extends PanelFondo {
         panel.add(campo, gbc);
     }
 
+    /**
+     * Obtiene la lista combinada de disciplinas disponibles, incluyendo deportes y videojuegos.
+     * @return una lista de disciplinas disponibles.
+     */
     private List<Disciplina> getTodasDisciplinas() {
         List<Disciplina> lista = new ArrayList<>();
         lista.addAll(List.of(Deporte.values()));
@@ -112,6 +146,10 @@ public class PanelOrganizador extends PanelFondo {
         return lista;
     }
 
+    /**
+     * Valida los campos del formulario y crea el torneo si todos los datos son correctos.
+     * Muestra mensajes de error en caso de datos inválidos.
+     */
     private void confirmarTorneo() {
         try {
             String nombre = txtNombre.getText().trim();
@@ -141,12 +179,20 @@ public class PanelOrganizador extends PanelFondo {
         }
     }
 
+    /**
+     * Valida que la contraseña no sea nula ni menor a 4 caracteres.
+     * @param password la contraseña a validar.
+     */
     private void validarPassword(String password) {
         if (password == null || password.length() < 4) {
             throw new DatosInvalidosException("La contraseña debe tener al menos 4 caracteres");
         }
     }
 
+    /**
+     * Valida que el nombre no sea vacío y contenga al menos 4 letras.
+     * @param nombre el nombre del torneo.
+     */
     private void validarNombre(String nombre) {
         if (nombre == null || nombre.isEmpty())
             throw new DatosInvalidosException("El nombre no puede estar vacío");
@@ -160,6 +206,10 @@ public class PanelOrganizador extends PanelFondo {
             throw new DatosInvalidosException("El nombre debe tener al menos 4 letras");
     }
 
+    /**
+     * Valida que la fecha esté en el formato correcto y no sea anterior a la fecha actual.
+     * @param fecha la fecha ingresada en el formulario.
+     */
     private void validarFecha(String fecha) {
         if (fecha == null || fecha.isEmpty())
             throw new DatosInvalidosException("La fecha no puede estar vacía");

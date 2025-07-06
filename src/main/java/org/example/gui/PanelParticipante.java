@@ -13,6 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Panel gráfico que muestra al participante la lista de torneos disponibles con opciones de filtrado.
+ *
+ * <p>Permite filtrar por estado (empezado/por empezar), disciplina (deporte/videojuego) y formato (liga, eliminación, etc.).
+ * Desde este panel se puede acceder a la vista de detalles e inscripción a un torneo.</p>
+ *
+ * <p>Este panel extiende {@link PanelFondo} para mostrar una imagen de fondo personalizada.</p>
+ */
 public class PanelParticipante extends PanelFondo {
 
     private final JFrame frame;
@@ -22,7 +30,11 @@ public class PanelParticipante extends PanelFondo {
     private JComboBox<String> filtroDisciplinaCombo;
     private JComboBox<String> filtroFormatoCombo;
 
-
+    /**
+     * Crea un nuevo panel para que los participantes visualicen y se inscriban en torneos.
+     *
+     * @param frame ventana principal donde se mostrará el panel.
+     */
     public PanelParticipante(JFrame frame) {
         super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
         this.frame = frame;
@@ -35,6 +47,9 @@ public class PanelParticipante extends PanelFondo {
         cargarTorneos();
     }
 
+    /**
+     * Inicializa el panel superior con los filtros de búsqueda.
+     */
     private void inicializarPanelSuperior() {
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelSuperior.setOpaque(false);
@@ -57,6 +72,9 @@ public class PanelParticipante extends PanelFondo {
         add(panelSuperior, BorderLayout.NORTH);
     }
 
+    /**
+     * Inicializa el panel central donde se mostrarán los torneos filtrados.
+     */
     private void inicializarPanelLista() {
         panelLista = new JPanel();
         panelLista.setLayout(new BoxLayout(panelLista, BoxLayout.Y_AXIS));
@@ -69,6 +87,9 @@ public class PanelParticipante extends PanelFondo {
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Inicializa el panel inferior con el botón de volver.
+     */
     private void inicializarPanelBotones() {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotones.setOpaque(false);
@@ -79,6 +100,9 @@ public class PanelParticipante extends PanelFondo {
         add(panelBotones, BorderLayout.SOUTH);
     }
 
+    /**
+     * Carga y muestra los torneos disponibles aplicando los filtros seleccionados.
+     */
     private void cargarTorneos() {
         panelLista.removeAll();
 
@@ -127,6 +151,10 @@ public class PanelParticipante extends PanelFondo {
         panelLista.repaint();
     }
 
+    /**
+     * Obtiene un arreglo de todas las disciplinas disponibles para el filtro.
+     * @return un arreglo de nombres de disciplinas (deportes y videojuegos).
+     */
     private String[] getDisciplinas() {
         List<String> disciplinas = new ArrayList<>();
         disciplinas.add("Todas las disciplinas");
@@ -142,6 +170,10 @@ public class PanelParticipante extends PanelFondo {
         return disciplinas.toArray(new String[0]);
     }
 
+    /**
+     * Obtiene un arreglo de todos los formatos disponibles para el filtro.
+     * @return un arreglo con "Todos los formatos" seguido de los valores de {@link Formato}.
+     */
     private String[] getFormatos() {
         String[] valores = new String[Formato.values().length + 1];
         valores[0] = "Todos los formatos";

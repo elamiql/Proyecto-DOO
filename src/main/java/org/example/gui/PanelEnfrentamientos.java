@@ -7,12 +7,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Panel gráfico que muestra los enfrentamientos de un torneo y permite seleccionar a los ganadores.
+ *
+ * <p>Este panel es capaz de listar todos los enfrentamientos generados en un {@link Torneo}
+ * y registrar resultados mediante una interfaz gráfica protegida por contraseña.</p>
+ */
 public class PanelEnfrentamientos extends JPanel {
 
     private final JFrame frame;
     private final Torneo<?> torneo;
     private final JPanel panelCentral;
 
+    /**
+     * Crea el panel de enfrentamientos para el torneo dado.
+     * @param frame la ventana principal donde se inserta el panel.
+     * @param torneo el torneo del cual se visualizarán los enfrentamientos.
+     */
     public PanelEnfrentamientos(JFrame frame, Torneo<?> torneo) {
         this.frame = frame;
         this.torneo = torneo;
@@ -27,18 +38,27 @@ public class PanelEnfrentamientos extends JPanel {
         inicializarPanelAbajo();
     }
 
+    /**
+     * Inicializa el título del panel.
+     */
     private void inicializarTitulo() {
         JLabel titulo = new JLabel("Enfrentamientos del Torneo", SwingConstants.CENTER);
         titulo.setFont(new Font("Arial", Font.BOLD, 20));
         add(titulo, BorderLayout.NORTH);
     }
 
+    /**
+     * Inicializa el panel central donde se mostrarán los enfrentamientos.
+     */
     private void inicializarPanelCentral() {
         cargarEnfrentamientos();
         JScrollPane scroll = new JScrollPane(panelCentral);
         add(scroll, BorderLayout.CENTER);
     }
 
+    /**
+     * Carga los enfrentamientos desde el torneo y los agrega al panel central.
+     */
     private void cargarEnfrentamientos() {
         panelCentral.removeAll();
 
@@ -57,6 +77,12 @@ public class PanelEnfrentamientos extends JPanel {
         panelCentral.repaint();
     }
 
+    /**
+     * Crea el panel que representa un enfrentamiento.
+     * @param e el enfrentamiento a mostrar.
+     * @param num el número del enfrentamiento.
+     * @return un {@link JPanel} con los datos del enfrentamiento y un botón de acción.
+     */
     private JPanel crearPanelEnfrentamiento(Enfrentamiento e, int num) {
         JPanel panelEnfrentamiento = new JPanel(new BorderLayout(5, 5));
         panelEnfrentamiento.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -83,6 +109,10 @@ public class PanelEnfrentamientos extends JPanel {
         return panelEnfrentamiento;
     }
 
+    /**
+     * Permite seleccionar al ganador de un enfrentamiento con autenticación mediante contraseña.
+     * @param e el enfrentamiento sobre el cual se va a registrar el ganador.
+     */
     private void seleccionarGanador(Enfrentamiento e) {
         String[] opciones = {
                 e.getParticipante1().getNombre(),
@@ -121,6 +151,11 @@ public class PanelEnfrentamientos extends JPanel {
         }
     }
 
+    /**
+     * Registra al ganador en el enfrentamiento y actualiza enfrentamientos futuros si corresponde.
+     * @param e el enfrentamiento a actualizar.
+     * @param seleccionado el nombre del participante ganador.
+     */
     private void registrarGanador(Enfrentamiento e, String seleccionado) {
         Participante ganador = seleccionado.equals(e.getParticipante1().getNombre())
                 ? e.getParticipante1()
@@ -138,6 +173,11 @@ public class PanelEnfrentamientos extends JPanel {
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
 
+    /**
+     * Actualiza los nombres de los enfrentamientos futuros que dependen del resultado actual.
+     * @param patron el texto identificador del enfrentamiento original.
+     * @param nombreGanadorLimpio el nombre que reemplazará al patrón.
+     */
     private void actualizarEnfrentamientosPosteriores(String patron, String nombreGanadorLimpio) {
         List<Enfrentamiento> enfrentamientos = torneo.getEnfrentamientos();
 
@@ -166,6 +206,12 @@ public class PanelEnfrentamientos extends JPanel {
         }
     }
 
+    /**
+     * Limpia el nombre del ganador en caso de que esté compuesto por múltiples niveles de "Ganador ...".
+     *
+     * @param nombre el nombre a limpiar.
+     * @return el nombre limpio sin prefijos de "Ganador ".
+     */
     private String limpiarNombreGanador(String nombre) {
         String nombreLimpio = nombre;
 
@@ -175,6 +221,11 @@ public class PanelEnfrentamientos extends JPanel {
         return nombreLimpio;
     }
 
+    /**
+     * Devuelve el nombre textual del ganador, según su tipo.
+     * @param ganador el objeto ganador (jugador o equipo).
+     * @return el nombre representativo.
+     */
     private String obtenerNombreGanador(Object ganador) {
         if (ganador instanceof Jugador) {
             return ((Jugador) ganador).getNombre();
@@ -184,6 +235,9 @@ public class PanelEnfrentamientos extends JPanel {
         return ganador.toString();
     }
 
+    /**
+     * Inicializa el panel inferior con el botón para volver al detalle del torneo.
+     */
     private void inicializarPanelAbajo() {
         JButton btnVolver = new JButton("Volver");
         btnVolver.addActionListener(e -> {
