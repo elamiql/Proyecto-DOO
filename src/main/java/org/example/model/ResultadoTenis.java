@@ -63,6 +63,9 @@ public class ResultadoTenis implements Resultado {
      * @param juegosJ2 juegos ganados por el jugador 2 en el set.
      */
     public void agregarSet(int setIndex, int juegosJ1, int juegosJ2) {
+        if (setIndex < 0 || setIndex >= juegosSetsJugador1.length)
+            throw new IllegalArgumentException("Índice de set fuera de rango");
+
         juegosSetsJugador1[setIndex] = juegosJ1;
         juegosSetsJugador2[setIndex] = juegosJ2;
         recalcularSets();
@@ -74,6 +77,7 @@ public class ResultadoTenis implements Resultado {
     private void recalcularSets() {
         setsJugador1 = 0;
         setsJugador2 = 0;
+
         for (int i = 0; i < juegosSetsJugador1.length; i++) {
             int j1 = juegosSetsJugador1[i];
             int j2 = juegosSetsJugador2[i];
@@ -97,8 +101,13 @@ public class ResultadoTenis implements Resultado {
      * @return true si el set está ganado por el jugador con 'ganados' juegos.
      */
     private boolean esSetGanado(int ganados, int perdidos) {
-        if (ganados >= 6 && ganados - perdidos >= 2 && ganados <= 7) return true;
-        return ganados == 7 && perdidos == 6;
+        // Gana 6-0 hasta 6-4
+        if (ganados >= 6 && ganados <= 7 && ganados - perdidos >= 2) return true;
+
+        // Gana 7-5 o 7-6 (tiebreak)
+        if (ganados == 7 && (perdidos == 5 || perdidos == 6)) return true;
+
+        return false;
     }
 
     /**
@@ -115,8 +124,7 @@ public class ResultadoTenis implements Resultado {
             int j1 = juegosSetsJugador1[i];
             int j2 = juegosSetsJugador2[i];
             if (j1 == 0 && j2 == 0) continue;
-            sb.append("Set ").append(i + 1).append(": ")
-                    .append(j1).append(" - ").append(j2).append("\n");
+            sb.append("Set ").append(i + 1).append(": ").append(j1).append(" - ").append(j2).append("\n");
         }
         return sb.toString();
     }
@@ -130,13 +138,8 @@ public class ResultadoTenis implements Resultado {
     public Participante getGanador() {
         if (!esValido()) return null;
 
-        if (setsJugador1 > setsJugador2) {
-            return jugador1;
-        } else if (setsJugador2 > setsJugador1) {
-            return jugador2;
-        } else {
-            return null;
-        }
+        return setsJugador1 > setsJugador2 ? jugador1 :
+                setsJugador2 > setsJugador1 ? jugador2 : null;
     }
 
     /**
@@ -148,6 +151,7 @@ public class ResultadoTenis implements Resultado {
     public boolean esValido() {
         int maxSets = juegosSetsJugador1.length;
         int necesarios = (maxSets / 2) + 1;
+
         return setsJugador1 >= necesarios || setsJugador2 >= necesarios;
     }
 
@@ -179,10 +183,12 @@ public class ResultadoTenis implements Resultado {
 
     public void setJuegosSetsJugador1(int[] juegosSetsJugador1) {
         this.juegosSetsJugador1 = juegosSetsJugador1;
+        recalcularSets();
     }
 
     public void setJuegosSetsJugador2(int[] juegosSetsJugador2) {
         this.juegosSetsJugador2 = juegosSetsJugador2;
+        recalcularSets();
     }
 
     public void setJugador1(Participante jugador1) {
