@@ -87,7 +87,7 @@ public class ResultadoTenisDeMesa implements Resultado {
      * @param p2 puntos del jugador 2.
      * @return true si el set es válido, false en caso contrario.
      */
-    private boolean esSetValido(int p1, int p2) {
+    public boolean esSetValido(int p1, int p2) {
         if (p1 < 0 || p2 < 0) return false;
         if (p1 < 11 && p2 < 11) return false;
         if (Math.abs(p1 - p2) < 2) return false;

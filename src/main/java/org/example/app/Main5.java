@@ -2,6 +2,7 @@ package org.example.app;
 
 import org.example.enums.Deporte;
 import org.example.enums.Formato;
+import org.example.enums.Videojuegos;
 import org.example.gui.Ventana;
 import org.example.model.*;
 
@@ -29,7 +30,7 @@ public class Main5 {
         // Crear torneo eliminatoria
         TorneoEquipo torneoTest = new TorneoEquipo(
                 "Torneo Test",
-                Deporte.AJEDREZ,
+                Videojuegos.LOL,
                 "01-06-2025 10:00",
                 Formato.ELIMINATORIA,
                 "1"
@@ -64,7 +65,7 @@ public class Main5 {
         // Crear torneo Champions
         TorneoEquipo torneoChampions = new TorneoEquipo(
                 "Champions 2025",
-                Deporte.FUTBOL,
+                Deporte.TENIS,
                 "01-07-2025 20:00",
                 Formato.ELIMINATORIA,
                 "1"
