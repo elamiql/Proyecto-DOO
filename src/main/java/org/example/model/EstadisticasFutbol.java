@@ -103,4 +103,9 @@ public class EstadisticasFutbol extends EstadisticasParticipante<Participante, R
                 getDiferenciaGoles(),
                 getPuntos());
     }
+
+    public void agregarGoles(int golesLocal, int golesVisitante) {
+        this.golesFavor += golesLocal;
+        this.golesContra += golesVisitante;
+    }
 }
