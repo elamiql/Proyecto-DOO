@@ -13,6 +13,7 @@ package org.example.model;
  *   <li>Derrota: 0 puntos</li>
  * </ul>
  */
+
 public class EstadisticasFutbol extends EstadisticasParticipante<Participante, ResultadoFutbol>{
     private int golesFavor;
     private int golesContra;

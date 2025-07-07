@@ -21,25 +21,25 @@ public class ResultadoFutbol implements Resultado {
     /**
      * Participante local.
      */
-    private Participante p1;
+    private Participante local;
 
     /**
      * Participante visitante.
      */
-    private Participante p2;
+    private Participante visitante;
 
     /**
      * Constructor que inicializa un resultado de fútbol con los participantes y los goles anotados.
-     * @param p1 participante local
-     * @param p2 participante visitante
+     * @param local participante local
+     * @param visitante participante visitante
      * @param golesLocal goles anotados por el participante local (no negativo)
      * @param golesVisitante goles anotados por el participante visitante (no negativo)
      */
-    public ResultadoFutbol(Participante p1, Participante p2, int golesLocal, int golesVisitante){
+    public ResultadoFutbol(Participante local, Participante visitante, int golesLocal, int golesVisitante){
         this.golesLocal = golesLocal;
         this.golesVisitante = golesVisitante;
-        this.p1 = p1;
-        this.p2 = p2;
+        this.local = local;
+        this.visitante = visitante;
     }
 
     /**
@@ -48,7 +48,7 @@ public class ResultadoFutbol implements Resultado {
      */
     @Override
     public String getResumen() {
-        return p1.getNombre() + " " + golesLocal + " - " + golesVisitante + " " + p2.getNombre();
+        return local.getNombre() + " " + golesLocal + " - " + golesVisitante + " " + visitante.getNombre();
     }
 
     /**
@@ -67,10 +67,10 @@ public class ResultadoFutbol implements Resultado {
     @Override
     public Participante getGanador(){
         if (golesLocal > golesVisitante){
-            return p1;
+            return local;
         }
         else if (golesVisitante > golesLocal){
-            return p2;
+            return visitante;
         }
         else{
             return null; //empate
@@ -98,7 +98,7 @@ public class ResultadoFutbol implements Resultado {
      * @return participante local.
      */
     public Participante getLocal() {
-        return p1;
+        return local;
     }
 
     /**
@@ -106,6 +106,6 @@ public class ResultadoFutbol implements Resultado {
      * @return participante visitante.
      */
     public Participante getVisitante() {
-        return p2;
+        return visitante;
     }
 }
