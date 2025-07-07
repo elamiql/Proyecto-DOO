@@ -29,10 +29,10 @@ public class Main5 {
         // Crear torneo eliminatoria
         TorneoEquipo torneoTest = new TorneoEquipo(
                 "Torneo Test",
-                Deporte.FUTBOL,
+                Deporte.AJEDREZ,
                 "01-06-2025 10:00",
                 Formato.ELIMINATORIA,
-                "admin123"
+                "1"
         );
 
         // Inscribir equipos
@@ -67,7 +67,7 @@ public class Main5 {
                 Deporte.FUTBOL,
                 "01-07-2025 20:00",
                 Formato.ELIMINATORIA,
-                "admin123"
+                "1"
         );
 
         // Inscribir equipos al torneo Champions

@@ -14,7 +14,7 @@ import org.example.interfaces.Resultado;
  * @see Resultado
  * @see Participante
  */
-public class ResultadoFifa implements Resultado {
+class ResultadoFifa implements Resultado {
 
     /**
      * Goles anotados por el equipo local.

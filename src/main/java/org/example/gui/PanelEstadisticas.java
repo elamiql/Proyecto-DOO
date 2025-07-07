@@ -1,0 +1,137 @@
+package org.example.gui;
+
+import org.example.interfaces.Estadisticas;
+import org.example.model.*;
+import org.example.model.Torneo;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+
+public class PanelEstadisticas extends JPanel {
+
+    private final JFrame frame;
+    private final Torneo torneo;
+
+    private JComboBox<Participante> comboParticipantes;
+    private JTextArea areaEstadisticas;
+    private JButton botonVer;
+
+    public PanelEstadisticas(JFrame frame, Torneo torneo) {
+        this.frame = frame;
+        this.torneo = torneo;
+
+        inicializarComponentes();
+        configurarLayout();
+        configurarEventos();
+    }
+
+    private void inicializarComponentes() {
+        comboParticipantes = new JComboBox<>();
+        for (Object p : torneo.getParticipantes()) {
+            comboParticipantes.addItem((Participante) p);
+        }
+
+        botonVer = new JButton("Ver estadísticas");
+
+        areaEstadisticas = new JTextArea(20, 45);
+        areaEstadisticas.setEditable(false);
+        areaEstadisticas.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        areaEstadisticas.setLineWrap(true);
+        areaEstadisticas.setWrapStyleWord(true);
+    }
+
+    private void configurarLayout() {
+        setLayout(new BorderLayout());
+
+        JPanel panelSuperior = new JPanel(new FlowLayout());
+        panelSuperior.add(new JLabel("Selecciona participante:"));
+        panelSuperior.add(comboParticipantes);
+        panelSuperior.add(botonVer);
+        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame,torneo));
+        panelSuperior.add(btnVolver);
+
+        add(panelSuperior, BorderLayout.NORTH);
+        add(new JScrollPane(areaEstadisticas), BorderLayout.CENTER);
+    }
+
+    private void configurarEventos() {
+        botonVer.addActionListener((ActionEvent e) -> {
+            Participante seleccionado = (Participante) comboParticipantes.getSelectedItem();
+            if (seleccionado != null) {
+                mostrarEstadisticas(seleccionado);
+            }
+        });
+    }
+
+    private void mostrarEstadisticas(Participante p) {
+        String disciplina = torneo.getDisciplina().getNombre().toUpperCase();
+        String resultado = "";
+
+        switch (disciplina) {
+            case "FUTBOL", "FIFA" -> {
+                EstadisticasFutbol estadisticas = new EstadisticasFutbol(p);
+                for (Object obj : torneo.getEnfrentamientos()) {
+                    Enfrentamiento enf = (Enfrentamiento) obj;
+                    if (enf.getResultado() instanceof ResultadoFutbol) {
+                        estadisticas.registrarResultado((ResultadoFutbol) enf.getResultado(), p, enf.getParticipante1().equals(p));
+                    }
+                }
+                resultado = estadisticas.toTablaString();
+            }
+
+            case "AJEDREZ" -> {
+                EstadisticasAjedrez estadisticas = new EstadisticasAjedrez(p);
+                for (Object obj : torneo.getEnfrentamientos()) {
+                    Enfrentamiento enf = (Enfrentamiento) obj;
+                    if (enf.getResultado() instanceof ResultadoAjedrez) {
+                        estadisticas.registrarResultado((ResultadoAjedrez) enf.getResultado(), p, enf.getParticipante1().equals(p));
+                    }
+                }
+                resultado = estadisticas.toTablaString();
+            }
+
+            case "TENIS" -> {
+                EstadisticasTenis estadisticas = new EstadisticasTenis(p);
+                for (Object obj : torneo.getEnfrentamientos()) {
+                    Enfrentamiento enf = (Enfrentamiento) obj;
+                    if (enf.getResultado() instanceof ResultadoTenis) {
+                        estadisticas.registrarResultado((ResultadoTenis) enf.getResultado(), p, enf.getParticipante1().equals(p));
+                    }
+                }
+                resultado = estadisticas.getEstadisticasCompletas();
+            }
+
+            case "TENIS_DE_MESA" -> {
+                EstadisticaTenisDeMesa estadisticas = new EstadisticaTenisDeMesa(p);
+                for (Object obj : torneo.getEnfrentamientos()) {
+                    Enfrentamiento enf = (Enfrentamiento) obj;
+                    if (enf.getResultado() instanceof ResultadoTenisDeMesa) {
+                        estadisticas.registrarResultado((ResultadoTenisDeMesa) enf.getResultado(), p, enf.getParticipante1().equals(p));
+                    }
+                }
+                resultado = estadisticas.toTablaString();
+            }
+
+            case "LOL" -> {
+                EstadisticasLol estadisticas = new EstadisticasLol(p);
+                for (Object obj : torneo.getEnfrentamientos()) {
+                    Enfrentamiento enf = (Enfrentamiento) obj;
+                    if (enf.getResultado() instanceof ResultadoLol) {
+                        estadisticas.registrarResultado((ResultadoLol) enf.getResultado(), p, enf.getParticipante1().equals(p));
+                    }
+                }
+                resultado = estadisticas.toTablaString();
+            }
+
+            default -> {
+                resultado = "Disciplina no soportada.";
+            }
+        }
+
+        areaEstadisticas.setText(resultado);
+    }
+
+
+}
+

@@ -70,8 +70,8 @@ public class Main6{
             }
 
             // Agregar goles a las estadísticas
-            statsArgentina.agregarGoles(resultado.getGolesLocal(), resultado.getGolesVisitante());
-            statsBrasil.agregarGoles(resultado.getGolesVisitante(), resultado.getGolesLocal());
+            //statsArgentina.agregarGoles(resultado.getGolesLocal(), resultado.getGolesVisitante());
+            //statsBrasil.agregarGoles(resultado.getGolesVisitante(), resultado.getGolesLocal());
 
             // Mostrar resumen y estadísticas
             System.out.println("Resumen del partido:");
