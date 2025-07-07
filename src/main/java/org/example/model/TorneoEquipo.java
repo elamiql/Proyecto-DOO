@@ -96,31 +96,23 @@ public class TorneoEquipo extends Torneo<Equipo> {
      */
     @Override
     public void generarCalendario() {
-        GenerarCalendario<Equipo> generador;
-
         switch (getFormato()) {
-            case LIGA:
-                generador = new Liga<>(getEquipos(), true);
-                generador.generarCalendario();
-                this.enfrentamientos = generador.getEnfrentamientos();
-                break;
-            case ELIMINATORIA:
-                generador = new Eliminatoria<>(getEquipos(), true);
-                generador.generarCalendario();
-                this.enfrentamientos = generador.getEnfrentamientos();
-                break;
-
-            case GRUPOS_CON_ELIMINATORIA:
+            case LIGA -> {
+                generadorActivo = new Liga<>(getEquipos(), true);
+            }
+            case ELIMINATORIA -> {
+                generadorActivo = new Eliminatoria<>(getEquipos(), true);
+            }
+            case GRUPOS_CON_ELIMINATORIA -> {
                 if (numGrupos <= 0 || clasificadosPorGrupo <= 0) {
                     throw new ParticipantesInsuficientesException("Error: numGrupos y clasificadosPorGrupo deben ser mayores que 0");
                 }
-                generador = new GruposEliminatoria<>(getEquipos(), numGrupos, clasificadosPorGrupo);
-                generador.generarCalendario();
-                this.enfrentamientos = generador.getEnfrentamientos();
-                break;
-
-            default:
-                throw new FormatoInvalidoException("Formato no soportado aún");
+                generadorActivo = new GruposEliminatoria<>(getEquipos(), numGrupos, clasificadosPorGrupo);
+            }
+            default -> throw new FormatoInvalidoException("Formato no soportado aún");
         }
+
+        generadorActivo.generarCalendario();
+        this.enfrentamientos = generadorActivo.getEnfrentamientos();
     }
 }

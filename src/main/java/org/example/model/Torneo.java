@@ -31,6 +31,8 @@ public abstract class Torneo <T extends Participante>{
     /** Lista de equipos inscritos */
     protected ArrayList<Equipo> equipos;
 
+    protected GenerarCalendario<T> generadorActivo;
+
     /** Formato del torneo (liga, eliminación, grupos) */
     protected Formato formato;
 
@@ -225,6 +227,11 @@ public abstract class Torneo <T extends Participante>{
      * Método abstracto para generar el calendario del torneo.
      */
     public abstract void generarCalendario();
+
+    public GenerarCalendario<T> getGeneradorActivo() {
+        return generadorActivo;
+    }
+
 }
 
 

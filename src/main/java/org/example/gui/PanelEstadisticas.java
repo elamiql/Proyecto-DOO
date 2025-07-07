@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+import static org.example.enums.Formato.LIGA;
+
 public class PanelEstadisticas extends JPanel {
 
     private final JFrame frame;
@@ -65,8 +67,36 @@ public class PanelEstadisticas extends JPanel {
     }
 
     private void mostrarEstadisticas(Participante p) {
+        if (torneo.getFormato() == LIGA) {
+            mostrarEstadisticasLiga();
+        } else {
+            mostrarEstadisticasEliminatoria(p);
+        }
+    }
+    private void mostrarEstadisticasLiga() {
+        StringBuilder resultado = new StringBuilder();
+        GenerarCalendario<?> generador = torneo.getGeneradorActivo();
+
+        if (generador instanceof Liga<?> liga) {
+            liga.actualizarEstadisticasDesdeResultados();
+            for (Participante participante : liga.getTablaEstadisticas().keySet()) {
+                EstadisticasFutbol estadisticas = liga.getTablaEstadisticas().get(participante);
+                if (estadisticas != null) {
+                    resultado.append("=== Estadísticas de ").append(participante.getNombre()).append(" ===\n");
+                    resultado.append(estadisticas.toTablaString()).append("\n\n");
+                } else {
+                    resultado.append("No hay estadísticas disponibles para ").append(participante.getNombre()).append("\n\n");
+                }
+            }
+        } else {
+            resultado.append("No se pudo recuperar la liga activa.");
+        }
+
+        areaEstadisticas.setText(resultado.toString());
+    }
+    private void mostrarEstadisticasEliminatoria(Participante p) {
         String disciplina = torneo.getDisciplina().getNombre().toUpperCase();
-        String resultado = "";
+        StringBuilder resultado = new StringBuilder();
 
         switch (disciplina) {
             case "FUTBOL", "FIFA" -> {
@@ -77,7 +107,7 @@ public class PanelEstadisticas extends JPanel {
                         estadisticas.registrarResultado((ResultadoFutbol) enf.getResultado(), p, enf.getParticipante1().equals(p));
                     }
                 }
-                resultado = estadisticas.toTablaString();
+                resultado.append(estadisticas.toTablaString());
             }
 
             case "AJEDREZ" -> {
@@ -88,7 +118,7 @@ public class PanelEstadisticas extends JPanel {
                         estadisticas.registrarResultado((ResultadoAjedrez) enf.getResultado(), p, enf.getParticipante1().equals(p));
                     }
                 }
-                resultado = estadisticas.toTablaString();
+                resultado.append(estadisticas.toTablaString());
             }
 
             case "TENIS" -> {
@@ -99,7 +129,7 @@ public class PanelEstadisticas extends JPanel {
                         estadisticas.registrarResultado((ResultadoTenis) enf.getResultado(), p, enf.getParticipante1().equals(p));
                     }
                 }
-                resultado = estadisticas.getEstadisticasCompletas();
+                resultado.append(estadisticas.getEstadisticasCompletas());
             }
 
             case "TENIS_DE_MESA" -> {
@@ -110,7 +140,7 @@ public class PanelEstadisticas extends JPanel {
                         estadisticas.registrarResultado((ResultadoTenisDeMesa) enf.getResultado(), p, enf.getParticipante1().equals(p));
                     }
                 }
-                resultado = estadisticas.toTablaString();
+                resultado.append(estadisticas.toTablaString());
             }
 
             case "LOL" -> {
@@ -121,17 +151,16 @@ public class PanelEstadisticas extends JPanel {
                         estadisticas.registrarResultado((ResultadoLol) enf.getResultado(), p, enf.getParticipante1().equals(p));
                     }
                 }
-                resultado = estadisticas.toTablaString();
+                resultado.append(estadisticas.toTablaString());
             }
 
             default -> {
-                resultado = "Disciplina no soportada.";
+                resultado.append("Disciplina no soportada.");
             }
         }
 
-        areaEstadisticas.setText(resultado);
+        areaEstadisticas.setText(resultado.toString());
     }
-
 
 }
 

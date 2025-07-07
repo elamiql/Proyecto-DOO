@@ -28,9 +28,9 @@ public class Main5 {
         Equipo equipoD = new Equipo("Equipo D", "D01", new ArrayList<>(List.of(j7, j8)));
 
         // Crear torneo eliminatoria
-        TorneoEquipo torneoTest = new TorneoEquipo(
+        TorneoIndividual torneoTest = new TorneoIndividual(
                 "Torneo Test",
-                Videojuegos.LOL,
+                Deporte.FUTBOL    ,
                 "01-06-2025 10:00",
                 Formato.ELIMINATORIA,
                 "1"
@@ -65,9 +65,9 @@ public class Main5 {
         // Crear torneo Champions
         TorneoEquipo torneoChampions = new TorneoEquipo(
                 "Champions 2025",
-                Deporte.TENIS,
+                Deporte.FUTBOL,
                 "01-07-2025 20:00",
-                Formato.ELIMINATORIA,
+                Formato.LIGA,
                 "1"
         );
 

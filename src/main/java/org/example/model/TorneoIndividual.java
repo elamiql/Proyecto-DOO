@@ -39,6 +39,8 @@ public class TorneoIndividual extends Torneo<Jugador> {
      */
     private int clasificadosPorGrupo;
 
+
+
     /**
      * Constructor para torneo individual sin configurar grupos/clasificados.
      *
@@ -94,31 +96,32 @@ public class TorneoIndividual extends Torneo<Jugador> {
      */
     @Override
     public void generarCalendario() {
-        GenerarCalendario<Jugador> generador;
-
         if (participantes.size() < 2){
             throw new ParticipantesInsuficientesException("Se requieren 2 participantes");
         }
 
         switch (getFormato()) {
             case LIGA:
-                generador = new Liga<>(getParticipantes(), true);
+                generadorActivo = new Liga<>(getParticipantes(), true);
                 break;
 
             case ELIMINATORIA:
-                generador = new Eliminatoria<>(getParticipantes(), true);
+                generadorActivo = new Eliminatoria<>(getParticipantes(), true);
                 break;
 
             case GRUPOS_CON_ELIMINATORIA:
-                generador = new GruposEliminatoria<>(getParticipantes(), numGrupos, clasificadosPorGrupo);
+                generadorActivo = new GruposEliminatoria<>(getParticipantes(), numGrupos, clasificadosPorGrupo);
                 break;
 
             default:
                 throw new FormatoInvalidoException("Formato no incluido / soportado");
         }
 
-        generador.generarCalendario();
-        this.enfrentamientos = generador.getEnfrentamientos();
-        generador.imprimirCalendario();
+        generadorActivo.generarCalendario();
+        this.enfrentamientos = generadorActivo.getEnfrentamientos();
+        generadorActivo.imprimirCalendario();
+
     }
+
+
 }
