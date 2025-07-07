@@ -1,130 +1,107 @@
 package org.example.model;
 
 /**
- * Clase que gestiona las estadísticas de un participante en un torneo con formato similar a FIFA.
- * Registra información sobre goles, partidos ganados, empatados y perdidos, además de calcular puntos y diferencia de goles.
- * <p>Se considera el sistema de puntuación FIFA:</p>
- * <ul>
- *   <li>Victoria = 3 puntos</li>
- *   <li>Empate = 1 punto</li>
- *   <li>Derrota = 0 puntos</li>
- * </ul>
+ * Estadísticas de un participante en un torneo FIFA.
+ * Usa sistema de puntuación FIFA (3 puntos victoria, 1 empate, 0 derrota).
+ * Registra goles a favor, goles en contra, partidos ganados, empatados y perdidos.
+ *
+ * @see EstadisticasParticipante
+ * @see ResultadoFifa
+ * @see Participante
  */
 public class EstadisticasFifa extends EstadisticasParticipante<Participante, ResultadoFifa> {
-    private int partidosJugados;
-    private int ganados;
-    private int empatados;
-    private int perdidos;
     private int golesFavor;
     private int golesContra;
 
     /**
-     * Constructor que inicializa las estadísticas para un participante.
+     * Crea una instancia para las estadísticas del participante dado.
      *
-     * @param participante Participante al que se le registrarán las estadísticas.
+     * @param participante participante a quien pertenecen estas estadísticas
      */
     public EstadisticasFifa(Participante participante) {
         super(participante);
-        partidosJugados = 0;
-        ganados = 0;
-        empatados = 0;
-        perdidos = 0;
-        golesFavor = 0;
-        golesContra = 0;
     }
 
     /**
-     * Registra el resultado de un partido para el participante.
-     * Se determina si el participante jugó como local o visitante y se actualizan
-     * los goles marcados y recibidos, así como el resultado del partido.
+     * Registra el resultado de un partido para este participante.
+     * Suma goles a favor y en contra, y actualiza resultados (victoria, empate o derrota).
      *
-     * @param resultado   Resultado del partido.
-     * @param participante Participante cuyas estadísticas se actualizan.
-     * @param esLocal     {@code true} si el participante jugó como local; {@code false} si fue visitante.
+     * @param resultado   resultado del partido a registrar
+     * @param participante participante cuyas estadísticas se actualizan (debe coincidir con esta instancia)
+     * @param esLocal     indica si el participante jugó como local (true) o visitante (false)
+     * @throws IllegalArgumentException si el resultado es nulo
      */
     @Override
     public void registrarResultado(ResultadoFifa resultado, Participante participante, boolean esLocal) {
-        if (resultado == null) return;
+        if (resultado == null) throw new IllegalArgumentException("Resultado nulo");
 
-        partidosJugados++;
-        int golesMarcados = esLocal ? resultado.getGolesLocal() : resultado.getGolesVisitante();
-        int golesRecibidos = esLocal ? resultado.getGolesVisitante() : resultado.getGolesLocal();
+        int gf = esLocal ? resultado.getGolesLocal() : resultado.getGolesVisitante();
+        int gc = esLocal ? resultado.getGolesVisitante() : resultado.getGolesLocal();
 
-        golesFavor += golesMarcados;
-        golesContra += golesRecibidos;
+        golesFavor += gf;
+        golesContra += gc;
 
         Participante ganador = resultado.getGanador();
-        if (ganador == null) { // empate
-            empatados++;
-        } else if (ganador.equals(participante)) {
-            ganados++;
-        } else {
-            perdidos++;
-        }
+        if (ganador == null) registrarEmpate();
+        else if (ganador.equals(participante)) registrarVictoria();
+        else registrarDerrota();
     }
 
     /**
-     * Devuelve la cantidad total de puntos acumulados.
-     * @return Puntos totales (victoria = 3 puntos, empate = 1 punto).
+     * Calcula los puntos acumulados.
+     * 3 por victoria, 1 por empate, 0 por derrota.
+     *
+     * @return puntos totales del participante
      */
     @Override
     public int getPuntos() {
-        return ganados * 3 + empatados;
+        return 3 * getGanados() + getEmpatados();
     }
 
     /**
-     * Retorna una representación en forma de tabla con todas las estadísticas del participante.
-     * @return Cadena con PJ, G, E, P, GF, GC, DG y Puntos.
-     */
-    @Override
-    public String toTablaString() {
-        int diferenciaGoles = golesFavor - golesContra;
-        return String.format(
-                "%s - PJ: %d, G: %d, E: %d, P: %d, GF: %d, GC: %d, DG: %d, Puntos: %d",
-                getParticipante().toString(), partidosJugados, ganados, empatados, perdidos, golesFavor, golesContra, diferenciaGoles, getPuntos()
-        );
-    }
-
-    /**
-     * @return Total de partidos jugados.
-     */
-    public int getPartidosJugados() {
-        return partidosJugados;
-    }
-
-    /**
-     * @return Total de partidos ganados.
-     */
-    public int getGanados() {
-        return ganados;
-    }
-
-    /**
-     * @return Total de partidos empatados.
-     */
-    public int getEmpatados() {
-        return empatados;
-    }
-
-    /**
-     * @return Total de partidos perdidos.
-     */
-    public int getPerdidos() {
-        return perdidos;
-    }
-
-    /**
-     * @return Total de goles a favor.
+     * Devuelve los goles a favor acumulados.
+     *
+     * @return goles a favor
      */
     public int getGolesFavor() {
         return golesFavor;
     }
 
     /**
-     * @return Total de goles en contra.
+     * Devuelve los goles en contra acumulados.
+     *
+     * @return goles en contra
      */
     public int getGolesContra() {
         return golesContra;
     }
 
+    /**
+     * Calcula la diferencia de goles (goles a favor menos goles en contra).
+     *
+     * @return diferencia de goles
+     */
+    public int getDiferenciaGoles() {
+        return golesFavor - golesContra;
+    }
+
+    /**
+     * Representación en forma de tabla de las estadísticas.
+     * Columnas: Participante, PJ, G, E, P, GF, GC, DIF, PTS.
+     *
+     * @return cadena con formato tabular de las estadísticas
+     */
+    @Override
+    public String toTablaString() {
+        return String.format("%-20s | %2d | %2d | %2d | %2d | %3d | %3d | %4d | %3d",
+                getParticipante(),
+                getPartidosJugados(),
+                getGanados(),
+                getEmpatados(),
+                getPerdidos(),
+                golesFavor,
+                golesContra,
+                getDiferenciaGoles(),
+                getPuntos());
+    }
 }
