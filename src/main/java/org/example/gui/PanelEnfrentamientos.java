@@ -15,9 +15,13 @@ import java.util.List;
  */
 public class PanelEnfrentamientos extends JPanel {
 
+    private JLabel labelPuntos;
     private final JFrame frame;
     private final Torneo<?> torneo;
     private final JPanel panelCentral;
+    private final List<Apuesta> apuestas = new java.util.ArrayList<>();
+    private static int puntosUsuario=1000;
+
 
     /**
      * Crea el panel de enfrentamientos para el torneo dado.
@@ -36,6 +40,7 @@ public class PanelEnfrentamientos extends JPanel {
         inicializarTitulo();
         inicializarPanelCentral();
         inicializarPanelAbajo();
+        inicializarPanelSuperior();
     }
 
     /**
@@ -96,18 +101,29 @@ public class PanelEnfrentamientos extends JPanel {
         lbl.setFont(new Font("Arial", Font.PLAIN, 16));
         panelEnfrentamiento.add(lbl, BorderLayout.CENTER);
 
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelBotones.setOpaque(false);
+
         JButton btnGanador = new JButton("Seleccionar Ganador");
-        panelEnfrentamiento.add(btnGanador, BorderLayout.EAST);
+        JButton btnApostar = new JButton("Apostar");
+
+        panelBotones.add(btnGanador);
+        panelBotones.add(btnApostar);
+
+        panelEnfrentamiento.add(panelBotones, BorderLayout.EAST);
 
         if (e.getGanador() != null) {
             lbl.setText(baseTexto + " - Ganador: " + obtenerNombreGanador(e.getGanador()));
             btnGanador.setEnabled(false);
+            btnApostar.setEnabled(false);
         } else {
             btnGanador.addActionListener(ae -> seleccionarGanador(e));
+            btnApostar.addActionListener(ae -> apostarEnEnfrentamiento(e, lbl));
         }
 
         return panelEnfrentamiento;
     }
+
 
     /**
      * Permite seleccionar al ganador de un enfrentamiento con autenticación mediante contraseña.
@@ -176,6 +192,14 @@ public class PanelEnfrentamientos extends JPanel {
         actualizarEnfrentamientosPosteriores(patron, nombreGanadorLimpio);
 
         JOptionPane.showMessageDialog(frame, "Ganador registrado: " + nombreGanadorLimpio);
+        for (Apuesta apuesta : apuestas) {
+            if (apuesta.getEnfrentamiento().equals(e)) {
+                int ganancia = apuesta.resolver(ganador);
+                puntosUsuario += ganancia;
+                JOptionPane.showMessageDialog(frame, "Resultado de la apuesta: " + ganancia + " puntos");
+                break;
+            }
+        }
 
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
@@ -414,14 +438,98 @@ public class PanelEnfrentamientos extends JPanel {
      * Inicializa el panel inferior con el botón para volver al detalle del torneo.
      */
     private void inicializarPanelAbajo() {
-        JButton btnVolver = new JButton("Volver");
-        btnVolver.addActionListener(e -> {
-            new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute();
-        });
+        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame,torneo));
 
         JPanel panelAbajo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelAbajo.setOpaque(false);
         panelAbajo.add(btnVolver);
         add(panelAbajo, BorderLayout.SOUTH);
     }
+
+    /**
+     * Inicializa el panel superior de la interfaz, que muestra la cantidad
+     * actual de puntos del usuario. Este panel se posiciona en la parte superior
+     * del componente (BorderLayout.PAGE_START).
+     */
+    private void inicializarPanelSuperior() {
+        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelSuperior.setOpaque(false);
+
+        labelPuntos = new JLabel("Puntos: " + puntosUsuario);
+        panelSuperior.add(labelPuntos);
+
+        add(panelSuperior, BorderLayout.PAGE_START);
+    }
+
+    /**
+     * Permite al usuario realizar una apuesta en un enfrentamiento específico.
+     *<p>
+     * El metodo verifica si el enfrentamiento ya tiene un ganador (en cuyo caso no se puede apostar y si ya se ha realizado
+     * una apuesta en el mismo enfrentamiento (no se permite duplicar).
+     *</p>
+     * Si pasa estas validaciones, se muestra un diálogo para que el usuario seleccione
+     * al participante por el que desea apostar y luego ingrese el monto.
+     * Si la apuesta es válida, se descuenta el monto de los puntos del usuario,
+     * se actualiza la etiqueta correspondiente y se registra la apuesta.
+     *
+     * @param e el {@link Enfrentamiento} en el que se desea apostar
+     * @param lbl un {@link JLabel} asociado al enfrentamiento.
+     */
+    private void apostarEnEnfrentamiento(Enfrentamiento e, JLabel lbl) {
+        if (e.getGanador() != null) {
+            JOptionPane.showMessageDialog(frame, "Este enfrentamiento ya tiene un ganador.");
+            return;
+        }
+
+        // NUEVO: Verificar si ya se apostó
+        for (Apuesta a : apuestas) {
+            if (a.getEnfrentamiento().equals(e)) {
+                JOptionPane.showMessageDialog(frame, "Ya realizaste una apuesta en este enfrentamiento.");
+                return;
+            }
+        }
+
+        String[] opciones = {
+                e.getParticipante1().getNombre(),
+                e.getParticipante2().getNombre()
+        };
+
+        String seleccionado = (String) JOptionPane.showInputDialog(
+                frame,
+                "¿A quién deseas apostar?",
+                "Apuesta",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        if (seleccionado == null) return;
+
+        String input = JOptionPane.showInputDialog(frame, "¿Cuántos puntos deseas apostar?");
+        if (input == null) return;
+
+        try {
+            int monto = Integer.parseInt(input);
+            if (monto <= 0 || monto > puntosUsuario) {
+                JOptionPane.showMessageDialog(frame, "Monto inválido. Tienes " + puntosUsuario + " puntos.");
+                return;
+            }
+
+            Participante apostado = e.getParticipante1().getNombre().equals(seleccionado)
+                    ? e.getParticipante1()
+                    : e.getParticipante2();
+
+            Apuesta apuesta = new Apuesta(e, apostado, monto);
+            apuestas.add(apuesta);
+            puntosUsuario -= monto;
+            labelPuntos.setText("Puntos: " + puntosUsuario);
+
+            JOptionPane.showMessageDialog(frame, "Apuesta realizada con éxito.");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Entrada inválida. Debe ser un número.");
+        }
+    }
+
 }
