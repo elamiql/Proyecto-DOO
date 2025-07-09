@@ -30,7 +30,7 @@ public class Main5 {
         // Crear torneo eliminatoria
         TorneoIndividual torneoTest = new TorneoIndividual(
                 "Torneo Test",
-                Deporte.FUTBOL    ,
+                Deporte.FUTBOL   ,
                 "01-06-2025 10:00",
                 Formato.ELIMINATORIA,
                 "1"

@@ -15,6 +15,7 @@ public abstract class Participante {
     /** Estado del participante: activo o inactivo */
     private Boolean activo;
 
+
     /**
      * Constructor que inicializa los atributos básicos del participante.
      * @param nombre Nombre del participante.

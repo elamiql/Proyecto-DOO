@@ -87,7 +87,7 @@ public class PanelDetalleTorneo extends JPanel {
     private JPanel crearPanelBotones() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panel.setBackground(Color.WHITE);
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelPrincipal(frame));
+        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelParticipante(frame));
 
         if (torneo.isActivo()) {
             JButton btnEnfrentamientos = BotonBuilder.crearBoton("Ver Enfrentamientos", new Color(0, 123, 255), () ->

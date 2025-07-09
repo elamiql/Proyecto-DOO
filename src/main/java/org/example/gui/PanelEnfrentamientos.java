@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
+import static org.example.enums.Formato.ELIMINATORIA;
+import static org.example.enums.Formato.LIGA;
+
 /**
  * Panel gráfico que muestra los enfrentamientos de un torneo y permite seleccionar a los ganadores.
  *
@@ -132,7 +135,7 @@ public class PanelEnfrentamientos extends JPanel {
     private void seleccionarGanador(Enfrentamiento e) {
         String[] opciones = {
                 e.getParticipante1().getNombre(),
-                e.getParticipante2().getNombre()
+                e.getParticipante2().getNombre(),"empate"
         };
 
         String seleccionado = (String) JOptionPane.showInputDialog(
@@ -152,7 +155,14 @@ public class PanelEnfrentamientos extends JPanel {
             } else if (e.getParticipante2().getNombre().equals(seleccionado)) {
                 ganador = e.getParticipante2();
             }
-            registrarEstadisticasDesdeInput(e,ganador);
+            if (torneo.getFormato() == ELIMINATORIA) {
+                if (ganador == null) {
+                    JOptionPane.showMessageDialog(frame,
+                            "No se puede elegir empate en eliminatoria", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            registrarEstadisticas(e,ganador);
             JPasswordField passwordField = new JPasswordField();
             int confirmacion = JOptionPane.showConfirmDialog(
                     frame,
@@ -204,11 +214,14 @@ public class PanelEnfrentamientos extends JPanel {
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
 
-    /**
-     * Registra Las estadisticas del enfrentamiento.
-     * @param e el enfrentamiento a detallar.
-     */
-    private void registrarEstadisticasDesdeInput(Enfrentamiento e, Participante ganador) {
+    private void registrarEstadisticas(Enfrentamiento e,Participante p) {
+        if (torneo.getFormato() == LIGA) {
+            registrarEstadisticas2(e,p);
+        } else {
+            registrarEstadisticas1(e,p);
+        }
+    }
+    private void registrarEstadisticas1(Enfrentamiento e, Participante ganador) {
         try {
             String disciplina = torneo.getDisciplina().getNombre();
 
@@ -370,6 +383,32 @@ public class PanelEnfrentamientos extends JPanel {
             JOptionPane.showMessageDialog(frame, "Error al ingresar estadísticas. Verifica los datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private void registrarEstadisticas2(Enfrentamiento e, Participante p) {
+        try {
+            Participante p1 = e.getParticipante1();
+            Participante p2 = e.getParticipante2();
+
+            String input1 = JOptionPane.showInputDialog(frame, "Puntos realizados por " + p1.getNombre());
+            String input2 = JOptionPane.showInputDialog(frame, "Puntos realizados por " + p2.getNombre());
+
+            if (input1 == null || input2 == null) {
+                JOptionPane.showMessageDialog(frame, "Ingreso cancelado.");
+                return;
+            }
+
+            int puntos1 = Integer.parseInt(input1);
+            int puntos2 = Integer.parseInt(input2);
+
+            // Falta logica para estadisticas liga.
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Entrada inválida. Asegúrate de ingresar números enteros.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(frame, "Error inesperado al registrar estadísticas.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
 
     /**
