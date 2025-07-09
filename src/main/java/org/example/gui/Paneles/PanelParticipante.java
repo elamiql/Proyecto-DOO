@@ -108,7 +108,7 @@ public class PanelParticipante extends PanelFondo {
     private void cargarTorneos() {
         panelLista.removeAll();
 
-        List<Torneo> torneos = GestorTorneos.obtenerTorneos();
+        List<Torneo<?>> torneos = GestorTorneos.obtenerTorneos();
 
         String filtroEstado = (String) filtroEstadoCombo.getSelectedItem();
         String filtroDisciplina = (String) filtroDisciplinaCombo.getSelectedItem();

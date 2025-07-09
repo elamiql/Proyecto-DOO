@@ -29,11 +29,6 @@ public abstract class Torneo <T extends Participante>{
     /** Lista de participantes inscritos */
     protected ArrayList<T> participantes;
 
-    /** Lista de jugadores individuales inscritos */
-    protected ArrayList<Jugador> jugadores;
-
-    /** Lista de equipos inscritos */
-    protected ArrayList<Equipo> equipos;
 
     protected GenerarCalendario<T> generadorActivo;
 
@@ -67,8 +62,6 @@ public abstract class Torneo <T extends Participante>{
         this.participantes = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         this.fecha = LocalDateTime.parse(fecha, formatter);
-        this.jugadores = new ArrayList<>();
-        this.equipos = new ArrayList<>();
         this.enfrentamientos = new ArrayList<>();
         this.contraseña = contraseña;
     }
@@ -85,12 +78,6 @@ public abstract class Torneo <T extends Participante>{
         }
 
         participantes.add((T) participante);
-        if (participante instanceof Jugador){
-            jugadores.add((Jugador) participante);
-        }
-        else if (participante instanceof Equipo){
-            equipos.add((Equipo) participante);
-        }
     }
 
     // Getters
@@ -118,13 +105,7 @@ public abstract class Torneo <T extends Participante>{
         return participantes;
     }
 
-    /**
-     * Devuelve la lista de jugadores individuales inscritos.
-     * @return Lista de jugadores.
-     */
-    public ArrayList<Jugador> getJugadores(){
-        return jugadores;
-    }
+
 
     /**
      * Devuelve la contraseña del torneo.
@@ -134,13 +115,6 @@ public abstract class Torneo <T extends Participante>{
         return contraseña;
     }
 
-    /**
-     * Devuelve la lista de equipos inscritos.
-     * @return Lista de equipos.
-     */
-    public ArrayList<Equipo> getEquipos(){
-        return equipos;
-    }
 
     /**
      * Devuelve el nombre del torneo.

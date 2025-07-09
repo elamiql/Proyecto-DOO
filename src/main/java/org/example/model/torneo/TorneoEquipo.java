@@ -102,16 +102,16 @@ public class TorneoEquipo extends Torneo<Equipo> {
     public void generarCalendario() {
         switch (getFormato()) {
             case LIGA -> {
-                generadorActivo = new Liga<>(getEquipos(), true);
+                generadorActivo = new Liga<>(getParticipantes(), true);
             }
             case ELIMINATORIA -> {
-                generadorActivo = new Eliminatoria<>(getEquipos(), true);
+                generadorActivo = new Eliminatoria<>(getParticipantes(), true);
             }
             case GRUPOS_CON_ELIMINATORIA -> {
                 if (numGrupos <= 0 || clasificadosPorGrupo <= 0) {
                     throw new ParticipantesInsuficientesException("Error: numGrupos y clasificadosPorGrupo deben ser mayores que 0");
                 }
-                generadorActivo = new GruposEliminatoria<>(getEquipos(), numGrupos, clasificadosPorGrupo);
+                generadorActivo = new GruposEliminatoria<>(getParticipantes(), numGrupos, clasificadosPorGrupo);
             }
             default -> throw new FormatoInvalidoException("Formato no soportado aún");
         }

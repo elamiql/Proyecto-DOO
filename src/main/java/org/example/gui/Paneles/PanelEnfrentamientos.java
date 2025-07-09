@@ -1,8 +1,9 @@
 package org.example.gui.Paneles;
 
+
 import org.example.command.CambiarPanelCommand;
 import org.example.gui.Otros.BotonBuilder;
-import org.example.model.*;
+import org.example.model.Apuesta;
 import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Estadisticas.*;
 import org.example.model.Participante.Equipo;
@@ -304,7 +305,7 @@ public class PanelEnfrentamientos extends JPanel {
 
                 case "TENIS_DE_MESA" -> {
                     int maxSets = 5;
-                    ResultadoTenisDeMesa resultadoTT = new ResultadoTenisDeMesa(p1, p2, maxSets);
+                    ResultadoTenisDeMesa resultadoT = new ResultadoTenisDeMesa(p1, p2, maxSets);
 
                     int setsJ1 = 0;
                     int setsJ2 = 0;
@@ -321,12 +322,12 @@ public class PanelEnfrentamientos extends JPanel {
 
                         int puntosJ1 = Integer.parseInt(inputJ1);
                         int puntosJ2 = Integer.parseInt(inputJ2);
-                        boolean p = resultadoTT.esSetValido(puntosJ1, puntosJ2);
+                        boolean p = resultadoT.esSetValido(puntosJ1, puntosJ2);
                         if(!p){
                             JOptionPane.showMessageDialog(frame, "Set invalido.", "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        resultadoTT.agregarSet(i, puntosJ1, puntosJ2);
+                        resultadoT.agregarSet(i, puntosJ1, puntosJ2);
 
                         if (puntosJ1 > puntosJ2) {
                             setsJ1++;
@@ -337,15 +338,15 @@ public class PanelEnfrentamientos extends JPanel {
                         i++;
                     }
 
-                    if (!resultadoTT.esValido()) {
+                    if (!resultadoT.esValido()) {
                         JOptionPane.showMessageDialog(frame, "Resultado inválido.", "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
 
-                    e.setResultado(resultadoTT);
+                    e.setResultado(resultadoT);
 
-                    new EstadisticaTenisDeMesa(p1).registrarResultado(resultadoTT, p1, true);
-                    new EstadisticaTenisDeMesa(p2).registrarResultado(resultadoTT, p2, false);
+                    new EstadisticaTenisDeMesa(p1).registrarResultado(resultadoT, p1, true);
+                    new EstadisticaTenisDeMesa(p2).registrarResultado(resultadoT, p2, false);
                     if (ganador != null) {
                         JOptionPane.showMessageDialog(frame, "Ganador: " + ganador.getNombre());
                     }

@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  * Cuando un torneo ha alcanzado su fecha de inicio y tiene suficientes participantes,
  * se activa automáticamente y genera su calendario.
  */
-public class ActualizadorEstadoTorneos {
+public final class ActualizadorEstadoTorneos {
 
     /** Temporizador que ejecuta la actualización periódica */
     private Timer timer;
