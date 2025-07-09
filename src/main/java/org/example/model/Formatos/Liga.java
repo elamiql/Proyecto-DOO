@@ -23,7 +23,7 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
     /**
      * Tabla de estadísticas para los participantes, usando {@link EstadisticasFutbol}.
      */
-    private Map<T, EstadisticasFutbol> tablaEstadisticas;
+    private Map<Participante, EstadisticasFutbol> tablaEstadisticas;
 
     /**
      * Constructor que inicializa la liga con participantes y opción de doble vuelta.
@@ -90,7 +90,7 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
      * Obtiene la tabla de estadísticas de la liga.
      * @return Mapa con participantes y sus estadísticas de fútbol.
      */
-    public Map<T, EstadisticasFutbol> getTablaEstadisticas(){
+    public Map<Participante, EstadisticasFutbol> getTablaEstadisticas(){
         return tablaEstadisticas;
     }
 
@@ -115,7 +115,7 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
      * Establece la tabla de estadísticas para los participantes.
      * @param tablaEstadisticas Mapa con estadísticas de fútbol por participante.
      */
-    public void setTablaEstadisticas(Map<T, EstadisticasFutbol> tablaEstadisticas) {
+    public void setTablaEstadisticas(Map<Participante, EstadisticasFutbol> tablaEstadisticas) {
         this.tablaEstadisticas = tablaEstadisticas;
     }
     public void actualizarEstadisticasDesdeResultados() {

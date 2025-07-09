@@ -145,6 +145,12 @@ public class Enfrentamiento {
      * @throws IllegalArgumentException si el ganador no es uno de los participantes.
      */
     public void setGanador(Participante ganador){
+        if (ganador == null) {
+            // Empate
+            this.ganador = null;
+            this.finalizado = true;
+            return;
+        }
         if (!ganador.equals(participante1) && !ganador.equals(participante2)){
             throw new IllegalArgumentException("El ganador debe ser uno de los participantes");
         }

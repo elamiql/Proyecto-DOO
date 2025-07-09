@@ -8,6 +8,9 @@ import org.example.model.Formatos.Eliminatoria;
 import org.example.model.Formatos.GruposEliminatoria;
 import org.example.model.Formatos.Liga;
 import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Jugador;
+
+import java.util.ArrayList;
 
 /**
  * Representa un torneo por equipos que puede utilizar diferentes formatos de competencia.
@@ -22,6 +25,7 @@ import org.example.model.Participante.Equipo;
  * @see org.example.interfaces.Disciplina
  */
 public class TorneoEquipo extends Torneo<Equipo> {
+
 
     /**
      * Número de grupos en la fase de grupos.

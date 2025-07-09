@@ -12,6 +12,9 @@ import org.example.model.torneo.Torneo;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.List;
 
 import static org.example.enums.Formato.LIGA;
 
@@ -84,21 +87,35 @@ public class PanelEstadisticas extends JPanel {
 
         if (generador instanceof Liga<?> liga) {
             liga.actualizarEstadisticasDesdeResultados();
-            for (Participante participante : liga.getTablaEstadisticas().keySet()) {
-                EstadisticasFutbol estadisticas = liga.getTablaEstadisticas().get(participante);
-                if (estadisticas != null) {
-                    resultado.append("=== Estadísticas de ").append(participante.getNombre()).append(" ===\n");
-                    resultado.append(estadisticas.toTablaString()).append("\n\n");
-                } else {
-                    resultado.append("No hay estadísticas disponibles para ").append(participante.getNombre()).append("\n\n");
-                }
+
+            // Obtener las estadísticas y ordenarlas por puntos (de mayor a menor)
+            List<Map.Entry<Participante, EstadisticasFutbol>> listaOrdenada =
+                    new ArrayList<>(liga.getTablaEstadisticas().entrySet());
+
+            listaOrdenada.sort((e1, e2) ->
+                    Integer.compare(e2.getValue().getPuntos(), e1.getValue().getPuntos()));
+
+            // Mostrar participantes ordenados por posición
+            int posicion = 1;
+            for (Map.Entry<Participante, EstadisticasFutbol> entry : listaOrdenada) {
+                Participante participante = entry.getKey();
+                EstadisticasFutbol estadisticas = entry.getValue();
+
+                resultado.append(posicion).append(". ")
+                        .append(participante.getNombre()).append("\n")
+                        .append(estadisticas.toTablaString()).append("\n\n");
+
+                posicion++;
             }
+
         } else {
             resultado.append("No se pudo recuperar la liga activa.");
         }
 
         areaEstadisticas.setText(resultado.toString());
     }
+
+
     private void mostrarEstadisticasEliminatoria(Participante p) {
         String disciplina = torneo.getDisciplina().getNombre().toUpperCase();
         StringBuilder resultado = new StringBuilder();

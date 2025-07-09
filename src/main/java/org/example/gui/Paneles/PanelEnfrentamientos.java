@@ -125,14 +125,19 @@ public class PanelEnfrentamientos extends JPanel {
 
         panelEnfrentamiento.add(panelBotones, BorderLayout.EAST);
 
-        if (e.getGanador() != null) {
-            lbl.setText(baseTexto + " - Ganador: " + obtenerNombreGanador(e.getGanador()));
+        if (e.isFinalizado()) {
+            if (e.getGanador() != null) {
+                lbl.setText(baseTexto + " - Ganador: " + obtenerNombreGanador(e.getGanador()));
+            } else {
+                lbl.setText(baseTexto + " - Resultado: Empate");
+            }
             btnGanador.setEnabled(false);
             btnApostar.setEnabled(false);
         } else {
             btnGanador.addActionListener(ae -> seleccionarGanador(e));
             btnApostar.addActionListener(ae -> apostarEnEnfrentamiento(e, lbl));
         }
+
 
         return panelEnfrentamiento;
     }
@@ -200,21 +205,30 @@ public class PanelEnfrentamientos extends JPanel {
      * @param seleccionado el nombre del participante ganador.
      */
     private void registrarGanador(Enfrentamiento e, String seleccionado) {
-        Participante ganador = seleccionado.equals(e.getParticipante1().getNombre())
-                ? e.getParticipante1()
-                : e.getParticipante2();
+        Participante ganador = null;
 
-        e.setGanador(ganador);
+        if (seleccionado.equals("empate")) {
+            e.setGanador(null); // Registrar como empate
+            JOptionPane.showMessageDialog(frame, "Se registró un empate.");
+        } else {
+            ganador = seleccionado.equals(e.getParticipante1().getNombre())
+                    ? e.getParticipante1()
+                    : e.getParticipante2();
 
-        String nombreGanadorLimpio = limpiarNombreGanador(ganador.getNombre());
-        String patron = "Ganador " + e.getParticipante1().getNombre() + " vs " + e.getParticipante2().getNombre();
+            e.setGanador(ganador); // Registrar al ganador normalmente
 
-        actualizarEnfrentamientosPosteriores(patron, nombreGanadorLimpio);
+            String nombreGanadorLimpio = limpiarNombreGanador(ganador.getNombre());
+            String patron = "Ganador " + e.getParticipante1().getNombre() + " vs " + e.getParticipante2().getNombre();
 
-        JOptionPane.showMessageDialog(frame, "Ganador registrado: " + nombreGanadorLimpio);
+            actualizarEnfrentamientosPosteriores(patron, nombreGanadorLimpio);
+
+            JOptionPane.showMessageDialog(frame, "Ganador registrado: " + nombreGanadorLimpio);
+        }
+
+        // Resolver apuestas si corresponde
         for (Apuesta apuesta : apuestas) {
             if (apuesta.getEnfrentamiento().equals(e)) {
-                int ganancia = apuesta.resolver(ganador);
+                int ganancia = apuesta.resolver(ganador); // puede ser null si fue empate
                 puntosUsuario += ganancia;
                 JOptionPane.showMessageDialog(frame, "Resultado de la apuesta: " + ganancia + " puntos");
                 break;
@@ -223,6 +237,7 @@ public class PanelEnfrentamientos extends JPanel {
 
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
+
 
     private void registrarEstadisticas(Enfrentamiento e,Participante p) {
         if (torneo.getFormato() == LIGA) {
@@ -410,7 +425,8 @@ public class PanelEnfrentamientos extends JPanel {
             int puntos1 = Integer.parseInt(input1);
             int puntos2 = Integer.parseInt(input2);
 
-            // Falta logica para estadisticas liga.
+            ResultadoFutbol resultado = new ResultadoFutbol(p1, p2, puntos1, puntos2);
+            e.registrarResultado(resultado);
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(frame, "Entrada inválida. Asegúrate de ingresar números enteros.", "Error", JOptionPane.ERROR_MESSAGE);
