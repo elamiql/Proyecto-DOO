@@ -1,6 +1,6 @@
 package org.example.interfaces;
 
-import org.example.model.Participante;
+import org.example.model.Participante.Participante;
 
 /**
  * Representa el resultado de un enfrentamiento entre participantes.

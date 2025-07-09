@@ -2,9 +2,14 @@ package org.example.app;
 
 import org.example.enums.Deporte;
 import org.example.enums.Formato;
-import org.example.enums.Videojuegos;
-import org.example.gui.Ventana;
-import org.example.model.*;
+import org.example.gui.Otros.Ventana;
+import org.example.model.Enfrentamientos.GenerarCalendario;
+import org.example.model.Formatos.Eliminatoria;
+import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Jugador;
+import org.example.model.torneo.GestorTorneos;
+import org.example.model.torneo.TorneoEquipo;
+import org.example.model.torneo.TorneoIndividual;
 
 import javax.swing.*;
 import java.util.*;

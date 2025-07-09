@@ -3,7 +3,8 @@ package org.example.model;
 import org.example.enums.Deporte;
 import org.example.enums.Formato;
 import org.example.exceptions.ParticipantesInsuficientesException;
-import org.example.interfaces.Disciplina;
+import org.example.model.Participante.Jugador;
+import org.example.model.torneo.TorneoIndividual;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

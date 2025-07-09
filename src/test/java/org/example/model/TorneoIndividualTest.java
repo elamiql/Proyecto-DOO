@@ -3,6 +3,9 @@ package org.example.model;
 import org.example.enums.*;
 import org.example.exceptions.*;
 import org.example.interfaces.*;
+import org.example.model.Participante.Jugador;
+import org.example.model.Participante.Participante;
+import org.example.model.torneo.TorneoIndividual;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

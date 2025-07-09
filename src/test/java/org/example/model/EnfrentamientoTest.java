@@ -2,6 +2,11 @@ package org.example.model;
 
 import org.example.exceptions.ParticipanteNullException;
 import org.example.interfaces.Resultado;
+import org.example.model.Enfrentamientos.Enfrentamiento;
+import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Jugador;
+import org.example.model.Participante.Participante;
+import org.example.model.Resultado.ResultadoFutbol;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 

@@ -1,5 +1,8 @@
 package org.example.model;
 
+import org.example.model.Enfrentamientos.Enfrentamiento;
+import org.example.model.Formatos.Liga;
+import org.example.model.Participante.Jugador;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;

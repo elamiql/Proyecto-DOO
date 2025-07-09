@@ -1,5 +1,9 @@
 package org.example.model;
 
+import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Jugador;
+import org.example.model.Participante.Participante;
+import org.example.model.torneo.Torneo;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 

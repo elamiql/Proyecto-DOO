@@ -5,6 +5,9 @@ import org.example.interfaces.Disciplina;
 import org.example.enums.Formato;
 import org.example.exceptions.ParticipanteDuplicadoException;
 import org.example.exceptions.ParticipantesInsuficientesException;
+import org.example.model.Enfrentamientos.Enfrentamiento;
+import org.example.model.Participante.Jugador;
+import org.example.model.torneo.Torneo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

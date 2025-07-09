@@ -1,7 +1,12 @@
 package org.example.app;
 
 import org.example.enums.*;
-import org.example.model.*;
+import org.example.model.Enfrentamientos.Enfrentamiento;
+import org.example.model.Enfrentamientos.GenerarCalendario;
+import org.example.model.Formatos.Eliminatoria;
+import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Participante;
+import org.example.model.torneo.TorneoEquipo;
 
 import java.util.*;
 

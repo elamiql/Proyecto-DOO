@@ -1,5 +1,8 @@
 package org.example.model;
 
+import org.example.model.Enfrentamientos.Enfrentamiento;
+import org.example.model.Participante.Participante;
+
 /**
  * Representa una apuesta realizada sobre un {@link Enfrentamiento}.
  * La apuesta se hace por un {@link Participante} específico y tiene un monto asociado.

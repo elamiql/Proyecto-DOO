@@ -1,5 +1,8 @@
 package org.example.model;
 
+import org.example.model.Participante.Jugador;
+import org.example.model.Participante.Participante;
+import org.example.model.Resultado.ResultadoTenis;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

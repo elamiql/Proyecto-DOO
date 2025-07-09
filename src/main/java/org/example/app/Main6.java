@@ -2,10 +2,12 @@ package org.example.app;
 
 import org.example.enums.Deporte;
 import org.example.enums.Formato;
-import org.example.interfaces.Resultado;
-import org.example.model.*;
+import org.example.model.Estadisticas.EstadisticasFutbol;
+import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Jugador;
+import org.example.model.Resultado.ResultadoFutbol;
+import org.example.model.torneo.TorneoEquipo;
 
-import java.text.Normalizer;
 import java.util.*;
 
 public class Main6{

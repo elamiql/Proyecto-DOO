@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Jugador;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

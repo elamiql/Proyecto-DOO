@@ -3,9 +3,9 @@ package org.example.command;
 
 import org.example.enums.Formato;
 import org.example.interfaces.Disciplina;
-import org.example.model.Torneo;
-import org.example.model.TorneoIndividual;
-import org.example.model.TorneoEquipo;
+import org.example.model.torneo.Torneo;
+import org.example.model.torneo.TorneoIndividual;
+import org.example.model.torneo.TorneoEquipo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

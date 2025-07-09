@@ -2,8 +2,8 @@ package org.example.app;
 
 import org.example.enums.*;
 import org.example.enums.Formato;
-import org.example.model.Jugador;
-import org.example.model.TorneoIndividual;
+import org.example.model.Participante.Jugador;
+import org.example.model.torneo.TorneoIndividual;
 
 public class Main4 {
     public static void main(String[] args) {

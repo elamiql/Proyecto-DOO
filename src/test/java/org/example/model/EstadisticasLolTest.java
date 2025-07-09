@@ -1,5 +1,10 @@
 package org.example.model;
 
+import org.example.model.Estadisticas.EstadisticasLol;
+import org.example.model.Participante.Equipo;
+import org.example.model.Participante.Jugador;
+import org.example.model.Participante.Participante;
+import org.example.model.Resultado.ResultadoLol;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

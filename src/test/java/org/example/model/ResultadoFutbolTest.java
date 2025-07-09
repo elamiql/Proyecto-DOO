@@ -1,5 +1,8 @@
 package org.example.model;
 
+import org.example.model.Participante.Jugador;
+import org.example.model.Participante.Participante;
+import org.example.model.Resultado.ResultadoFutbol;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
