@@ -53,17 +53,25 @@ public class PanelEstadisticas extends JPanel {
 
     private void configurarLayout() {
         setLayout(new BorderLayout());
+        if (!(torneo.getFormato() == LIGA)) {
+            JPanel panelSuperior = new JPanel(new FlowLayout());
+            panelSuperior.add(new JLabel("Selecciona participante:"));
+            panelSuperior.add(comboParticipantes);
+            panelSuperior.add(botonVer);
+            add(panelSuperior, BorderLayout.NORTH);
+        }
+        else{
+            mostrarEstadisticasLiga();
+        }
 
-        JPanel panelSuperior = new JPanel(new FlowLayout());
-        panelSuperior.add(new JLabel("Selecciona participante:"));
-        panelSuperior.add(comboParticipantes);
-        panelSuperior.add(botonVer);
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame,torneo));
-        panelSuperior.add(btnVolver);
 
-        add(panelSuperior, BorderLayout.NORTH);
         add(new JScrollPane(areaEstadisticas), BorderLayout.CENTER);
+        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame, torneo));
+        panelInferior.add(btnVolver);
+        add(panelInferior, BorderLayout.SOUTH);
     }
+
 
     private void configurarEventos() {
         botonVer.addActionListener((ActionEvent e) -> {
@@ -88,12 +96,19 @@ public class PanelEstadisticas extends JPanel {
         if (generador instanceof Liga<?> liga) {
             liga.actualizarEstadisticasDesdeResultados();
 
-            // Obtener las estadísticas y ordenarlas por puntos (de mayor a menor)
+            // Obtener las estadísticas y ordenarlas por puntos y diferencia de goles
             List<Map.Entry<Participante, EstadisticasFutbol>> listaOrdenada =
                     new ArrayList<>(liga.getTablaEstadisticas().entrySet());
 
-            listaOrdenada.sort((e1, e2) ->
-                    Integer.compare(e2.getValue().getPuntos(), e1.getValue().getPuntos()));
+            listaOrdenada.sort((e1, e2) -> {
+                int cmp = Integer.compare(e2.getValue().getPuntos(), e1.getValue().getPuntos());
+                if (cmp == 0) {
+                    int dif1 = e1.getValue().getDiferenciaGoles();
+                    int dif2 = e2.getValue().getDiferenciaGoles();
+                    cmp = Integer.compare(dif2, dif1); // mayor diferencia primero
+                }
+                return cmp;
+            });
 
             // Mostrar participantes ordenados por posición
             int posicion = 1;
@@ -114,6 +129,7 @@ public class PanelEstadisticas extends JPanel {
 
         areaEstadisticas.setText(resultado.toString());
     }
+
 
 
     private void mostrarEstadisticasEliminatoria(Participante p) {
