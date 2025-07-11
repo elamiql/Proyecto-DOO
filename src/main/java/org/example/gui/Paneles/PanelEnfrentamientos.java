@@ -35,12 +35,13 @@ public class PanelEnfrentamientos extends PanelFondo {
     private final Torneo<?> torneo;
     private final JPanel panelCentral;
     private final List<Apuesta> apuestas = new java.util.ArrayList<>();
-    private static int puntosUsuario=1000;
+    private static int puntosUsuario = 1000;
 
 
     /**
      * Crea el panel de enfrentamientos para el torneo dado.
-     * @param frame la ventana principal donde se inserta el panel.
+     *
+     * @param frame  la ventana principal donde se inserta el panel.
      * @param torneo el torneo del cual se visualizarán los enfrentamientos.
      */
     public PanelEnfrentamientos(JFrame frame, Torneo<?> torneo) {
@@ -58,7 +59,6 @@ public class PanelEnfrentamientos extends PanelFondo {
         inicializarPanelAbajo();
         inicializarPanelSuperior();
     }
-
 
 
     /**
@@ -98,7 +98,8 @@ public class PanelEnfrentamientos extends PanelFondo {
 
     /**
      * Crea el panel que representa un enfrentamiento.
-     * @param e el enfrentamiento a mostrar.
+     *
+     * @param e   el enfrentamiento a mostrar.
      * @param num el número del enfrentamiento.
      * @return un {@link JPanel} con los datos del enfrentamiento y un botón de acción.
      */
@@ -147,12 +148,13 @@ public class PanelEnfrentamientos extends PanelFondo {
 
     /**
      * Permite seleccionar al ganador de un enfrentamiento con autenticación mediante contraseña.
+     *
      * @param e el enfrentamiento sobre el cual se va a registrar el ganador.
      */
     private void seleccionarGanador(Enfrentamiento e) {
         String[] opciones = {
                 e.getParticipante1().getNombre(),
-                e.getParticipante2().getNombre(),"empate"
+                e.getParticipante2().getNombre(), "empate"
         };
 
         String seleccionado = (String) JOptionPane.showInputDialog(
@@ -166,7 +168,7 @@ public class PanelEnfrentamientos extends PanelFondo {
         );
 
         if (seleccionado != null) {
-            Participante ganador=null;
+            Participante ganador = null;
             if (e.getParticipante1().getNombre().equals(seleccionado)) {
                 ganador = e.getParticipante1();
             } else if (e.getParticipante2().getNombre().equals(seleccionado)) {
@@ -179,7 +181,9 @@ public class PanelEnfrentamientos extends PanelFondo {
                     return;
                 }
             }
-            registrarEstadisticas(e,ganador);
+            boolean exito = registrarEstadisticas(e, ganador);
+            if (!exito) return;
+
             JPasswordField passwordField = new JPasswordField();
             int confirmacion = JOptionPane.showConfirmDialog(
                     frame,
@@ -203,7 +207,8 @@ public class PanelEnfrentamientos extends PanelFondo {
 
     /**
      * Registra al ganador en el enfrentamiento y actualiza enfrentamientos futuros si corresponde.
-     * @param e el enfrentamiento a actualizar.
+     *
+     * @param e            el enfrentamiento a actualizar.
      * @param seleccionado el nombre del participante ganador.
      */
     private void registrarGanador(Enfrentamiento e, String seleccionado) {
@@ -241,14 +246,15 @@ public class PanelEnfrentamientos extends PanelFondo {
     }
 
 
-    private void registrarEstadisticas(Enfrentamiento e,Participante p) {
+    private boolean registrarEstadisticas(Enfrentamiento e, Participante p) {
         if (torneo.getFormato() == LIGA) {
-            registrarEstadisticas2(e,p);
+            return registrarEstadisticas2(e, p);
         } else {
-            registrarEstadisticas1(e,p);
+            return registrarEstadisticas1(e, p);
         }
     }
-    private void registrarEstadisticas1(Enfrentamiento e, Participante ganador) {
+
+    private boolean registrarEstadisticas1(Enfrentamiento e, Participante ganador) {
         try {
             String disciplina = torneo.getDisciplina().getNombre();
 
@@ -271,6 +277,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                     new EstadisticasAjedrez(p1).registrarResultado(resultadoAjedrez, p1, true);
                     new EstadisticasAjedrez(p2).registrarResultado(resultadoAjedrez, p2, false);
+                    return true;
                 }
 
                 case "TENIS" -> {
@@ -287,7 +294,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                         if (inputJ1 == null || inputJ2 == null) {
                             JOptionPane.showMessageDialog(frame, "Ingreso cancelado.");
-                            return;
+                            return false;
                         }
 
                         int juegosJ1 = Integer.parseInt(inputJ1);
@@ -306,17 +313,15 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                     if (!resultadoTenis.esValido()) {
                         JOptionPane.showMessageDialog(frame, "Resultado inválido: nadie ganó la mayoría de sets.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
+                        return false;
                     }
 
                     e.setResultado(resultadoTenis);
 
                     new EstadisticasTenis(p1).registrarResultado(resultadoTenis, p1, true);
                     new EstadisticasTenis(p2).registrarResultado(resultadoTenis, p2, false);
+                    return true;
 
-                    if (ganador != null) {
-                        JOptionPane.showMessageDialog(frame, "Ganador: " + ganador.getNombre());
-                    }
                 }
 
 
@@ -328,21 +333,21 @@ public class PanelEnfrentamientos extends PanelFondo {
                     int setsJ2 = 0;
                     int i = 0;
 
-                    while (i < maxSets && setsJ1 < (maxSets/2+1)&& setsJ2 < (maxSets/2+1)) {
+                    while (i < maxSets && setsJ1 < (maxSets / 2 + 1) && setsJ2 < (maxSets / 2 + 1)) {
                         String inputJ1 = JOptionPane.showInputDialog(frame, "Puntos de " + p1.getNombre() + " en set " + (i + 1));
                         String inputJ2 = JOptionPane.showInputDialog(frame, "Puntos de " + p2.getNombre() + " en set " + (i + 1));
 
                         if (inputJ1 == null || inputJ2 == null) {
                             JOptionPane.showMessageDialog(frame, "Ingreso cancelado.");
-                            return;
+                            return false;
                         }
 
                         int puntosJ1 = Integer.parseInt(inputJ1);
                         int puntosJ2 = Integer.parseInt(inputJ2);
                         boolean p = resultadoT.esSetValido(puntosJ1, puntosJ2);
-                        if(!p){
+                        if (!p) {
                             JOptionPane.showMessageDialog(frame, "Set invalido.", "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
+                            return false;
                         }
                         resultadoT.agregarSet(i, puntosJ1, puntosJ2);
 
@@ -357,16 +362,14 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                     if (!resultadoT.esValido()) {
                         JOptionPane.showMessageDialog(frame, "Resultado inválido.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
+                        return false;
                     }
 
                     e.setResultado(resultadoT);
 
                     new EstadisticaTenisDeMesa(p1).registrarResultado(resultadoT, p1, true);
                     new EstadisticaTenisDeMesa(p2).registrarResultado(resultadoT, p2, false);
-                    if (ganador != null) {
-                        JOptionPane.showMessageDialog(frame, "Ganador: " + ganador.getNombre());
-                    }
+                    return true;
                 }
 
                 case "LOL" -> {
@@ -396,22 +399,24 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                     if (!resultadoFutbol.esValido()) {
                         JOptionPane.showMessageDialog(frame, "Los goles deben ser números no negativos.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
+                        return false;
                     }
 
                     e.setResultado(resultadoFutbol);
 
                     new EstadisticasFutbol(p1).registrarResultado(resultadoFutbol, p1, true);
                     new EstadisticasFutbol(p2).registrarResultado(resultadoFutbol, p2, false);
+                    return true;
                 }
             }
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Error al ingresar estadísticas. Verifica los datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        return true;
     }
 
-    private void registrarEstadisticas2(Enfrentamiento e, Participante p) {
+    private boolean registrarEstadisticas2(Enfrentamiento e, Participante p) {
         try {
             Participante p1 = e.getParticipante1();
             Participante p2 = e.getParticipante2();
@@ -421,7 +426,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
             if (input1 == null || input2 == null) {
                 JOptionPane.showMessageDialog(frame, "Ingreso cancelado.");
-                return;
+                return false;
             }
 
             int puntos1 = Integer.parseInt(input1);
@@ -429,12 +434,14 @@ public class PanelEnfrentamientos extends PanelFondo {
 
             ResultadoFutbol resultado = new ResultadoFutbol(p1, p2, puntos1, puntos2);
             e.registrarResultado(resultado);
+            return true;
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(frame, "Entrada inválida. Asegúrate de ingresar números enteros.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Error inesperado al registrar estadísticas.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        return true;
     }
 
 
