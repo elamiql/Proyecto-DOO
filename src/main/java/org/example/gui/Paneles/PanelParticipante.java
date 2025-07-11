@@ -64,15 +64,24 @@ public class PanelParticipante extends PanelFondo {
         filtroDisciplinaCombo.addActionListener(e -> cargarTorneos());
         filtroFormatoCombo.addActionListener(e -> cargarTorneos());
 
-        panelSuperior.add(new JLabel("Estado:"));
+        JLabel lblEstado = new JLabel("Estado:");
+        JLabel lblDisciplina = new JLabel("Disciplina:");
+        JLabel lblFormato = new JLabel("Formato:");
+
+        lblEstado.setForeground(Color.WHITE);
+        lblDisciplina.setForeground(Color.WHITE);
+        lblFormato.setForeground(Color.WHITE);
+
+        panelSuperior.add(lblEstado);
         panelSuperior.add(filtroEstadoCombo);
-        panelSuperior.add(new JLabel("Disciplina:"));
+        panelSuperior.add(lblDisciplina);
         panelSuperior.add(filtroDisciplinaCombo);
-        panelSuperior.add(new JLabel("Formato:"));
+        panelSuperior.add(lblFormato);
         panelSuperior.add(filtroFormatoCombo);
 
         add(panelSuperior, BorderLayout.NORTH);
     }
+
 
     /**
      * Inicializa el panel central donde se mostrarán los torneos filtrados.
@@ -85,7 +94,8 @@ public class PanelParticipante extends PanelFondo {
         scrollPane = new JScrollPane(panelLista);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
-
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setBorder(null);
         add(scrollPane, BorderLayout.CENTER);
     }
 
@@ -139,6 +149,7 @@ public class PanelParticipante extends PanelFondo {
             panelTorneo.setOpaque(false);
 
             JLabel etiqueta = new JLabel(torneo.toString());
+            etiqueta.setForeground(Color.WHITE);
             JButton btnVer = BotonBuilder.crearBoton("Ver", new Color(0, 153, 204),
                     () -> new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute());
 

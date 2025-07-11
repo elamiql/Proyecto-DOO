@@ -43,7 +43,7 @@ public class PanelOrganizador extends PanelFondo {
      * @param frame el {@link JFrame} principal donde se mostrará el panel.
      */
     public PanelOrganizador(JFrame frame) {
-        super(Imagen.cargarImagen("/Fondos/Fondo1.jpg"));
+        super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
         this.frame = frame;
 
         setLayout(new BorderLayout(10, 10));
@@ -88,6 +88,8 @@ public class PanelOrganizador extends PanelFondo {
         radioEquipos = new JRadioButton("Por equipos");
         radioIndividual.setOpaque(false);
         radioEquipos.setOpaque(false);
+        radioIndividual.setForeground(Color.WHITE);
+        radioEquipos.setForeground(Color.WHITE);
 
         ButtonGroup grupo = new ButtonGroup();
         grupo.add(radioIndividual);

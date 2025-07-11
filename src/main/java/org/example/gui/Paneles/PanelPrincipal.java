@@ -27,7 +27,7 @@ public class PanelPrincipal extends PanelFondo {
      * @param frame La ventana principal de la aplicación.
      */
     public PanelPrincipal(JFrame frame) {
-        super(Imagen.cargarImagen("/Fondos/Fondo.jpg"));
+        super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

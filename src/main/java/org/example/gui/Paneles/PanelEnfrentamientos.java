@@ -3,6 +3,7 @@ package org.example.gui.Paneles;
 
 import org.example.command.CambiarPanelCommand;
 import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Imagen;
 import org.example.model.Apuesta;
 import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Estadisticas.*;
@@ -14,6 +15,7 @@ import org.example.model.Resultado.*;
 import org.example.model.torneo.Torneo;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.List;
 
@@ -26,7 +28,7 @@ import static org.example.enums.Formato.LIGA;
  * <p>Este panel es capaz de listar todos los enfrentamientos generados en un {@link Torneo}
  * y registrar resultados mediante una interfaz gráfica protegida por contraseña.</p>
  */
-public class PanelEnfrentamientos extends JPanel {
+public class PanelEnfrentamientos extends PanelFondo {
 
     private JLabel labelPuntos;
     private final JFrame frame;
@@ -42,6 +44,7 @@ public class PanelEnfrentamientos extends JPanel {
      * @param torneo el torneo del cual se visualizarán los enfrentamientos.
      */
     public PanelEnfrentamientos(JFrame frame, Torneo<?> torneo) {
+        super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
         this.frame = frame;
         this.torneo = torneo;
         setLayout(new BorderLayout(10, 10));
@@ -50,29 +53,27 @@ public class PanelEnfrentamientos extends JPanel {
         panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
         panelCentral.setOpaque(false);
 
-        inicializarTitulo();
+
         inicializarPanelCentral();
         inicializarPanelAbajo();
         inicializarPanelSuperior();
     }
 
-    /**
-     * Inicializa el título del panel.
-     */
-    private void inicializarTitulo() {
-        JLabel titulo = new JLabel("Enfrentamientos del Torneo", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 20));
-        add(titulo, BorderLayout.NORTH);
-    }
+
 
     /**
      * Inicializa el panel central donde se mostrarán los enfrentamientos.
      */
     private void inicializarPanelCentral() {
         cargarEnfrentamientos();
+
         JScrollPane scroll = new JScrollPane(panelCentral);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.setBorder(null);
         add(scroll, BorderLayout.CENTER);
     }
+
 
     /**
      * Carga los enfrentamientos desde el torneo y los agrega al panel central.
@@ -111,6 +112,7 @@ public class PanelEnfrentamientos extends JPanel {
                 e.getParticipante2().getNombre();
 
         JLabel lbl = new JLabel(baseTexto);
+        lbl.setForeground(Color.WHITE);
         lbl.setFont(new Font("Arial", Font.PLAIN, 16));
         panelEnfrentamiento.add(lbl, BorderLayout.CENTER);
 
@@ -517,14 +519,31 @@ public class PanelEnfrentamientos extends JPanel {
      * del componente (BorderLayout.PAGE_START).
      */
     private void inicializarPanelSuperior() {
-        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel panelSuperior = new JPanel();
+        panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
         panelSuperior.setOpaque(false);
 
-        labelPuntos = new JLabel("Puntos: " + puntosUsuario);
-        panelSuperior.add(labelPuntos);
 
-        add(panelSuperior, BorderLayout.PAGE_START);
+        JLabel titulo = new JLabel("Enfrentamientos del Torneo", SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial", Font.BOLD, 26));
+        titulo.setForeground(new Color(0x2E86C1));
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        panelSuperior.add(titulo);
+
+        JPanel barraPuntos = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        barraPuntos.setOpaque(false);
+
+        labelPuntos = new JLabel("Puntos: " + puntosUsuario);
+        labelPuntos.setForeground(Color.WHITE);
+        barraPuntos.add(labelPuntos);
+
+        panelSuperior.add(barraPuntos);
+
+        add(panelSuperior, BorderLayout.NORTH);
     }
+
 
     /**
      * Permite al usuario realizar una apuesta en un enfrentamiento específico.

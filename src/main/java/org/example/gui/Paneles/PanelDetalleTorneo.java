@@ -3,6 +3,7 @@ package org.example.gui.Paneles;
 import org.example.command.CambiarPanelCommand;
 import org.example.gui.Otros.BotonBuilder;
 import org.example.exceptions.DatosInvalidosException;
+import org.example.gui.Otros.Imagen;
 import org.example.model.Participante.Equipo;
 import org.example.model.Participante.Jugador;
 import org.example.model.torneo.Torneo;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * y realizar acciones como ver enfrentamientos o inscribirse.
  * <p>Este panel se adapta dinámicamente según el estado del torneo y su tipo (individual o por equipos).</p>
  */
-public class PanelDetalleTorneo extends JPanel {
+public class PanelDetalleTorneo extends PanelFondo{
 
     private final JFrame frame;
     private final Torneo<?> torneo;
@@ -29,59 +30,83 @@ public class PanelDetalleTorneo extends JPanel {
      * @param torneo el torneo cujos detalles serán mostrados.
      */
     public PanelDetalleTorneo(JFrame frame, Torneo<?> torneo) {
+        super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
         this.frame = frame;
         this.torneo = torneo;
 
         setLayout(new BorderLayout(10, 10));
         setBackground(new Color(245, 245, 245));
 
-        add(crearTitulo(), BorderLayout.NORTH);
-        add(crearAreaInformacion(), BorderLayout.CENTER);
+
+        add(crearAreaInformacion(), BorderLayout.NORTH);
         add(crearPanelBotones(), BorderLayout.SOUTH);
     }
 
-    /**
-     * Crea y devuelve el componente del título del panel.
-     * @return un {@link JLabel} con el título del panel.
-     */
-    private JLabel crearTitulo() {
-        JLabel titulo = new JLabel("Detalle del Torneo", SwingConstants.CENTER);
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        titulo.setForeground(new Color(40, 40, 40));
-        return titulo;
-    }
+
 
     /**
      * Crea y devuelve un área de desplazamiento con la información general del torneo.
      * @return un {@link JScrollPane} con los detalles del torneo.
      */
-    private JScrollPane crearAreaInformacion() {
-        JTextArea area = new JTextArea();
-        area.setEditable(false);
-        area.setFont(new Font("Monospaced", Font.PLAIN, 15));
-        area.setBackground(Color.WHITE);
-        area.setMargin(new Insets(10, 10, 10, 10));
+    private JPanel crearAreaInformacion() {
+        JPanel panelInfo = new JPanel();
+        panelInfo.setOpaque(false);
+        panelInfo.setLayout(new BorderLayout(10, 10));
+        panelInfo.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        String info = String.format("""
-            Nombre: %s
-            Disciplina: %s
-            Formato: %s
-            Fecha: %s
-            Participantes: %d
-            Estado: %s
-            """,
-                torneo.getNombre(),
-                torneo.getDisciplina().getNombre(),
-                torneo.getFormato(),
-                torneo.getFecha().format(formatter),
-                torneo.getParticipantes().size(),
-                torneo.isActivo() ? "Cerrado (Torneo en curso)" : "Activo (Inscripciones abiertas)"
-        );
 
-        area.setText(info);
-        return new JScrollPane(area);
+        JLabel nombreTorneo = new JLabel(torneo.getNombre().toUpperCase(), SwingConstants.CENTER);
+        nombreTorneo.setFont(new Font("Serif", Font.BOLD, 32));
+        nombreTorneo.setForeground(new Color(0x2E86C1));
+        nombreTorneo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0xAED6F1)));
+
+
+        JLabel formatoDisciplina = new JLabel(
+                torneo.getFormato() + " de " + torneo.getDisciplina().getNombre(),
+                SwingConstants.CENTER
+        );
+        formatoDisciplina.setFont(new Font("SansSerif", Font.ITALIC, 20));
+        formatoDisciplina.setForeground(Color.LIGHT_GRAY); // Gris claro para contraste
+        formatoDisciplina.setBorder(BorderFactory.createEmptyBorder(5, 0, 20, 0));
+
+        JPanel detalles = new JPanel(new GridLayout(0, 2, 15, 15));
+        detalles.setOpaque(false);
+
+        detalles.add(crearEtiquetaDestacada("Fecha:"));
+        detalles.add(crearEtiqueta(torneo.getFecha().format(formatter)));
+
+        detalles.add(crearEtiquetaDestacada("Participantes:"));
+        detalles.add(crearEtiqueta(String.valueOf(torneo.getParticipantes().size())));
+
+        detalles.add(crearEtiquetaDestacada("Estado:"));
+        detalles.add(crearEtiqueta(
+                torneo.isActivo() ? "Cerrado (Torneo en curso)" : "Activo (Inscripciones abiertas)"
+        ));
+
+        JPanel centro = new JPanel(new BorderLayout());
+        centro.setOpaque(false);
+        centro.add(formatoDisciplina, BorderLayout.NORTH);
+        centro.add(detalles, BorderLayout.CENTER);
+
+        panelInfo.add(nombreTorneo, BorderLayout.NORTH);
+        panelInfo.add(centro, BorderLayout.CENTER);
+
+        return panelInfo;
     }
+    private JLabel crearEtiqueta(String texto) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+        etiqueta.setForeground(Color.WHITE);
+        return etiqueta;
+    }
+    private JLabel crearEtiquetaDestacada(String texto) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        etiqueta.setForeground(Color.WHITE);
+        return etiqueta;
+    }
+
 
     /**
      * Crea el panel de botones que permite volver o realizar una acción según el estado del torneo.
@@ -89,7 +114,7 @@ public class PanelDetalleTorneo extends JPanel {
      */
     private JPanel crearPanelBotones() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        panel.setBackground(Color.WHITE);
+        panel.setOpaque(false);
         JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelParticipante(frame));
 
         if (torneo.isActivo()) {

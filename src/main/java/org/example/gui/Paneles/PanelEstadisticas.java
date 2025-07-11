@@ -1,6 +1,7 @@
 package org.example.gui.Paneles;
 
 import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Imagen;
 import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Enfrentamientos.GenerarCalendario;
 import org.example.model.Estadisticas.*;
@@ -18,7 +19,7 @@ import java.util.List;
 
 import static org.example.enums.Formato.LIGA;
 
-public class PanelEstadisticas extends JPanel {
+public class PanelEstadisticas extends PanelFondo {
 
     private final JFrame frame;
     private final Torneo torneo;
@@ -28,6 +29,7 @@ public class PanelEstadisticas extends JPanel {
     private JButton botonVer;
 
     public PanelEstadisticas(JFrame frame, Torneo torneo) {
+        super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
         this.frame = frame;
         this.torneo = torneo;
 
@@ -53,22 +55,43 @@ public class PanelEstadisticas extends JPanel {
 
     private void configurarLayout() {
         setLayout(new BorderLayout());
+
+
         if (!(torneo.getFormato() == LIGA)) {
             JPanel panelSuperior = new JPanel(new FlowLayout());
-            panelSuperior.add(new JLabel("Selecciona participante:"));
+            panelSuperior.setOpaque(false);
+
+            JLabel lblSeleccion = new JLabel("Selecciona participante:");
+            lblSeleccion.setForeground(Color.WHITE);
+            panelSuperior.add(lblSeleccion);
             panelSuperior.add(comboParticipantes);
             panelSuperior.add(botonVer);
+
             add(panelSuperior, BorderLayout.NORTH);
-        }
-        else{
+        } else {
             mostrarEstadisticasLiga();
         }
 
 
-        add(new JScrollPane(areaEstadisticas), BorderLayout.CENTER);
+        areaEstadisticas.setOpaque(false);
+        areaEstadisticas.setForeground(Color.WHITE);
+
+        areaEstadisticas.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // padding
+
+        JScrollPane scroll = new JScrollPane(areaEstadisticas);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+
+        add(scroll, BorderLayout.CENTER);
+
+
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelInferior.setOpaque(false);
+
         JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame, torneo));
         panelInferior.add(btnVolver);
+
         add(panelInferior, BorderLayout.SOUTH);
     }
 
