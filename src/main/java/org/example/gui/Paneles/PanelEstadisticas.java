@@ -6,7 +6,7 @@ import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Enfrentamientos.GenerarCalendario;
 import org.example.model.Estadisticas.*;
 import org.example.model.Formatos.Liga;
-import org.example.model.Participante.Participante;
+import org.example.model.Participante.*;
 import org.example.model.Resultado.*;
 import org.example.model.torneo.Torneo;
 
@@ -116,24 +116,24 @@ public class PanelEstadisticas extends PanelFondo {
         StringBuilder resultado = new StringBuilder();
         GenerarCalendario<?> generador = torneo.getGeneradorActivo();
 
-        if (generador instanceof Liga<?> liga) {
+        if (generador instanceof Liga<?, ?, ?> liga) {
             liga.actualizarEstadisticasDesdeResultados();
 
-            // Obtener las estadísticas y ordenarlas por puntos y diferencia de goles
-            List<Map.Entry<Participante, EstadisticasFutbol>> listaOrdenada =
-                    new ArrayList<>(liga.getTablaEstadisticas().entrySet());
+            List<Map.Entry<Participante, EstadisticasFutbol>> listaOrdenada = new ArrayList<>();
+            for (Map.Entry<?, ?> entry : liga.getTablaEstadisticas().entrySet()) {
+                listaOrdenada.add((Map.Entry<Participante, EstadisticasFutbol>) entry);
+            }
 
             listaOrdenada.sort((e1, e2) -> {
                 int cmp = Integer.compare(e2.getValue().getPuntos(), e1.getValue().getPuntos());
                 if (cmp == 0) {
                     int dif1 = e1.getValue().getDiferenciaGoles();
                     int dif2 = e2.getValue().getDiferenciaGoles();
-                    cmp = Integer.compare(dif2, dif1); // mayor diferencia primero
+                    cmp = Integer.compare(dif2, dif1);
                 }
                 return cmp;
             });
 
-            // Mostrar participantes ordenados por posición
             int posicion = 1;
             for (Map.Entry<Participante, EstadisticasFutbol> entry : listaOrdenada) {
                 Participante participante = entry.getKey();
@@ -145,7 +145,6 @@ public class PanelEstadisticas extends PanelFondo {
 
                 posicion++;
             }
-
         } else {
             resultado.append("No se pudo recuperar la liga activa.");
         }
@@ -161,11 +160,11 @@ public class PanelEstadisticas extends PanelFondo {
 
         switch (disciplina) {
             case "FUTBOL", "FIFA" -> {
-                EstadisticasFutbol estadisticas = new EstadisticasFutbol(p);
+                EstadisticasFutbol estadisticas = new EstadisticasFutbol((Equipo) p);
                 for (Object obj : torneo.getEnfrentamientos()) {
                     Enfrentamiento enf = (Enfrentamiento) obj;
                     if (enf.getResultado() instanceof ResultadoFutbol) {
-                        estadisticas.registrarResultado((ResultadoFutbol) enf.getResultado(), p, enf.getParticipante1().equals(p));
+                        estadisticas.registrarResultado((ResultadoFutbol) enf.getResultado(), (Equipo) p, enf.getParticipante1().equals(p));
                     }
                 }
                 resultado.append(estadisticas.toTablaString());
@@ -183,11 +182,11 @@ public class PanelEstadisticas extends PanelFondo {
             }
 
             case "TENIS" -> {
-                EstadisticasTenis estadisticas = new EstadisticasTenis(p);
+                EstadisticasTenis estadisticas = new EstadisticasTenis((Jugador) p);
                 for (Object obj : torneo.getEnfrentamientos()) {
                     Enfrentamiento enf = (Enfrentamiento) obj;
                     if (enf.getResultado() instanceof ResultadoTenis) {
-                        estadisticas.registrarResultado((ResultadoTenis) enf.getResultado(), p, enf.getParticipante1().equals(p));
+                        estadisticas.registrarResultado((ResultadoTenis) enf.getResultado(), (Jugador) p, enf.getParticipante1().equals(p));
                     }
                 }
                 resultado.append(estadisticas.getEstadisticasCompletas());

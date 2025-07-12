@@ -1,6 +1,7 @@
 package org.example.model.Estadisticas;
 
 import org.example.interfaces.*;
+import org.example.model.Participante.Participante;
 
 /**
  * Clase abstracta que representa las estadísticas de un participante en una competencia.
@@ -8,7 +9,7 @@ import org.example.interfaces.*;
  * @param <T> Tipo del participante (por ejemplo, un jugador o equipo).
  * @param <R> Tipo de resultado que se utiliza para registrar las estadísticas.
  */
-public abstract class EstadisticasParticipante<T, R extends Resultado> implements Estadisticas<T, R>{
+public abstract class EstadisticasParticipante<T extends Participante, R extends Resultado> implements Estadisticas<T, R>{
 
     /** Participante al que pertenecen estas estadísticas */
     private T participante;
@@ -103,6 +104,7 @@ public abstract class EstadisticasParticipante<T, R extends Resultado> implement
      */
     public abstract String toTablaString();
 
+    public abstract EstadisticasParticipante<T, R> crear(T participante);
     // Getters y setters
 
     /**

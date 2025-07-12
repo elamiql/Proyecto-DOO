@@ -26,6 +26,10 @@ public class EstadisticasFifa extends EstadisticasParticipante<Participante, Res
         super(participante);
     }
 
+    public EstadisticasFifa(){
+        super(null);
+    }
+
     /**
      * Registra el resultado de un partido para este participante.
      * Suma goles a favor y en contra, y actualiza resultados (victoria, empate o derrota).
@@ -107,5 +111,10 @@ public class EstadisticasFifa extends EstadisticasParticipante<Participante, Res
                 golesContra,
                 getDiferenciaGoles(),
                 getPuntos());
+    }
+
+    @Override
+    public EstadisticasParticipante<Participante, ResultadoFifa> crear(Participante participante) {
+        return new EstadisticasFifa(participante);
     }
 }

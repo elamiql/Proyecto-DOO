@@ -20,6 +20,10 @@ public class EstadisticaTenisDeMesa extends EstadisticasParticipante<Participant
         super(participante);
     }
 
+    public EstadisticaTenisDeMesa(){
+        super(null);
+    }
+
     /**
      * Registra el resultado de un enfrentamiento para el participante.
      * <p>
@@ -65,5 +69,10 @@ public class EstadisticaTenisDeMesa extends EstadisticasParticipante<Participant
                 ", G: " + getGanados() +
                 ", P: " + getPerdidos() +
                 ", Ptos: " + getPuntos();
+    }
+
+    @Override
+    public EstadisticasParticipante<Participante, ResultadoTenisDeMesa> crear(Participante participante) {
+        return new EstadisticaTenisDeMesa(participante);
     }
 }

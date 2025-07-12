@@ -33,16 +33,18 @@ public class Main3 {
             }
         }
 
-        // Generador de mundial (fase grupos + eliminación)
-        GruposEliminatoria<Equipo> generador = new GruposEliminatoria<>(mundialEquipos, 8, 2);
+        // Generador de mundial (fase grupos + eliminación) - Corregido con tipos genéricos
+        EstadisticasFutbol estadisticasFutbol= new EstadisticasFutbol();
+        GruposEliminatoria<Equipo, ResultadoFutbol, EstadisticasFutbol> generador =
+                new GruposEliminatoria<>(mundialEquipos, 8, 2, estadisticasFutbol);
 
         generador.generarCalendario();
 
         Random rnd = new Random();
 
-        // Simular resultados aleatorios en fase de grupos
-        List<Liga<Equipo>> ligasGrupos = generador.getGeneradoresGrupos();
-        for (Liga<Equipo> liga : ligasGrupos) {
+        // Simular resultados aleatorios en fase de grupos - Corregido con tipos genéricos
+        List<Liga<Equipo, ResultadoFutbol, EstadisticasFutbol>> ligasGrupos = generador.getGeneradoresGrupos();
+        for (Liga<Equipo, ResultadoFutbol, EstadisticasFutbol> liga : ligasGrupos) {
             for (Enfrentamiento e : liga.getEnfrentamientos()) {
                 int golesLocal = rnd.nextInt(6);
                 int golesVisitante = rnd.nextInt(6);
@@ -61,7 +63,7 @@ public class Main3 {
         System.out.println("\n=== FASE DE GRUPOS ===");
         char grupoLetra = 'A';
         for (int i = 0; i < ligasGrupos.size(); i++) {
-            Liga<Equipo> liga = ligasGrupos.get(i);
+            Liga<Equipo, ResultadoFutbol, EstadisticasFutbol> liga = ligasGrupos.get(i);
             System.out.println("\nGRUPO " + grupoLetra++ + ":");
             System.out.println("Equipo               | PJ |  G |  E |  P | GF  | GC  | DIF | Pts");
             System.out.println("------------------------------------------------------------------");

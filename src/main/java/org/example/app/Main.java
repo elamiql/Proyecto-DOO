@@ -1,21 +1,16 @@
 package org.example.app;
 
-import org.example.model.Enfrentamientos.Enfrentamiento;
-import org.example.model.Estadisticas.EstadisticasFutbol;
-import org.example.model.Formatos.Liga;
-import org.example.model.Participante.Equipo;
-import org.example.model.Participante.Participante;
-import org.example.model.Resultado.ResultadoFutbol;
+import org.example.model.Enfrentamientos.*;
+import org.example.model.Estadisticas.*;
+import org.example.model.Formatos.*;
+import org.example.model.Participante.*;
+import org.example.model.Resultado.*;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Random;
-import java.util.Comparator;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
 
-        // Crear lista con todos los equipos de la liga chilena
         ArrayList<Equipo> equiposLiga = new ArrayList<>() {{
             add(new Equipo("Colo Colo", "001", new ArrayList<>()));
             add(new Equipo("Universidad de Chile", "002", new ArrayList<>()));
@@ -35,42 +30,42 @@ public class Main {
             add(new Equipo("Copiapo", "007", new ArrayList<>()));
         }};
 
-        // Convertir lista de equipos a lista de participantes (T extends Participante)
-        ArrayList<Participante> participantes = new ArrayList<>(equiposLiga);
+        ArrayList<Equipo> participantes = new ArrayList<>(equiposLiga);
 
-        // Crear instancia de Liga (doble vuelta)
-        Liga<Participante> liga = new Liga<>(participantes, true);
+        // Map con Equipo como clave
+        Map<Equipo, EstadisticasFutbol> tablaEstadisticas = new HashMap<>();
+        for (Equipo equipo : participantes) {
+            tablaEstadisticas.put(equipo, new EstadisticasFutbol(equipo));
+        }
 
-        // Generar calendario
+        // Liga con Equipo como T
+        EstadisticasFutbol p = new EstadisticasFutbol();
+        Liga<Equipo, ResultadoFutbol, EstadisticasFutbol> liga = new Liga<>(participantes, true, p);
+
         liga.generarCalendario();
 
-        // Simular resultados aleatorios para cada enfrentamiento
         Random rnd = new Random();
-
         for (Enfrentamiento partido : liga.getEnfrentamientos()) {
-            // Simular goles local y visitante entre 0 y 5
             int golesLocal = rnd.nextInt(6);
             int golesVisitante = rnd.nextInt(6);
 
-            // Crear resultado de futbol
-            ResultadoFutbol resultado = new ResultadoFutbol(partido.getParticipante1(), partido.getParticipante2(), golesLocal, golesVisitante);
+            ResultadoFutbol resultado = new ResultadoFutbol(
+                    partido.getParticipante1(),
+                    partido.getParticipante2(),
+                    golesLocal, golesVisitante
+            );
 
-            // Registrar resultado en enfrentamiento
             partido.registrarResultado(resultado);
 
-            // Actualizar estadísticas para ambos equipos
-            // Recordar: participante1 es local, participante2 es visitante
             EstadisticasFutbol estadLocal = liga.getTablaEstadisticas().get(partido.getParticipante1());
             EstadisticasFutbol estadVisitante = liga.getTablaEstadisticas().get(partido.getParticipante2());
 
-            estadLocal.registrarResultado(resultado, partido.getParticipante1(), true);
-            estadVisitante.registrarResultado(resultado, partido.getParticipante2(), false);
+            estadLocal.registrarResultado(resultado, (Equipo) partido.getParticipante1(), true);
+            estadVisitante.registrarResultado(resultado, (Equipo) partido.getParticipante2(), false);
         }
 
-        // Imprimir calendario completo
         liga.imprimirCalendario();
 
-        // Imprimir tabla de posiciones ordenada
         System.out.println("\nTabla de Posiciones:");
         System.out.println("Equipo               | PJ |  G |  E |  P | GF  | GC  | DIF | Pts");
         System.out.println("---------------------------------------------------------------");
@@ -81,7 +76,6 @@ public class Main {
                         .thenComparingInt(EstadisticasFutbol::getGolesFavor).reversed())
                 .forEach(est -> System.out.println(est.toTablaString()));
 
-        // Permitir filtrar calendario por equipo
         Scanner sc = new Scanner(System.in);
         System.out.print("\nIngrese el nombre del equipo para ver sus partidos: ");
         String nombreEquipo = sc.nextLine();

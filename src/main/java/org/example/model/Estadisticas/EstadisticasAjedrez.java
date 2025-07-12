@@ -25,6 +25,10 @@ public class EstadisticasAjedrez extends EstadisticasParticipante<Participante, 
         super(participante);
     }
 
+    public EstadisticasAjedrez(){
+        super(null);
+    }
+
     /**
      * Registra el resultado de un enfrentamiento para el participante.
      * Según el resultado (victoria, empate o derrota), incrementa los contadores correspondientes.
@@ -70,5 +74,10 @@ public class EstadisticasAjedrez extends EstadisticasParticipante<Participante, 
                 getEmpatados(),
                 getPerdidos(),
                 getGanados() * 1.0 + getEmpatados() * 0.5);
+    }
+
+    @Override
+    public EstadisticasParticipante<Participante, ResultadoAjedrez> crear(Participante participante) {
+        return new EstadisticasAjedrez(participante);
     }
 }

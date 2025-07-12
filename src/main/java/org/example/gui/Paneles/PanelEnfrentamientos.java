@@ -318,8 +318,8 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                     e.setResultado(resultadoTenis);
 
-                    new EstadisticasTenis(p1).registrarResultado(resultadoTenis, p1, true);
-                    new EstadisticasTenis(p2).registrarResultado(resultadoTenis, p2, false);
+                    new EstadisticasTenis((Jugador) p1).registrarResultado(resultadoTenis, (Jugador) p1, true);
+                    new EstadisticasTenis((Jugador) p2).registrarResultado(resultadoTenis, (Jugador) p2, false);
                     return true;
 
                 }
@@ -404,8 +404,8 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                     e.setResultado(resultadoFutbol);
 
-                    new EstadisticasFutbol(p1).registrarResultado(resultadoFutbol, p1, true);
-                    new EstadisticasFutbol(p2).registrarResultado(resultadoFutbol, p2, false);
+                    new EstadisticasFutbol((Equipo) p1).registrarResultado(resultadoFutbol, (Equipo) p1, true);
+                    new EstadisticasFutbol((Equipo) p2).registrarResultado(resultadoFutbol, (Equipo) p2, false);
                     return true;
                 }
             }

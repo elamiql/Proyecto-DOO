@@ -1,14 +1,15 @@
 package org.example.model.Estadisticas;
 
-import org.example.model.Participante.Participante;
-import org.example.model.Resultado.ResultadoTenis;
+import org.example.model.Participante.*;
+import org.example.model.Resultado.*;
 
 /**
  * Clase que representa las estadísticas detalladas de un participante en un torneo de tenis.
  * Incluye conteo de sets y juegos ganados/perdidos, rachas de victorias/derrotas, eficiencia en tiebreaks
  * y métodos para obtener datos en distintos formatos de presentación.
+ * por defecto se usara el Tenis Singles, para simplificacion
  */
-public class EstadisticasTenis extends EstadisticasParticipante<Participante, ResultadoTenis> {
+public class EstadisticasTenis extends EstadisticasParticipante<Jugador, ResultadoTenis> {
 
     private int setsGanados;
     private int setsPerdidos;
@@ -29,7 +30,7 @@ public class EstadisticasTenis extends EstadisticasParticipante<Participante, Re
      *
      * @param participante Participante al que se le asociarán estas estadísticas.
      */
-    public EstadisticasTenis(Participante participante) {
+    public EstadisticasTenis(Jugador participante) {
         super(participante);
         this.setsGanados = 0;
         this.setsPerdidos = 0;
@@ -46,6 +47,9 @@ public class EstadisticasTenis extends EstadisticasParticipante<Participante, Re
         this.ultimaFueVictoria = false;
     }
 
+    public EstadisticasTenis(){
+        super(null);
+    }
     /**
      * Registra el resultado de un partido y actualiza todas las estadísticas correspondientes.
      *
@@ -54,10 +58,10 @@ public class EstadisticasTenis extends EstadisticasParticipante<Participante, Re
      * @param esLocal Indica si el participante jugó como local (no usado aquí).
      */
     @Override
-    public void registrarResultado(ResultadoTenis resultado, Participante participante, boolean esLocal) {
+    public void registrarResultado(ResultadoTenis resultado, Jugador participante, boolean esLocal) {
         if (!resultado.esValido()) return;
 
-        Participante ganador = resultado.getGanador();
+        Jugador ganador = (Jugador) resultado.getGanador();
         if (ganador == null) return;
 
         boolean victoria = ganador.equals(getParticipante());
@@ -192,6 +196,11 @@ public class EstadisticasTenis extends EstadisticasParticipante<Participante, Re
                 ", Juegos: " + juegosGanados + "/" + (juegosGanados + juegosPerdidos) +
                 ", %V: " + String.format("%.1f", getPorcentajeVictorias()) +
                 ", TB: " + setsGanadosEnTiebreak + "/" + (setsGanadosEnTiebreak + setsPerdidosEnTiebreak);
+    }
+
+    @Override
+    public EstadisticasParticipante<Jugador, ResultadoTenis> crear(Jugador participante) {
+        return new EstadisticasTenis(participante);
     }
 
     /**

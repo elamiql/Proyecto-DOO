@@ -29,6 +29,9 @@ public abstract class Torneo <T extends Participante>{
     /** Lista de participantes inscritos */
     protected ArrayList<T> participantes;
 
+    protected ArrayList<Jugador> jugadores;
+
+    protected ArrayList<Equipo> equipos;
 
     protected GenerarCalendario<T> generadorActivo;
 
@@ -105,7 +108,13 @@ public abstract class Torneo <T extends Participante>{
         return participantes;
     }
 
+    public ArrayList<Equipo> getEquipos() {
+        return equipos;
+    }
 
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
 
     /**
      * Devuelve la contraseña del torneo.

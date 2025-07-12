@@ -29,6 +29,10 @@ public class EstadisticasLol extends EstadisticasParticipante<Participante, Resu
         super(participante);
     }
 
+    public EstadisticasLol(){
+        super(null);
+    }
+
     /**
      * Registra un resultado de enfrentamiento para el participante en una partida de LoL.
      * <p>Se actualizan:</p>
@@ -86,5 +90,10 @@ public class EstadisticasLol extends EstadisticasParticipante<Participante, Resu
                 ", Torres: " + torresTotales +
                 ", Dragones: " + dragonesTotales +
                 ", Barones: " + baronesTotales;
+    }
+
+    @Override
+    public EstadisticasParticipante<Participante, ResultadoLol> crear(Participante participante) {
+        return new EstadisticasLol(participante);
     }
 }

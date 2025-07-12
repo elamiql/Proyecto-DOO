@@ -1,84 +1,70 @@
 package org.example.model.Formatos;
 
-import org.example.model.Enfrentamientos.Enfrentamiento;
-import org.example.model.Enfrentamientos.GenerarCalendario;
-import org.example.model.Participante.Participante;
+import org.example.interfaces.Resultado;
+import org.example.model.Enfrentamientos.*;
+import org.example.model.Estadisticas.*;
+import org.example.model.Participante.*;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Clase que representa un sistema de torneo que combina una fase de grupos con una fase eliminatoria.
- * <p>
  * Los participantes se dividen en grupos donde juegan en formato liga,
  * y luego los mejores de cada grupo avanzan a una eliminatoria.
- * </p>
  *
  * @param <T> Tipo de participante que extiende {@link Participante}.
+ * @param <R> Tipo de resultado que extiende {@link Resultado}.
+ * @param <E> Tipo de estadísticas que extiende {@link EstadisticasParticipante}.
  */
-public class GruposEliminatoria<T extends Participante> extends GenerarCalendario<T> {
+public class GruposEliminatoria<T extends Participante, R extends Resultado, E extends EstadisticasParticipante<T, R>> extends GenerarCalendario<T> {
 
-    /**
-     * Número de grupos en la fase de grupos.
-     */
     private final int numeroGrupos;
-
-    /**
-     * Número de participantes que clasifican por grupo a la fase eliminatoria.
-     */
     private final int clasificadosPorGrupo;
-
-    /**
-     * Lista con los grupos creados, cada grupo es una lista de participantes.
-     */
     private final List<List<T>> grupos;
-
-    /**
-     * Lista con los generadores de calendario para cada grupo (fase de liga).
-     */
-    private final List<Liga<T>> generadoresGrupos;
-
-    /**
-     * Generador del calendario para la fase eliminatoria posterior a la fase de grupos.
-     */
+    private final List<Liga<T, R, E>> generadoresGrupos;
     private Eliminatoria<T> generadorEliminatorias;
+    private final E estadisticasCreador; // Objeto que puede crear estadísticas
 
     /**
-     * Constructor que inicializa los grupos y parámetros del torneo.
-     *
-     * @param participantes       Lista de participantes.
-     * @param numeroGrupos        Cantidad de grupos en la fase de grupos.
-     * @param clasificadosPorGrupo Número de participantes que clasifican por grupo.
+     * Constructor que requiere una función para crear estadísticas.
+     * @param participantes Lista de participantes
+     * @param numeroGrupos Número de grupos
+     * @param clasificadosPorGrupo Número de clasificados por grupo
+     * @param estadisticasCreador Objeto que puede crear estadísticas para cada participante
      */
-    public GruposEliminatoria(ArrayList<T> participantes, int numeroGrupos, int clasificadosPorGrupo){
+    public GruposEliminatoria(ArrayList<T> participantes, int numeroGrupos, int clasificadosPorGrupo, E estadisticasCreador) {
         super(participantes);
         this.numeroGrupos = numeroGrupos;
         this.clasificadosPorGrupo = clasificadosPorGrupo;
         this.grupos = new ArrayList<>();
         this.generadoresGrupos = new ArrayList<>();
+        this.estadisticasCreador = estadisticasCreador;
     }
 
     /**
-     * Valida que haya suficientes participantes para formar los grupos y que el número
-     * de clasificados sea al menos 4 para poder hacer la fase eliminatoria.
-     * Llama a la validación base para verificar al menos 2 participantes.
+     * Constructor alternativo que no requiere estadísticas (para casos donde no se necesiten).
+     * @param participantes Lista de participantes
+     * @param numeroGrupos Número de grupos
+     * @param clasificadosPorGrupo Número de clasificados por grupo
      */
+    public GruposEliminatoria(ArrayList<T> participantes, int numeroGrupos, int clasificadosPorGrupo) {
+        this(participantes, numeroGrupos, clasificadosPorGrupo, null);
+    }
+
     @Override
-    protected void validarParticipantes(){
+    protected void validarParticipantes() {
         super.validarParticipantes();
-        if (participantes.size() < numeroGrupos * 2){
-            throw new IllegalArgumentException("No hay suficientes participantes para: "+ numeroGrupos);
+        if (participantes.size() < numeroGrupos * 2) {
+            throw new IllegalArgumentException("No hay suficientes participantes para: " + numeroGrupos);
         }
-        if (clasificadosPorGrupo * numeroGrupos < 4){
+        if (clasificadosPorGrupo * numeroGrupos < 4) {
             throw new IllegalArgumentException("Deben clasificar al menos 4 participantes para la fase eliminatoria");
         }
     }
 
-    /**
-     * Genera los enfrentamientos para la fase de grupos y la fase eliminatoria.
-     * Primero divide participantes en grupos, genera la fase de grupos y luego prepara la eliminatoria.
-     */
     @Override
-    protected void generarEnfrentamientos(){
+    protected void generarEnfrentamientos() {
         enfrentamientos.clear();
 
         dividirEnGrupos();
@@ -86,9 +72,6 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         prepararFaseEliminatoria();
     }
 
-    /**
-     * Divide a los participantes en grupos equilibrados.
-     */
     private void dividirEnGrupos(){
         grupos.clear();
 
@@ -105,43 +88,61 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         }
     }
 
-    /**
-     * Genera la fase de grupos creando calendarios de tipo Liga para cada grupo y agregando sus enfrentamientos.
-     */
-    private void generarFaseGrupos(){
+    private void generarFaseGrupos() {
         generadoresGrupos.clear();
 
         for (List<T> grupo : grupos) {
             if (grupo.size() > 1) {
-                Liga<T> generadorGrupo = new Liga<>(new ArrayList<>(grupo), false);
-                generadorGrupo.generarCalendario();
+                Liga<T, R, E> ligaGrupo;
 
-                enfrentamientos.addAll(generadorGrupo.getEnfrentamientos());
-                generadoresGrupos.add(generadorGrupo);
+                // Crear liga dependiendo si tenemos estadísticas o no
+                if (estadisticasCreador != null) {
+                    ligaGrupo = new Liga<>(new ArrayList<>(grupo), false, estadisticasCreador);
+                } else {
+                    // Si no tenemos estadísticas, necesitamos crear una implementación dummy
+                    // o modificar Liga para que acepte null
+                    throw new IllegalStateException("No se pueden crear grupos sin estadísticas válidas");
+                }
+
+                ligaGrupo.generarCalendario();
+
+                enfrentamientos.addAll(ligaGrupo.getEnfrentamientos());
+                generadoresGrupos.add(ligaGrupo);
             }
         }
     }
 
-    /**
-     * Prepara la fase eliminatoria tomando a los mejores clasificados de cada grupo
-     * y generando un calendario eliminatorio con ellos.
-     */
     private void prepararFaseEliminatoria() {
         ArrayList<T> clasificadosOrdenados = new ArrayList<>();
 
-        for (int i=0; i<numeroGrupos; i+=2){
-            List<T> grupo1 = grupos.get(i);
-            List<T> grupo2 = grupos.get(i+1);
+        // Obtener los mejores clasificados de cada grupo basándose en las estadísticas
+        for (int i = 0; i < grupos.size(); i++) {
+            List<T> grupo = grupos.get(i);
 
-            clasificadosOrdenados.add(grupo1.get(0));
-            clasificadosOrdenados.add(grupo2.get(1));
+            if (grupo.size() > 0 && i < generadoresGrupos.size()) {
+                Liga<T, R, E> ligaGrupo = generadoresGrupos.get(i);
 
-            clasificadosOrdenados.add(grupo2.get(0));
-            clasificadosOrdenados.add(grupo1.get(1));
+                // Ordenar participantes del grupo por sus estadísticas
+                List<T> participantesOrdenados = new ArrayList<>(grupo);
+                participantesOrdenados.sort((p1, p2) -> {
+                    E stats1 = ligaGrupo.getTablaEstadisticas().get(p1);
+                    E stats2 = ligaGrupo.getTablaEstadisticas().get(p2);
 
+                    // Aquí necesitarías implementar la lógica de comparación
+                    // Por ejemplo, comparar por puntos, diferencia de goles, etc.
+                    // Este es un ejemplo básico que asume que las estadísticas
+                    // tienen un método comparable o que implementas tu propia lógica
+                    return Integer.compare(stats2.getPuntos(), stats1.getPuntos());
+                });
+
+                // Tomar los mejores clasificados
+                for (int j = 0; j < clasificadosPorGrupo && j < participantesOrdenados.size(); j++) {
+                    clasificadosOrdenados.add(participantesOrdenados.get(j));
+                }
+            }
         }
 
-        if (clasificadosOrdenados.size() > 1) {
+        if (clasificadosOrdenados.size() >= 2) {
             generadorEliminatorias = new Eliminatoria<>(clasificadosOrdenados, false);
             generadorEliminatorias.generarCalendario();
             enfrentamientos.addAll(generadorEliminatorias.getEnfrentamientos());
@@ -149,52 +150,108 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
     }
 
     /**
-     * Imprime el calendario completo incluyendo la fase de grupos y la fase eliminatoria.
-     * Muestra los participantes por grupo, los enfrentamientos de cada grupo y el bracket eliminatorio.
+     * Método para actualizar estadísticas después de que se jueguen los partidos
      */
+    public void actualizarEstadisticasGrupos() {
+        for (Liga<T, R, E> ligaGrupo : generadoresGrupos) {
+            ligaGrupo.actualizarEstadisticasDesdeResultados();
+        }
+    }
+
+    /**
+     * Obtiene la tabla de estadísticas de un grupo específico
+     * @param numeroGrupo Número del grupo (0-indexed)
+     * @return Tabla de estadísticas del grupo
+     */
+    public Map<T, E> getEstadisticasGrupo(int numeroGrupo) {
+        if (numeroGrupo >= 0 && numeroGrupo < generadoresGrupos.size()) {
+            return generadoresGrupos.get(numeroGrupo).getTablaEstadisticas();
+        }
+        return new HashMap<>();
+    }
+
+    /**
+     * Obtiene los clasificados de un grupo específico ordenados por posición
+     * @param numeroGrupo Número del grupo (0-indexed)
+     * @return Lista de participantes ordenados por posición
+     */
+    public List<T> getClasificacionGrupo(int numeroGrupo) {
+        if (numeroGrupo >= 0 && numeroGrupo < grupos.size() && numeroGrupo < generadoresGrupos.size()) {
+            List<T> grupo = grupos.get(numeroGrupo);
+            Liga<T, R, E> ligaGrupo = generadoresGrupos.get(numeroGrupo);
+
+            List<T> clasificacion = new ArrayList<>(grupo);
+            clasificacion.sort((p1, p2) -> {
+                E stats1 = ligaGrupo.getTablaEstadisticas().get(p1);
+                E stats2 = ligaGrupo.getTablaEstadisticas().get(p2);
+                return Integer.compare(stats2.getPuntos(), stats1.getPuntos());
+            });
+
+            return clasificacion;
+        }
+        return new ArrayList<>();
+    }
+
     @Override
     public void imprimirCalendario() {
         System.out.println("=== Calendario Grupos + Eliminatoria ===");
 
-        // Imprimir fase de grupos
         System.out.println("\n--- FASE DE GRUPOS ---");
         for (int i = 0; i < grupos.size(); i++) {
-            System.out.println("\nGrupo " + (char)('A' + i) + ":");
+            System.out.println("\nGrupo " + (char) ('A' + i) + ":");
             for (T participante : grupos.get(i)) {
                 System.out.println("  - " + participante.getNombre());
             }
         }
 
-        // Imprimir enfrentamientos de grupos
         System.out.println("\n--- ENFRENTAMIENTOS DE GRUPOS ---");
         for (int i = 0; i < generadoresGrupos.size(); i++) {
-            System.out.println("\nGrupo " + (char)('A' + i) + ":");
-            Liga<T> generador = generadoresGrupos.get(i);
-            for (Enfrentamiento e : generador.getEnfrentamientos()) {
+            System.out.println("\nGrupo " + (char) ('A' + i) + ":");
+            Liga<T, R, E> ligaGrupo = generadoresGrupos.get(i);
+            for (Enfrentamiento e : ligaGrupo.getEnfrentamientos()) {
                 System.out.println("  " + e);
             }
         }
 
-        // Imprimir fase eliminatoria
         if (generadorEliminatorias != null) {
             System.out.println("\n--- FASE ELIMINATORIA ---");
             generadorEliminatorias.imprimirBracket();
         }
     }
 
-    public Eliminatoria<T> getGeneradorEliminatorias(){
+    /**
+     * Imprime las tablas de posiciones de todos los grupos
+     */
+    public void imprimirTablasGrupos() {
+        System.out.println("\n=== TABLAS DE POSICIONES ===");
+        for (int i = 0; i < grupos.size(); i++) {
+            System.out.println("\nGrupo " + (char) ('A' + i) + ":");
+            List<T> clasificacion = getClasificacionGrupo(i);
+            Map<T, E> estadisticas = getEstadisticasGrupo(i);
+
+            for (int pos = 0; pos < clasificacion.size(); pos++) {
+                T participante = clasificacion.get(pos);
+                E stats = estadisticas.get(participante);
+                System.out.println((pos + 1) + ". " + participante.getNombre() +
+                        " - Puntos: " + stats.getPuntos());
+            }
+        }
+    }
+
+    // Getters existentes
+    public Eliminatoria<T> getGeneradorEliminatorias() {
         return generadorEliminatorias;
     }
 
-    public List<List<T>> getGrupos(){
+    public List<List<T>> getGrupos() {
         return grupos;
     }
 
-    public List<Liga<T>> getGeneradoresGrupos(){
+    public List<Liga<T, R, E>> getGeneradoresGrupos() {
         return generadoresGrupos;
     }
 
-    public int getNumeroGrupos(){
+    public int getNumeroGrupos() {
         return numeroGrupos;
     }
 }

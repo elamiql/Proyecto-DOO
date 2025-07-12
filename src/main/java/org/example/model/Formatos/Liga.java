@@ -1,8 +1,10 @@
 package org.example.model.Formatos;
 
+import org.example.interfaces.Resultado;
 import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Estadisticas.EstadisticasFutbol;
 import org.example.model.Enfrentamientos.GenerarCalendario;
+import org.example.model.Estadisticas.EstadisticasParticipante;
 import org.example.model.Participante.Participante;
 import org.example.model.Resultado.ResultadoFutbol;
 
@@ -13,7 +15,7 @@ import java.util.*;
  * Permite generar enfrentamientos en formato de liga, ya sea de vuelta simple o doble vuelta.
  * @param <T> Tipo de participante que extiende de {@link Participante}.
  */
-public class Liga<T extends Participante> extends GenerarCalendario<T> {
+public class Liga<T extends Participante, R extends Resultado, E extends EstadisticasParticipante<T, R>> extends GenerarCalendario<T> {
 
     /**
      * Indica si la liga es de doble vuelta (cada par de participantes juega dos veces, una como local y otra como visitante).
@@ -23,7 +25,7 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
     /**
      * Tabla de estadísticas para los participantes, usando {@link EstadisticasFutbol}.
      */
-    private Map<Participante, EstadisticasFutbol> tablaEstadisticas;
+    private Map<T, E> tablaEstadisticas;
 
     /**
      * Constructor que inicializa la liga con participantes y opción de doble vuelta.
@@ -31,12 +33,17 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
      * @param participantes Lista de participantes.
      * @param dobleVuelta   True para liga de doble vuelta, false para vuelta simple.
      */
-    public Liga(ArrayList<T> participantes, boolean dobleVuelta){
+    public Liga(ArrayList<T> participantes, boolean dobleVuelta, E estadisticas){
         super(participantes);
+        if (estadisticas == null) {
+            throw new IllegalArgumentException("El objeto estadisticas no puede ser null");
+        }
         this.dobleVuelta = dobleVuelta;
         this.tablaEstadisticas = new HashMap<>();
+
         for (T participante: participantes){
-            tablaEstadisticas.put(participante, new EstadisticasFutbol(participante));
+            E stats = (E) estadisticas.crear(participante);
+            tablaEstadisticas.put(participante, stats);
         }
     }
 
@@ -45,8 +52,8 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
      *
      * @param participantes Lista de participantes.
      */
-    public Liga(ArrayList<T> participantes){
-        this(participantes, true);
+    public Liga(ArrayList<T> participantes, E estadisticas){
+        this(participantes, true, estadisticas);
     }
 
     /**
@@ -90,7 +97,7 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
      * Obtiene la tabla de estadísticas de la liga.
      * @return Mapa con participantes y sus estadísticas de fútbol.
      */
-    public Map<Participante, EstadisticasFutbol> getTablaEstadisticas(){
+    public Map<T, E> getTablaEstadisticas(){
         return tablaEstadisticas;
     }
 
@@ -115,16 +122,17 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
      * Establece la tabla de estadísticas para los participantes.
      * @param tablaEstadisticas Mapa con estadísticas de fútbol por participante.
      */
-    public void setTablaEstadisticas(Map<Participante, EstadisticasFutbol> tablaEstadisticas) {
+    public void setTablaEstadisticas(Map<T, E> tablaEstadisticas) {
         this.tablaEstadisticas = tablaEstadisticas;
     }
+
     public void actualizarEstadisticasDesdeResultados() {
         for (Enfrentamiento enf : enfrentamientos) {
-            if (enf.getResultado() instanceof ResultadoFutbol resultado) {
-                Participante p1 = enf.getParticipante1();
-                Participante p2 = enf.getParticipante2();
+            if (enf.getResultado() != null) {
+                R resultado = (R) enf.getResultado();
+                T p1 = (T) enf.getParticipante1();
+                T p2 = (T) enf.getParticipante2();
 
-                // Registrar para ambos
                 if (tablaEstadisticas.containsKey(p1)) {
                     tablaEstadisticas.get(p1).registrarResultado(resultado, p1, true);
                 }

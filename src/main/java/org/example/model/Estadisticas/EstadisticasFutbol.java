@@ -1,6 +1,6 @@
 package org.example.model.Estadisticas;
 
-import org.example.model.Participante.Participante;
+import org.example.model.Participante.*;
 import org.example.model.Resultado.ResultadoFutbol;
 
 /**
@@ -10,9 +10,9 @@ import org.example.model.Resultado.ResultadoFutbol;
  *
  * @see EstadisticasParticipante
  * @see ResultadoFutbol
- * @see Participante
+ * @see Equipo
  */
-public class EstadisticasFutbol extends EstadisticasParticipante<Participante, ResultadoFutbol> {
+public class EstadisticasFutbol extends EstadisticasParticipante<Equipo, ResultadoFutbol>{
     private int golesFavor;
     private int golesContra;
 
@@ -21,8 +21,15 @@ public class EstadisticasFutbol extends EstadisticasParticipante<Participante, R
      *
      * @param participante participante a quien pertenecen estas estadísticas
      */
-    public EstadisticasFutbol(Participante participante) {
+    public EstadisticasFutbol(Equipo participante) throws IllegalArgumentException{
         super(participante);
+        if (participante == null){
+            throw new IllegalArgumentException("El participante no puede ser null");
+        }
+    }
+
+    public EstadisticasFutbol(){
+        super(null);
     }
 
     /**
@@ -35,7 +42,7 @@ public class EstadisticasFutbol extends EstadisticasParticipante<Participante, R
      * @throws IllegalArgumentException si el resultado no es válido
      */
     @Override
-    public void registrarResultado(ResultadoFutbol resultado, Participante participante, boolean esLocal) {
+    public void registrarResultado(ResultadoFutbol resultado, Equipo participante, boolean esLocal) {
         if (!resultado.esValido()) throw new IllegalArgumentException("Resultado no válido");
 
         int gf = esLocal ? resultado.getGolesLocal() : resultado.getGolesVisitante();
@@ -105,6 +112,11 @@ public class EstadisticasFutbol extends EstadisticasParticipante<Participante, R
                 golesContra,
                 getDiferenciaGoles(),
                 getPuntos());
+    }
+
+    @Override
+    public EstadisticasParticipante<Equipo, ResultadoFutbol> crear(Equipo participante) {
+        return new EstadisticasFutbol(participante);
     }
 
     public void agregarGoles(int golesLocal, int golesVisitante) {
