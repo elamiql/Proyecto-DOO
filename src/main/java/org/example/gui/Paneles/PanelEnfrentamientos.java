@@ -104,9 +104,16 @@ public class PanelEnfrentamientos extends PanelFondo {
      * @return un {@link JPanel} con los datos del enfrentamiento y un botón de acción.
      */
     private JPanel crearPanelEnfrentamiento(Enfrentamiento e, int num) {
-        JPanel panelEnfrentamiento = new JPanel(new BorderLayout(5, 5));
+        JPanel panelEnfrentamiento = new JPanel(new GridBagLayout());
         panelEnfrentamiento.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panelEnfrentamiento.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
 
         String baseTexto = "Partido " + num + ": " +
                 e.getParticipante1().getNombre() + " vs " +
@@ -115,9 +122,10 @@ public class PanelEnfrentamientos extends PanelFondo {
         JLabel lbl = new JLabel(baseTexto);
         lbl.setForeground(Color.WHITE);
         lbl.setFont(new Font("Arial", Font.PLAIN, 16));
-        panelEnfrentamiento.add(lbl, BorderLayout.CENTER);
 
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelEnfrentamiento.add(lbl, gbc);
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         panelBotones.setOpaque(false);
 
         JButton btnGanador = new JButton("Seleccionar Ganador");
@@ -126,7 +134,13 @@ public class PanelEnfrentamientos extends PanelFondo {
         panelBotones.add(btnGanador);
         panelBotones.add(btnApostar);
 
-        panelEnfrentamiento.add(panelBotones, BorderLayout.EAST);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+
+        panelEnfrentamiento.add(panelBotones, gbc);
 
         if (e.isFinalizado()) {
             if (e.getGanador() != null) {
@@ -140,7 +154,6 @@ public class PanelEnfrentamientos extends PanelFondo {
             btnGanador.addActionListener(ae -> seleccionarGanador(e));
             btnApostar.addActionListener(ae -> apostarEnEnfrentamiento(e, lbl));
         }
-
 
         return panelEnfrentamiento;
     }
@@ -389,6 +402,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                     new EstadisticasLol(p1).registrarResultado(resultadoLol, p1, true);
                     new EstadisticasLol(p2).registrarResultado(resultadoLol, p2, false);
+                    return true;
                 }
 
                 default -> {
@@ -413,7 +427,7 @@ public class PanelEnfrentamientos extends PanelFondo {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Error al ingresar estadísticas. Verifica los datos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        return true;
+        return false;
     }
 
     private boolean registrarEstadisticas2(Enfrentamiento e, Participante p) {
@@ -441,7 +455,7 @@ public class PanelEnfrentamientos extends PanelFondo {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(frame, "Error inesperado al registrar estadísticas.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        return true;
+        return false;
     }
 
 
