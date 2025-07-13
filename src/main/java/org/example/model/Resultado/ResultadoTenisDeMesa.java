@@ -38,6 +38,7 @@ public class ResultadoTenisDeMesa implements Resultado {
      * Participante jugador 2.
      */
     private Participante jugador2;
+    private Participante ganador;
 
     /**
      * Constructor que inicializa el resultado de tenis de mesa con los jugadores y el número máximo de sets.
@@ -45,14 +46,16 @@ public class ResultadoTenisDeMesa implements Resultado {
      * @param jugador1 Participante jugador 1.
      * @param jugador2 Participante jugador 2.
      * @param maxSets Número máximo de sets posibles en el partido.
+     * @param ganador       Ganador del encuentro
      */
-    public ResultadoTenisDeMesa(Participante jugador1, Participante jugador2, int maxSets) {
+    public ResultadoTenisDeMesa(Participante jugador1, Participante jugador2, int maxSets,Participante ganador) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         puntosSetsJugador1 = new int[maxSets];
         puntosSetsJugador2 = new int[maxSets];
         setsJugador1 = 0;
         setsJugador2 = 0;
+        this.ganador=ganador;
     }
 
     /**
@@ -83,19 +86,28 @@ public class ResultadoTenisDeMesa implements Resultado {
      * - Al menos 11 puntos para uno de los jugadores.
      * - Diferencia mínima de 2 puntos.
      * - No se permiten puntos negativos.
-     *
+     *  ventajas diferencia estrica de 2 puntos
      * @param p1 puntos del jugador 1.
      * @param p2 puntos del jugador 2.
      * @return true si el set es válido, false en caso contrario.
      */
     public boolean esSetValido(int p1, int p2) {
         if (p1 < 0 || p2 < 0) return false;
+
         if (p1 < 11 && p2 < 11) return false;
-        if (Math.abs(p1 - p2) < 2) return false;
-        if (p1 >= 11 || p2 >= 11) return true;
+
+        if (p1 == 11 && p2 <= 9) return p1 - p2 >= 2;
+        if (p2 == 11 && p1 <= 9) return p2 - p1 >= 2;
+
+        if (p1 >= 12 && p2 < 10) return false;
+        if (p2 >= 12 && p1 < 10) return false;
+
+        if (p1 >= 10 && p2 >= 10) {
+            return Math.abs(p1 - p2) == 2;
+        }
+
         return false;
     }
-
     /**
      * Obtiene un resumen textual del resultado, incluyendo sets ganados y los puntos por set.
      *
@@ -128,16 +140,25 @@ public class ResultadoTenisDeMesa implements Resultado {
     }
 
     /**
-     * Verifica si el resultado es válido, es decir, si algún jugador ha ganado la mayoría de sets.
+     * Verifica si el resultado es válido, viendo si los sets ganados son coherentes con el ganador.
      *
      * @return true si el resultado es válido, false en caso contrario.
      */
     @Override
     public boolean esValido() {
         int setsNecesarios = (puntosSetsJugador1.length / 2) + 1;
-        // Validar que algún jugador haya ganado la mayoría de sets y sets válidos
-        if (setsJugador1 >= setsNecesarios || setsJugador2 >= setsNecesarios) return true;
-        return false;
+        if (ganador != null) {
+            if (ganador.equals(jugador1)) {
+
+                return setsJugador1 >= setsNecesarios && setsJugador2 < setsNecesarios;
+            } else if (ganador.equals(jugador2)) {
+
+                return setsJugador2 >= setsNecesarios && setsJugador1 < setsNecesarios;
+            }
+            return false;
+        } else {
+            return setsJugador1 < setsNecesarios && setsJugador2 < setsNecesarios;
+        }
     }
 
     // Getters para pruebas

@@ -51,8 +51,6 @@ public class Main6{
 
         System.out.println();
 
-        // Crear resultado del partido: Argentina 2 - 1 Brasil
-        ResultadoFutbol resultado = new ResultadoFutbol(argentina, brasil, 2, 1);
 
         // Crear estadísticas para cada equipo
         EstadisticasFutbol statsArgentina = new EstadisticasFutbol(argentina);

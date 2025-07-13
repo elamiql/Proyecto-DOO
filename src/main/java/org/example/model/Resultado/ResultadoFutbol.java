@@ -29,18 +29,22 @@ public class ResultadoFutbol implements Resultado {
      */
     private Participante visitante;
 
+    private Participante ganador;
+
     /**
      * Constructor que inicializa un resultado de fútbol con los participantes y los goles anotados.
      * @param local participante local
      * @param visitante participante visitante
      * @param golesLocal goles anotados por el participante local (no negativo)
      * @param golesVisitante goles anotados por el participante visitante (no negativo)
+     * @param ganador       Ganador del encuentro
      */
-    public ResultadoFutbol(Participante local, Participante visitante, int golesLocal, int golesVisitante){
+    public ResultadoFutbol(Participante local, Participante visitante, int golesLocal, int golesVisitante,Participante ganador){
         this.golesLocal = golesLocal;
         this.golesVisitante = golesVisitante;
         this.local = local;
         this.visitante = visitante;
+        this.ganador=ganador;
     }
 
     /**
@@ -53,12 +57,39 @@ public class ResultadoFutbol implements Resultado {
     }
 
     /**
-     * Verifica que el resultado sea válido (los goles no pueden ser negativos).
-     * @return true si ambos goles son mayores o iguales a cero, false en caso contrario.
+     * Verifica que el resultado sea válido .
+     * @return true si los goles son coherentes con el ganador del partido.
      */
     @Override
     public boolean esValido() {
-        return golesLocal >= 0 && golesVisitante >=0;
+        // Los goles no pueden ser negativos
+        if (golesLocal < 0 || golesVisitante < 0) {
+            return false;
+        }
+
+        // Validar que los goles sean números razonables (opcional)
+        if (golesLocal > 50 || golesVisitante > 50) {
+            return false;
+        }
+
+
+        if (ganador != null) {
+            if (golesLocal > golesVisitante && !ganador.equals(local)) {
+                return false;
+            }
+            if (golesVisitante > golesLocal && !ganador.equals(visitante)) {
+                return false;
+            }
+            if (golesLocal == golesVisitante) {
+                return false;
+            }
+        } else {
+            if (golesLocal != golesVisitante) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public boolean esValidoLiga(Participante ganador) {
