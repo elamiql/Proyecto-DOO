@@ -143,19 +143,18 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
     }
 
     public void actualizarEstadisticasDesdeResultados() {
-
         for (E estadistica : tablaEstadisticas.values()) {
             estadistica.reiniciarEstadisticas();
         }
 
         for (Enfrentamiento enf : enfrentamientos) {
-                Resultado r = enf.getResultado();
-                System.out.println("Resultado del enfrentamiento: " + r);
+            Resultado r = enf.getResultado();
+            System.out.println("Resultado del enfrentamiento: " + r);
 
             if (r != null && getResultadoClass().isInstance(r)) {
                 R resultado = (R) r;
-                T p1 = (T) enf.getParticipante1();
-                T p2 = (T) enf.getParticipante2();
+                Participante p1 = enf.getParticipante1();
+                Participante p2 = enf.getParticipante2();
 
                 if (tablaEstadisticas.containsKey(p1)) {
                     tablaEstadisticas.get(p1).registrarResultado(resultado, p1, true);

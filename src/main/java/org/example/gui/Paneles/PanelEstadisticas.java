@@ -40,11 +40,8 @@ public class PanelEstadisticas extends PanelFondo {
     }
 
     private void inicializarComponentes() {
-        comboParticipantes = new JComboBox<>();
-        for (Object p : torneo.getParticipantes()) {
-            comboParticipantes.addItem((Participante) p);
-        }
-
+        ArrayList<Participante> participantes = torneo.getParticipantes();
+        comboParticipantes = BotonBuilder.crearComboBox(participantes.toArray(new Participante[0]));
         botonVer = new JButton("Ver estadísticas");
 
         areaEstadisticas = new JTextArea(20, 45);
@@ -77,7 +74,7 @@ public class PanelEstadisticas extends PanelFondo {
         areaEstadisticas.setOpaque(false);
         areaEstadisticas.setForeground(Color.WHITE);
 
-        areaEstadisticas.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // padding
+        areaEstadisticas.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JScrollPane scroll = new JScrollPane(areaEstadisticas);
         scroll.setOpaque(false);

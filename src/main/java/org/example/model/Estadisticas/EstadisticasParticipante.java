@@ -86,7 +86,7 @@ public abstract class EstadisticasParticipante<T, R extends Resultado> implement
      * @param participante Participante relacionado con el resultado.
      * @param esLocal Indica si el participante jugó como local.
      */
-    @Override
+
     public abstract void registrarResultado(R resultado, T participante, boolean esLocal);
 
     /**

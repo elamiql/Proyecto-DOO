@@ -281,7 +281,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
     private boolean registrarEstadisticas(Enfrentamiento e, Participante p) {
         if (torneo.getFormato() == LIGA) {
-            return registrarEstadisticas2(e);
+            return registrarEstadisticas2(e,p);
         } else {
             return registrarEstadisticas1(e, p);
         }
@@ -299,7 +299,7 @@ public class PanelEnfrentamientos extends PanelFondo {
                 case "FUTBOL" -> {
                     int goles1 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p1.getNombre()));
                     int goles2 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p2.getNombre()));
-                    resultado = new ResultadoFutbol(p1, p2, goles1, goles2);
+                    resultado = new ResultadoFutbol(p1, p2, goles1, goles2,ganador);
                     if (!resultado.esValido()) {
                         JOptionPane.showMessageDialog(null, "Goles inválidos.");
                         return false;
@@ -318,7 +318,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                 case "TENIS" -> {
                     int maxSets = 5;
-                    ResultadoTenis r = new ResultadoTenis(p1, p2, maxSets);
+                    ResultadoTenis r = new ResultadoTenis(p1, p2, maxSets,ganador);
                     int setsP1 = 0, setsP2 = 0;
 
                     for (int i = 0; i < maxSets; i++) {
@@ -341,7 +341,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
                 case "TENIS_DE_MESA" -> {
                     int maxSets = 5;
-                    ResultadoTenisDeMesa r = new ResultadoTenisDeMesa(p1, p2, maxSets);
+                    ResultadoTenisDeMesa r = new ResultadoTenisDeMesa(p1, p2, maxSets,ganador);
                     int setsP1 = 0, setsP2 = 0;
 
                     for (int i = 0; i < maxSets; i++) {
@@ -404,7 +404,7 @@ public class PanelEnfrentamientos extends PanelFondo {
     }
 
 
-    private boolean registrarEstadisticas2(Enfrentamiento e) {
+    private boolean registrarEstadisticas2(Enfrentamiento e, Participante ganador) {
         try {
             Participante p1 = e.getParticipante1();
             Participante p2 = e.getParticipante2();
@@ -420,7 +420,14 @@ public class PanelEnfrentamientos extends PanelFondo {
             int puntos1 = Integer.parseInt(input1);
             int puntos2 = Integer.parseInt(input2);
 
-            ResultadoFutbol resultado = new ResultadoFutbol(p1, p2, puntos1, puntos2);
+            ResultadoFutbol resultado = new ResultadoFutbol(p1, p2, puntos1, puntos2,ganador);
+
+            // Usar el método esValido() para validar
+            if (!resultado.esValido()) {
+                JOptionPane.showMessageDialog(frame, "Los datos ingresados no son válidos.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
             e.registrarResultado(resultado);
             return true;
 
@@ -431,7 +438,6 @@ public class PanelEnfrentamientos extends PanelFondo {
         }
         return false;
     }
-
 
 
     /**
@@ -491,13 +497,8 @@ public class PanelEnfrentamientos extends PanelFondo {
      * @param ganador el objeto ganador (jugador o equipo).
      * @return el nombre representativo.
      */
-    private String obtenerNombreGanador(Object ganador) {
-        if (ganador instanceof Jugador) {
-            return ((Jugador) ganador).getNombre();
-        } else if (ganador instanceof Equipo) {
-            return ((Equipo) ganador).getNombre();
-        }
-        return ganador.toString();
+    private String obtenerNombreGanador(Participante ganador) {
+        return ganador.getNombre();
     }
 
     /**
@@ -564,7 +565,7 @@ public class PanelEnfrentamientos extends PanelFondo {
             return;
         }
 
-        // NUEVO: Verificar si ya se apostó
+
         for (Apuesta a : apuestas) {
             if (a.getEnfrentamiento().equals(e)) {
                 JOptionPane.showMessageDialog(frame, "Ya realizaste una apuesta en este enfrentamiento.");

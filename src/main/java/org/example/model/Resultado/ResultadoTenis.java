@@ -39,20 +39,24 @@ public class ResultadoTenis implements Resultado {
      */
     private Participante jugador2;
 
+    private Participante ganador;
+
     /**
      * Constructor que inicializa el resultado de tenis con los jugadores y el número máximo de sets.
      *
      * @param jugador1 Participante jugador 1.
      * @param jugador2 Participante jugador 2.
      * @param maxSets Número máximo de sets posibles en el partido.
+     * @param ganador       Ganador del encuentro
      */
-    public ResultadoTenis(Participante jugador1, Participante jugador2, int maxSets) {
+    public ResultadoTenis(Participante jugador1, Participante jugador2, int maxSets,Participante ganador) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         this.juegosSetsJugador1 = new int[maxSets];
         this.juegosSetsJugador2 = new int[maxSets];
         this.setsJugador1 = 0;
         this.setsJugador2 = 0;
+        this.ganador=ganador;
     }
 
     /**
@@ -144,16 +148,61 @@ public class ResultadoTenis implements Resultado {
     }
 
     /**
-     * Verifica si el resultado es válido considerando la cantidad mínima de sets ganados para declarar un ganador.
+     * Verifica si el resultado es válido considerando los puntajes de los sets y que los sets ganados tengan coherencia con el ganador del encuentro.
      *
      * @return true si el resultado es válido, false en caso contrario.
      */
     @Override
     public boolean esValido() {
+        if (setsJugador1 < 0 || setsJugador2 < 0) {
+            return false;
+        }
+
         int maxSets = juegosSetsJugador1.length;
         int necesarios = (maxSets / 2) + 1;
 
-        return setsJugador1 >= necesarios || setsJugador2 >= necesarios;
+        if (setsJugador1 > maxSets || setsJugador2 > maxSets) {
+            return false;
+        }
+        if (setsJugador1 + setsJugador2 > maxSets) {
+            return false;
+        }
+
+
+        for (int i = 0; i < maxSets; i++) {
+            int juegosJ1 = juegosSetsJugador1[i];
+            int juegosJ2 = juegosSetsJugador2[i];
+
+            if (juegosJ1 == 0 && juegosJ2 == 0) {
+                continue;
+            }
+            if (juegosJ1 > 7 || juegosJ2 > 7) {
+                return false;
+            }
+            if (juegosJ1 == 7 && (juegosJ2 != 5 && juegosJ2 != 6)) {
+                return false;
+            }
+            if (juegosJ2 == 7 && (juegosJ1 != 5 && juegosJ1 != 6)) {
+                return false;
+            }
+            if (juegosJ1 < 6 && juegosJ2 < 6) {
+                if (juegosJ1 < 4 && juegosJ2 < 4) {
+                    return false;
+                }
+            }
+        }
+
+        if (ganador != null) {
+            if (ganador.equals(jugador1)) {
+                return setsJugador1 >= necesarios && setsJugador2 < necesarios;
+            } else if (ganador.equals(jugador2)) {
+                return setsJugador2 >= necesarios && setsJugador1 < necesarios;
+            }
+        } else {
+            return setsJugador1 < necesarios && setsJugador2 < necesarios;
+        }
+
+        return false;
     }
 
     // Getters y Setters

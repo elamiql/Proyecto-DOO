@@ -36,6 +36,7 @@ public class ResultadoFifa implements Resultado {
      * Participante que actúa como equipo visitante.
      */
     private Participante visitante;
+    private Participante ganador;
 
     /**
      * Constructor que crea un resultado de partido FIFA.
@@ -44,10 +45,10 @@ public class ResultadoFifa implements Resultado {
      * @param visitante    Participante visitante.
      * @param golesLocal   Goles anotados por el equipo local (no negativos).
      * @param golesVisitante Goles anotados por el equipo visitante (no negativos).
-     *
+     * @param ganador       Ganador del encuentro
      * @throws IllegalArgumentException si los goles son negativos.
      */
-    public ResultadoFifa(Participante local, Participante visitante, int golesLocal, int golesVisitante) {
+    public ResultadoFifa(Participante local, Participante visitante, int golesLocal, int golesVisitante,Participante ganador) {
         if (golesLocal < 0 || golesVisitante < 0) {
             throw new IllegalArgumentException("Los goles no pueden ser negativos");
         }
@@ -55,6 +56,7 @@ public class ResultadoFifa implements Resultado {
         this.visitante = visitante;
         this.golesLocal = golesLocal;
         this.golesVisitante = golesVisitante;
+        this.ganador=ganador;
     }
 
     /**
@@ -86,12 +88,38 @@ public class ResultadoFifa implements Resultado {
 
     /**
      * Valida que el resultado sea consistente.
-     * @return {@code true} si los goles son no negativos y los participantes no son nulos, {@code false} en caso contrario.
+     * @return {@code true} si los goles son coherentes con el ganador, {@code false} en caso contrario.
      */
     @Override
     public boolean esValido() {
-        // Validamos que goles sean >=0 y participantes no nulos
-        return local != null && visitante != null && golesLocal >= 0 && golesVisitante >= 0;
+        // Los goles no pueden ser negativos
+        if (golesLocal < 0 || golesVisitante < 0) {
+            return false;
+        }
+
+        // Validar que los goles sean números razonables (opcional)
+        if (golesLocal > 50 || golesVisitante > 50) {
+            return false;
+        }
+
+
+        if (ganador != null) {
+            if (golesLocal > golesVisitante && !ganador.equals(local)) {
+                return false;
+            }
+            if (golesVisitante > golesLocal && !ganador.equals(visitante)) {
+                return false;
+            }
+            if (golesLocal == golesVisitante) {
+                return false;
+            }
+        } else {
+            if (golesLocal != golesVisitante) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

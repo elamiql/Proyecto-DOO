@@ -1,5 +1,7 @@
 package org.example.interfaces;
 
+import org.example.model.Participante.Participante;
+
 /**
  * Representa las estadísticas de un participante en una competencia.
  *
@@ -17,7 +19,7 @@ public interface Estadisticas<T, R> {
      * @param participante el participante involucrado.
      * @param esLocal indica si el participante jugó como local (true) o visitante (false).
      */
-    void registrarResultado(R resultado, T participante, boolean esLocal);
+    void registrarResultado(R resultado, Participante participante, boolean esLocal);
 
     /**
      * Devuelve la cantidad total de puntos obtenidos por el participante
