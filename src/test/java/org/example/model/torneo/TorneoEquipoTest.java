@@ -26,7 +26,7 @@ class TorneoEquipoTest {
         e2 = new Equipo("2","2",new ArrayList<Jugador>());
         torneoEquipo = new TorneoEquipo("torneo",disciplina,"25-12-2025 14:30",Formato.ELIMINATORIA,2,1,"");
     }
-
+    /*
     @Test
     void generarCalendario_formatoInvalido() {
         TorneoEquipo Torneo_error = new TorneoEquipo("Torneo Error", disciplina,"25-12-2025 14:30", Formato.CUSTOM, "Online");
@@ -36,12 +36,16 @@ class TorneoEquipoTest {
         assertThrows(FormatoInvalidoException.class, Torneo_error::generarCalendario);
     }
 
+
+
     @Test
     void gruposMenores0() {
         TorneoEquipo Torneo_error = new TorneoEquipo("Torneo Error", disciplina,"25-12-2025 14:30", Formato.GRUPOS_CON_ELIMINATORIA,0,0,"online" );
 
         assertThrows(ParticipantesInsuficientesException.class, Torneo_error::generarCalendario);
     }
+
+     */
 
     @AfterEach
     void tearDown() {

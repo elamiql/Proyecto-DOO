@@ -211,7 +211,7 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
 
         for (Enfrentamiento enf : enfrentamientos) {
             Resultado r = enf.getResultado();
-            System.out.println("Resultado del enfrentamiento: " + r);
+
 
             if (r != null && getResultadoClass().isInstance(r)) {
                 R resultado = (R) r;

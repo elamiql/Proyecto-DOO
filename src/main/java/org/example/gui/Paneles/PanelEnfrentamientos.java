@@ -205,6 +205,16 @@ public class PanelEnfrentamientos extends PanelFondo {
      * @param e el enfrentamiento sobre el cual se va a registrar el ganador.
      */
     private void seleccionarGanador(Enfrentamiento e) {
+        if (e.getParticipante1() == null || e.getParticipante2() == null
+                || e.getParticipante1().getNombre().startsWith("Ganador")
+                || e.getParticipante2().getNombre().startsWith("Ganador")) {
+
+            JOptionPane.showMessageDialog(frame,
+                    "Este enfrentamiento aún no tiene participantes definidos.",
+                    "No disponible",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         String[] opciones = {
                 e.getParticipante1().getNombre(),
                 e.getParticipante2().getNombre(), "empate"

@@ -111,12 +111,14 @@ public class TorneoEquipo extends Torneo<Equipo> {
             case ELIMINATORIA -> {
                 generadorActivo = new Eliminatoria<>(getParticipantes(), true, disciplina);
             }
-            case GRUPOS_CON_ELIMINATORIA -> {
+            /*case GRUPOS_CON_ELIMINATORIA -> {
                 if (numGrupos <= 0 || clasificadosPorGrupo <= 0) {
                     throw new ParticipantesInsuficientesException("Error: numGrupos y clasificadosPorGrupo deben ser mayores que 0");
                 }
                 generadorActivo = new GruposEliminatoria<>(getParticipantes(), numGrupos, clasificadosPorGrupo, disciplina);
             }
+
+             */
             default -> throw new FormatoInvalidoException("Formato no soportado aún");
         }
 

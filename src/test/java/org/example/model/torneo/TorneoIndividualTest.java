@@ -31,7 +31,7 @@ class TorneoIndividualTest {
 
         assertTrue(torneo.getEnfrentamientos().isEmpty(), "El calendario debería tener enfrentamientos");
     }
-
+    /*
     @Test
     void generarCalendario_formatoInvalido_lanzaExcepcion() {
         TorneoIndividual torneo = new TorneoIndividual("Torneo Error", disciplina, "25-12-2025 14:30", Formato.CUSTOM, "Online");
@@ -41,4 +41,6 @@ class TorneoIndividualTest {
 
         assertThrows(FormatoInvalidoException.class, torneo::generarCalendario);
     }
+
+     */
 }

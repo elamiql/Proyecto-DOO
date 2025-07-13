@@ -185,7 +185,7 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
         }
 
     }
-
+    //Getters
     public Eliminatoria<?, ?, ?> getGeneradorEliminatorias(){
         return generadorEliminatorias;
     }

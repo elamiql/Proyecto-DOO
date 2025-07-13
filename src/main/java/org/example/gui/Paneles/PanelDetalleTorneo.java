@@ -94,18 +94,32 @@ public class PanelDetalleTorneo extends PanelFondo{
 
         return panelInfo;
     }
+
+
+    /**
+     * Crea una etiqueta (JLabel) con estilo estandar.
+     * @param texto El texto que mostrará la etiqueta.
+     * @return Una instancia de {@link JLabel} con el texto y estilo aplicado.
+     */
     private JLabel crearEtiqueta(String texto) {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         etiqueta.setForeground(Color.WHITE);
         return etiqueta;
     }
+
+    /**
+     * Crea una etiqueta (JLabel) con estilo destacado para relementos importantes.
+     * @param texto El texto que mostrará la etiqueta.
+     * @return Una instancia de {@link JLabel} con el texto en estilo destacado.
+     */
     private JLabel crearEtiquetaDestacada(String texto) {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setFont(new Font("Segoe UI", Font.BOLD, 15));
         etiqueta.setForeground(Color.WHITE);
         return etiqueta;
     }
+
 
 
     /**
@@ -192,7 +206,7 @@ public class PanelDetalleTorneo extends PanelFondo{
         if (input == null) return;
         try {
             int cantidad = Integer.parseInt(input.trim());
-            if (cantidad <= 0) throw new NumberFormatException();
+            if (cantidad <= 1) throw new NumberFormatException();
 
             ArrayList<Jugador> jugadores = new ArrayList<>();
             for (int i = 1; i <= cantidad; i++) {
