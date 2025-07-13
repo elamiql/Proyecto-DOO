@@ -108,6 +108,11 @@ public class EstadisticasFifa extends EstadisticasParticipante<Participante, Res
                 getDiferenciaGoles(),
                 getPuntos());
     }
+
+    /**
+     * Reinicia todas las estadísticas acumuladas del participante y
+     * se deja el estado como si no se hubiera disputado ningún partido.
+     */
     public void reiniciarEstadisticas(){
         super.reiniciarEstadisticas();
         this.golesFavor = 0;

@@ -61,6 +61,37 @@ public class ResultadoFutbol implements Resultado {
         return golesLocal >= 0 && golesVisitante >=0;
     }
 
+    public boolean esValidoLiga(Participante ganador) {
+        // Los goles no pueden ser negativos
+        if (golesLocal < 0 || golesVisitante < 0) {
+            return false;
+        }
+
+        // Validar que los goles sean números razonables (opcional)
+        if (golesLocal > 50 || golesVisitante > 50) {
+            return false;
+        }
+
+
+        if (ganador != null) {
+            if (golesLocal > golesVisitante && !ganador.equals(local)) {
+                return false;
+            }
+            if (golesVisitante > golesLocal && !ganador.equals(visitante)) {
+                return false;
+            }
+            if (golesLocal == golesVisitante) {
+                return false;
+            }
+        } else {
+            if (golesLocal != golesVisitante) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Obtiene el participante ganador según la cantidad de goles anotados.
      * @return participante ganador, o null si el resultado fue empate.

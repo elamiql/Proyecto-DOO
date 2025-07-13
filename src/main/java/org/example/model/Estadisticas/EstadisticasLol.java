@@ -87,6 +87,11 @@ public class EstadisticasLol extends EstadisticasParticipante<Participante, Resu
                 ", Dragones: " + dragonesTotales +
                 ", Barones: " + baronesTotales;
     }
+
+    /**
+     * Reinicia todas las estadísticas acumuladas del participante y
+     * se deja el estado como si no se hubiera disputado ningúna partida.
+     */
     public void reiniciarEstadisticas(){
         super.reiniciarEstadisticas();
         this.killsTotales = 0;

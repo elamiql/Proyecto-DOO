@@ -262,6 +262,7 @@ public class EstadisticasTenis extends EstadisticasParticipante<Participante, Re
         return sb.toString();
     }
 
+    //Getters
     public int getSetsGanados() {
         return setsGanados;
     }
@@ -313,6 +314,10 @@ public class EstadisticasTenis extends EstadisticasParticipante<Participante, Re
     public boolean isUltimaFueVictoria() {
         return ultimaFueVictoria;
     }
+
+    /**
+     * Reinicia todas las estadísticas acumuladas del participante.
+     */
     public void reiniciarEstadisticas(){
         super.reiniciarEstadisticas();
         this.setsGanados = 0;

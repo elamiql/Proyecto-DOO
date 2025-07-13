@@ -58,33 +58,6 @@ public class Main6{
         EstadisticasFutbol statsArgentina = new EstadisticasFutbol(argentina);
         EstadisticasFutbol statsBrasil = new EstadisticasFutbol(brasil);
 
-        // Registrar resultado en estadísticas
-        if (resultado.esValido()) {
-            if (resultado.getGanador() == null) {
-                statsArgentina.registrarEmpate();
-                statsBrasil.registrarEmpate();
-            } else if (resultado.getGanador().equals(argentina)) {
-                statsArgentina.registrarVictoria();
-                statsBrasil.registrarDerrota();
-            } else {
-                statsBrasil.registrarVictoria();
-                statsArgentina.registrarDerrota();
-            }
 
-            // Agregar goles a las estadísticas
-            //statsArgentina.agregarGoles(resultado.getGolesLocal(), resultado.getGolesVisitante());
-            //statsBrasil.agregarGoles(resultado.getGolesVisitante(), resultado.getGolesLocal());
-
-            // Mostrar resumen y estadísticas
-            System.out.println("Resumen del partido:");
-            System.out.println(resultado.getResumen());
-            System.out.println();
-
-            System.out.println("Estadísticas:");
-            System.out.println(statsArgentina);
-            System.out.println(statsBrasil);
-        } else {
-            System.out.println("Resultado inválido.");
-        }
     }
 }

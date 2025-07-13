@@ -107,10 +107,21 @@ public class EstadisticasFutbol extends EstadisticasParticipante<Participante, R
                 getPuntos());
     }
 
+    /**
+     * Agrega manualmente goles a favor y en contra al participante.
+     *
+     * @param golesLocal goles a favor que se desean añadir
+     * @param golesVisitante goles en contra que se desean añadir
+     */
     public void agregarGoles(int golesLocal, int golesVisitante) {
         this.golesFavor += golesLocal;
         this.golesContra += golesVisitante;
     }
+
+    /**
+     * Reinicia todas las estadísticas acumuladas del participante y
+     * se deja el estado como si no se hubiera disputado ningún partido.
+     */
     public void reiniciarEstadisticas(){
         super.reiniciarEstadisticas();
         this.golesFavor = 0;

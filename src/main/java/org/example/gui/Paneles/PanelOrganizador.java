@@ -10,6 +10,7 @@ import org.example.gui.Otros.Imagen;
 import org.example.interfaces.Disciplina;
 import org.example.model.torneo.GestorTorneos;
 import org.example.exceptions.DatosInvalidosException;
+import javax.swing.JComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,8 +58,9 @@ public class PanelOrganizador extends PanelFondo {
      */
     private void initTitulo() {
         JLabel labelTitulo = new JLabel("Crear Nuevo Torneo", SwingConstants.CENTER);
-        labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        labelTitulo.setForeground(Color.WHITE);
+        labelTitulo.setFont(new Font("Serif", Font.BOLD, 32));
+        labelTitulo.setForeground(new Color(0x2E86C1));
+        labelTitulo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0xAED6F1)));
         labelTitulo.setOpaque(false);
         add(labelTitulo, BorderLayout.NORTH);
     }

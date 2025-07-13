@@ -53,7 +53,7 @@ public class PanelParticipante extends PanelFondo {
      * Inicializa el panel superior con los filtros de búsqueda.
      */
     private void inicializarPanelSuperior() {
-        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelSuperior.setOpaque(false);
 
         filtroEstadoCombo = BotonBuilder.crearComboBox(new String[]{"Todos", "Por empezar", "Empezados"});

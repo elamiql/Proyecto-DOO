@@ -20,6 +20,16 @@ import java.util.List;
 
 import static org.example.enums.Formato.LIGA;
 
+/**
+ * {@code PanelEstadisticas} es un panel gráfico que permite visualizar las estadísticas
+ * de los participantes en un torneo, ya sea en formato de liga o eliminación directa.
+ * <p>
+ * Muestra las estadísticas agrupadas (tabla de posiciones) para torneos de tipo liga,
+ * o estadísticas individuales por participante para formatos eliminatorios.
+ * </p>
+ * <p>Usa componentes Swing como {@link JComboBox}, {@link JTextArea} y
+ * {@link JScrollPane}</p>
+ */
 public class PanelEstadisticas extends PanelFondo {
 
     private final JFrame frame;
@@ -29,6 +39,11 @@ public class PanelEstadisticas extends PanelFondo {
     private JTextArea areaEstadisticas;
     private JButton botonVer;
 
+    /**
+     * Crea un nuevo {@code PanelEstadisticas} asociado a un torneo y al frame principal.
+     * @param frame  el {@link JFrame} principal de la aplicación.
+     * @param torneo el {@link Torneo} del cual se mostrarán las estadísticas.
+     */
     public PanelEstadisticas(JFrame frame, Torneo torneo) {
         super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
         this.frame = frame;
@@ -39,12 +54,13 @@ public class PanelEstadisticas extends PanelFondo {
         configurarEventos();
     }
 
+    /**
+     * Inicializa los componentes gráficos del panel, como la lista de participantes,
+     * el botón para ver estadísticas y el área de texto.
+     */
     private void inicializarComponentes() {
-        comboParticipantes = new JComboBox<>();
-        for (Object p : torneo.getParticipantes()) {
-            comboParticipantes.addItem((Participante) p);
-        }
-
+        ArrayList<Participante> participantes = torneo.getParticipantes();
+        comboParticipantes = BotonBuilder.crearComboBox(participantes.toArray(new Participante[0]));
         botonVer = new JButton("Ver estadísticas");
 
         areaEstadisticas = new JTextArea(20, 45);
@@ -54,6 +70,10 @@ public class PanelEstadisticas extends PanelFondo {
         areaEstadisticas.setWrapStyleWord(true);
     }
 
+    /**
+     * Configura el layout del panel, agregando la lista de participantes, botones y área de estadísticas.
+     * Si el torneo es de formato liga, muestra automáticamente la tabla completa.
+     */
     private void configurarLayout() {
         setLayout(new BorderLayout());
 
@@ -77,7 +97,7 @@ public class PanelEstadisticas extends PanelFondo {
         areaEstadisticas.setOpaque(false);
         areaEstadisticas.setForeground(Color.WHITE);
 
-        areaEstadisticas.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // padding
+        areaEstadisticas.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JScrollPane scroll = new JScrollPane(areaEstadisticas);
         scroll.setOpaque(false);
@@ -96,7 +116,10 @@ public class PanelEstadisticas extends PanelFondo {
         add(panelInferior, BorderLayout.SOUTH);
     }
 
-
+    /**
+     * Configura los eventos de la interfaz, en particular la acción del botón "Ver estadísticas"
+     * para mostrar información del participante seleccionado.
+     */
     private void configurarEventos() {
         botonVer.addActionListener((ActionEvent e) -> {
             Participante seleccionado = (Participante) comboParticipantes.getSelectedItem();
@@ -106,6 +129,15 @@ public class PanelEstadisticas extends PanelFondo {
         });
     }
 
+    /**
+     * Muestra las estadísticas de un participante específico.
+     * <p>
+     * Si el torneo es de formato liga, se muestran todas las estadísticas ordenadas por puntos.
+     * Si el torneo es eliminatorio, se muestra la información específica del participante.
+     * </p>
+     *
+     * @param p el participante seleccionado.
+     */
     private void mostrarEstadisticas(Participante p) {
         if (torneo.getFormato() == LIGA) {
             mostrarEstadisticasLiga();
@@ -113,6 +145,14 @@ public class PanelEstadisticas extends PanelFondo {
             mostrarEstadisticasEliminatoria(p);
         }
     }
+
+    /**
+     * Muestra la tabla de posiciones y estadísticas acumuladas para torneos en formato liga.
+     * <p>
+     * Los participantes se ordenan por puntos obtenidos y se despliega la información completa
+     * usando el metodo {@code toTablaString()} de {@link EstadisticasFutbol}.
+     * </p>
+     */
     private void mostrarEstadisticasLiga() {
         StringBuilder resultado = new StringBuilder();
         GenerarCalendario<?> generador = torneo.getGeneradorActivo();
@@ -146,8 +186,15 @@ public class PanelEstadisticas extends PanelFondo {
         areaEstadisticas.setText(resultado.toString());
     }
 
-
-
+    /**
+     * Muestra las estadísticas individuales de un participante en torneos de eliminación directa.
+     * <p>
+     * Recupera el objeto de estadísticas correspondiente desde la tabla de estadísticas
+     * del generador {@link Eliminatoria}, y lo representa en pantalla según la disciplina.
+     * </p>
+     *
+     * @param p el participante del cual se mostrarán las estadísticas.
+     */
     private void mostrarEstadisticasEliminatoria(Participante p) {
         String disciplina = torneo.getDisciplina().getNombre().toUpperCase();
         StringBuilder resultado = new StringBuilder();

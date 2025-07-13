@@ -12,7 +12,17 @@ import org.example.model.Participante.Jugador;
 import org.example.model.Participante.Participante;
 import java.util.*;
 
-
+/**
+ * Clase que implementa el formato de torneo por eliminación directa.
+ *
+ * <p>Esta clase extiende {@link GenerarCalendario} y organiza a los participantes
+ * en un sistema de rondas eliminatorias, donde los perdedores quedan
+ * fuera en cada ronda.</p>
+ *
+ * @param <T> tipo de participante
+ * @param <E> tipo de estadísticas asociadas a los participantes
+ * @param <R> tipo de resultado usado en los enfrentamientos
+ */
 public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, R extends Resultado> extends GenerarCalendario<T> {
 
     private final List<List<Enfrentamiento>> bracket;
@@ -20,6 +30,13 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
     private final Map<T, E> tablaEstadisticas;
     private Disciplina disciplina;
 
+    /**
+     * Constructor principal para el formato eliminatorio.
+     *
+     * @param participantes lista de participantes
+     * @param requierePotenciaDeDos indica si la cantidad de participantes debe ser potencia de 2
+     * @param disciplina disciplina del torneo (usada para generar estadísticas)
+     */
     public Eliminatoria(ArrayList<T> participantes, boolean requierePotenciaDeDos,Disciplina disciplina) {
         super(participantes);
         this.requierePotenciaDeDos = requierePotenciaDeDos;
@@ -32,10 +49,23 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
         }
     }
 
+    /**
+     * Constructor por defecto sin requerimiento de potencia de dos.
+     *
+     * @param participantes lista de participantes
+     * @param disciplina disciplina del torneo
+     */
     public Eliminatoria(ArrayList<T> participantes,Disciplina disciplina) {
         this(participantes, false,disciplina);
     }
 
+    /**
+     * Crea la instancia de estadísticas adecuada según la disciplina del torneo.
+     *
+     * @param participante el participante al que se asignarán las estadísticas
+     * @return instancia de estadísticas correspondiente a la disciplina
+     * @throws UnsupportedOperationException si la disciplina no está soportada
+     */
     private E crearEstadistica(T participante) {
 
         switch (disciplina.getNombre()) {
@@ -56,6 +86,12 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
         }
     }
 
+    /**
+     * Valida que los participantes cumplan con las condiciones necesarias.
+     * Verifica que la cantidad sea potencia de dos si se requiere.
+     *
+     * @throws IllegalArgumentException si la cantidad no es válida
+     */
     @Override
     protected void validarParticipantes(){
         super.validarParticipantes();
@@ -67,6 +103,10 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
         }
     }
 
+    /**
+     * Genera todos los enfrentamientos del torneo en formato de eliminación directa,
+     * construyendo el bracket completo.
+     */
     @Override
     protected void generarEnfrentamientos(){
         enfrentamientos.clear();
@@ -77,6 +117,12 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
         rondasEliminatorias = bracket;
     }
 
+    /**
+     * Genera el árbol de eliminatorias (bracket) completo a partir de los participantes.
+     * Se insertan placeholders para los ganadores en rondas futuras.
+     *
+     * @param participantes lista de participantes para la primera ronda
+     */
     private void generarBracketCompleto(ArrayList<T> participantes){
         ArrayList<T> rondaActual = new ArrayList<>(participantes);
 
@@ -118,6 +164,9 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
         }
     }
 
+    /**
+     * Imprime por consola el bracket generado con rondas y enfrentamientos.
+     */
     public void imprimirBracket() {
         System.out.println("=== Bracket Eliminatorio ===");
 
@@ -134,28 +183,40 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
         }
     }
 
+    /**
+     * Devuelve el bracket (lista de rondas de enfrentamientos).
+     * @return lista de rondas
+     */
     public List<List<Enfrentamiento>> getBracket() {
         return bracket;
     }
 
+    /**
+     * Devuelve el mapa de estadísticas por participante.
+     * @return mapa de estadísticas
+     */
     public Map<T, E> getTablaEstadisticas() {
         return tablaEstadisticas;
     }
 
+    /**
+     * Actualiza las estadísticas de todos los participantes a partir de los resultados
+     * actuales de los enfrentamientos.
+     * Reinicia previamente las estadísticas.
+     */
     public void actualizarEstadisticasDesdeResultados() {
-
         for (E estadistica : tablaEstadisticas.values()) {
             estadistica.reiniciarEstadisticas();
         }
 
         for (Enfrentamiento enf : enfrentamientos) {
-                Resultado r = enf.getResultado();
-                System.out.println("Resultado del enfrentamiento: " + r);
+            Resultado r = enf.getResultado();
+            System.out.println("Resultado del enfrentamiento: " + r);
 
             if (r != null && getResultadoClass().isInstance(r)) {
                 R resultado = (R) r;
-                T p1 = (T) enf.getParticipante1();
-                T p2 = (T) enf.getParticipante2();
+                Participante p1 = enf.getParticipante1();
+                Participante p2 = enf.getParticipante2();
 
                 if (tablaEstadisticas.containsKey(p1)) {
                     tablaEstadisticas.get(p1).registrarResultado(resultado, p1, true);
@@ -167,8 +228,10 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
         }
     }
 
-
-
+    /**
+     * Devuelve la clase esperada para los resultados. Por defecto, {@link Resultado}.
+     * @return clase del tipo de resultado
+     */
     protected Class<?> getResultadoClass() {
         return Resultado.class;
     }

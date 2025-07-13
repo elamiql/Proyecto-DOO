@@ -2,6 +2,7 @@ package org.example.app;
 
 import org.example.enums.Deporte;
 import org.example.enums.Formato;
+import org.example.enums.Videojuegos;
 import org.example.gui.Otros.Ventana;
 import org.example.model.Enfrentamientos.GenerarCalendario;
 import org.example.model.Formatos.Eliminatoria;
@@ -70,9 +71,9 @@ public class Main5 {
         // Crear torneo Champions
         TorneoEquipo torneoChampions = new TorneoEquipo(
                 "Champions 2025",
-                Deporte.FUTBOL  ,
+                Deporte.TENIS_DE_MESA,
                 "01-07-2025 20:00",
-                Formato.LIGA,
+                Formato.ELIMINATORIA,
                 "1"
         );
 

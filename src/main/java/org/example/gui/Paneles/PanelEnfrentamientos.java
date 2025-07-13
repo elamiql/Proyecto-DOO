@@ -278,15 +278,32 @@ public class PanelEnfrentamientos extends PanelFondo {
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
 
-
+    /**
+     * Registra las estadísticas de un enfrentamiento en función del formato del torneo.
+     * Si el formato es {@code LIGA}, se utiliza {@code registrarEstadisticas2}
+     * de lo contrario se utiliza {@code registrarEstadisticas1}.
+     * @param e el {@link Enfrentamiento} que se desea registrar.
+     * @param p el participante ganador del enfrentamiento (puede ser {@code null}).
+     * @return {@code true} si el registro fue exitoso, {@code false} si hubo errores.
+     */
     private boolean registrarEstadisticas(Enfrentamiento e, Participante p) {
         if (torneo.getFormato() == LIGA) {
-            return registrarEstadisticas2(e);
+            return registrarEstadisticas2(e,p);
         } else {
             return registrarEstadisticas1(e, p);
         }
     }
 
+    /**
+     * Registra las estadísticas de un enfrentamiento para disciplinas en torneos que no son de formato liga.
+     * <p>
+     * Dependiendo de la disciplina del torneo, este metodo crea un objeto de resultado correspondiente
+     * a la disciplina valida.
+     * </p>
+     * @param e       el {@link Enfrentamiento} que se desea registrar.
+     * @param ganador el participante que ganó el enfrentamiento (puede ser {@code null} para empate).
+     * @return {@code true} si el resultado fue registrado correctamente, {@code false} si ocurrió algún error o cancelación.
+     */
     private boolean registrarEstadisticas1(Enfrentamiento e, Participante ganador) {
         try {
             String disciplina = torneo.getDisciplina().getNombre();
@@ -403,8 +420,17 @@ public class PanelEnfrentamientos extends PanelFondo {
         return false;
     }
 
-
-    private boolean registrarEstadisticas2(Enfrentamiento e) {
+    /**
+     * Registra estadísticas para un enfrentamiento en formato liga.
+     * <p>
+     * Solicita al usuario los puntos obtenidos por ambos participantes y registra
+     * un resultado de tipo {@link ResultadoFutbol}.
+     * </p>
+     *
+     * @param e el {@link Enfrentamiento} que se desea registrar.
+     * @return {@code true} si el resultado fue registrado correctamente, {@code false} si ocurrió algún error.
+     */
+    private boolean registrarEstadisticas2(Enfrentamiento e, Participante ganador) {
         try {
             Participante p1 = e.getParticipante1();
             Participante p2 = e.getParticipante2();
@@ -421,6 +447,13 @@ public class PanelEnfrentamientos extends PanelFondo {
             int puntos2 = Integer.parseInt(input2);
 
             ResultadoFutbol resultado = new ResultadoFutbol(p1, p2, puntos1, puntos2);
+
+            // Usar el método esValido() para validar
+            if (!resultado.esValidoLiga(ganador)) {
+                JOptionPane.showMessageDialog(frame, "Los datos ingresados no son válidos.", "Error de validación", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
             e.registrarResultado(resultado);
             return true;
 
@@ -431,7 +464,6 @@ public class PanelEnfrentamientos extends PanelFondo {
         }
         return false;
     }
-
 
 
     /**
@@ -491,13 +523,8 @@ public class PanelEnfrentamientos extends PanelFondo {
      * @param ganador el objeto ganador (jugador o equipo).
      * @return el nombre representativo.
      */
-    private String obtenerNombreGanador(Object ganador) {
-        if (ganador instanceof Jugador) {
-            return ((Jugador) ganador).getNombre();
-        } else if (ganador instanceof Equipo) {
-            return ((Equipo) ganador).getNombre();
-        }
-        return ganador.toString();
+    private String obtenerNombreGanador(Participante ganador) {
+        return ganador.getNombre();
     }
 
     /**
@@ -564,7 +591,7 @@ public class PanelEnfrentamientos extends PanelFondo {
             return;
         }
 
-        // NUEVO: Verificar si ya se apostó
+
         for (Apuesta a : apuestas) {
             if (a.getEnfrentamiento().equals(e)) {
                 JOptionPane.showMessageDialog(frame, "Ya realizaste una apuesta en este enfrentamiento.");
