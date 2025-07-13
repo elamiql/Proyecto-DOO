@@ -44,15 +44,15 @@ public class Main2 {
             torneo.addParticipante(equipo);
         }
 
-        GenerarCalendario<Equipo> generador = new Eliminatoria<>(torneo.getParticipantes(), true);
-        generador.generarCalendario();
+        //GenerarCalendario<Equipo> generador = new Eliminatoria<>(torneo.getParticipantes(), true,"FUTBOL");
+        //generador.generarCalendario();
 
-        List<List<Enfrentamiento>> rondas = generador.getRondasEliminatorias();
+        //List<List<Enfrentamiento>> rondas = generador.getRondasEliminatorias();
         Random rnd = new Random();
 
         System.out.println("=== Simulación del torneo ===");
 
-        for (int i = 0; i < rondas.size(); i++) {
+        /*for (int i = 0; i < rondas.size(); i++) {
             List<Enfrentamiento> ronda = rondas.get(i);
             System.out.println("\n--- Ronda " + (i + 1) + " ---");
             for (int j = 0; j < ronda.size(); j++) {
@@ -90,5 +90,7 @@ public class Main2 {
         Enfrentamiento finalMatch = rondas.get(rondas.size() - 1).get(0);
         System.out.println("\n=== Campeón del torneo ===");
         System.out.println("🏆 " + finalMatch.getGanador().getNombre() + " 🏆");
+
+         */
     }
 }

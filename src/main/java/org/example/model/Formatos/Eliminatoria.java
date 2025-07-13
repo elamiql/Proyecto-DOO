@@ -1,68 +1,72 @@
 package org.example.model.Formatos;
 
 import org.example.exceptions.ParticipanteNullException;
+import org.example.interfaces.Disciplina;
+import org.example.interfaces.Estadisticas;
+import org.example.interfaces.Resultado;
 import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Enfrentamientos.GenerarCalendario;
+import org.example.model.Estadisticas.*;
 import org.example.model.Participante.Equipo;
 import org.example.model.Participante.Jugador;
 import org.example.model.Participante.Participante;
-
 import java.util.*;
 
-/**
- * Clase que representa un generador de calendario para torneos en formato de eliminación directa.
- * Genera un bracket eliminatorio completo a partir de una lista de participantes.
- * Puede configurarse para requerir que el número de participantes sea potencia de dos.
- * @param <T> Tipo de participante (jugador o equipo) que extiende de {@link Participante}.
- */
-public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
 
-    /** Lista de rondas, cada una con sus respectivos enfrentamientos, que conforman el bracket del torneo */
+public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, R extends Resultado> extends GenerarCalendario<T> {
+
     private final List<List<Enfrentamiento>> bracket;
-
-    /** Indica si el torneo requiere una cantidad de participantes igual a una potencia de 2 */
     private final boolean requierePotenciaDeDos;
+    private final Map<T, E> tablaEstadisticas;
+    private Disciplina disciplina;
 
-    /**
-     * Constructor que permite especificar si se requiere una cantidad de participantes que sea potencia de dos.
-     * @param participantes Lista de participantes.
-     * @param requierePotenciaDeDos {@code true} si se debe verificar que la cantidad sea potencia de dos.
-     */
-    public Eliminatoria(ArrayList<T> participantes, boolean requierePotenciaDeDos){
+    public Eliminatoria(ArrayList<T> participantes, boolean requierePotenciaDeDos,Disciplina disciplina) {
         super(participantes);
         this.requierePotenciaDeDos = requierePotenciaDeDos;
         this.bracket = new ArrayList<>();
+        this.tablaEstadisticas = new HashMap<>();
+        this.disciplina=disciplina;
+
+        for (T participante : participantes) {
+            tablaEstadisticas.put(participante, crearEstadistica(participante));
+        }
     }
 
-    /**
-     * Constructor que permite crear una eliminatoria sin requerir que la cantidad de participantes sea potencia de dos.
-     * @param participantes Lista de participantes.
-     */
-    public Eliminatoria(ArrayList<T> participantes){
-        this(participantes, false);
+    public Eliminatoria(ArrayList<T> participantes,Disciplina disciplina) {
+        this(participantes, false,disciplina);
     }
 
-    /**
-     * Valida la cantidad de participantes antes de generar el calendario.
-     * Si {@code requierePotenciaDeDos} es true, lanza excepción si el número no es potencia de 2.
-     * @throws IllegalArgumentException si la cantidad no es válida.
-     */
+    private E crearEstadistica(T participante) {
+
+        switch (disciplina.getNombre()) {
+            case "FUTBOL":
+                return (E) new EstadisticasFutbol(participante);
+            case "TENIS":
+                return (E) new EstadisticasTenis(participante);
+            case "TENIS_DE_MESA":
+                return (E) new EstadisticaTenisDeMesa(participante);
+            case "AJEDREZ":
+                return (E) new EstadisticasAjedrez(participante);
+            case "FIFA":
+                return (E) new EstadisticasFifa(participante);
+            case "LOL":
+                return (E) new EstadisticasLol(participante);
+            default:
+                throw new UnsupportedOperationException("Disciplina no soportada: " + disciplina);
+        }
+    }
+
     @Override
     protected void validarParticipantes(){
         super.validarParticipantes();
-
         if (requierePotenciaDeDos){
             int total = participantes.size();
             if ((total & (total - 1)) != 0){
-                throw new IllegalArgumentException("Para una eliminatoria se requiere que el total sea potencia de 2");
+                throw new IllegalArgumentException("La cantidad de participantes debe ser potencia de 2");
             }
         }
     }
 
-    /**
-     * Genera el calendario de enfrentamientos en forma de bracket eliminatorio.
-     * Los participantes son emparejados en rondas sucesivas hasta quedar un solo ganador.
-     */
     @Override
     protected void generarEnfrentamientos(){
         enfrentamientos.clear();
@@ -73,12 +77,6 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         rondasEliminatorias = bracket;
     }
 
-    /**
-     * Genera el bracket completo a partir de los participantes dados.
-     * Crea enfrentamientos y placeholders para las siguientes rondas.
-     * @param participantes Lista inicial de participantes.
-     * @throws ParticipanteNullException si se intenta enfrentar un jugador con un equipo.
-     */
     private void generarBracketCompleto(ArrayList<T> participantes){
         ArrayList<T> rondaActual = new ArrayList<>(participantes);
 
@@ -102,8 +100,8 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
                 } else if (p1 instanceof Equipo && p2 instanceof Equipo) {
                     placeholder = new Equipo(nombreGanador, "-1", new ArrayList<>());
                 } else {
-                    throw new ParticipanteNullException("No se puede enfrentar un jugador con un equipo "
-                            + p1.getClass() + " " + p2.getClass());
+                    throw new ParticipanteNullException("No se puede enfrentar un jugador con un equipo: "
+                            + p1.getClass() + " vs " + p2.getClass());
                 }
 
                 sgteRonda.add((T) placeholder);
@@ -120,9 +118,6 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         }
     }
 
-    /**
-     * Imprime el bracket del torneo por consola, mostrando enfrentamientos por ronda.
-     */
     public void imprimirBracket() {
         System.out.println("=== Bracket Eliminatorio ===");
 
@@ -139,19 +134,42 @@ public class Eliminatoria<T extends Participante> extends GenerarCalendario<T> {
         }
     }
 
-    /**
-     * Devuelve la estructura del bracket completo generado.
-     * @return Lista de rondas, cada una con sus enfrentamientos.
-     */
     public List<List<Enfrentamiento>> getBracket() {
         return bracket;
     }
 
-    /**
-     * Devuelve la lista de rondas eliminatorias (bracket).
-     * @return Lista de rondas eliminatorias.
-     */
-    public List<List<Enfrentamiento>> getRondas() {
-        return rondasEliminatorias;
+    public Map<T, E> getTablaEstadisticas() {
+        return tablaEstadisticas;
+    }
+
+    public void actualizarEstadisticasDesdeResultados() {
+
+        for (E estadistica : tablaEstadisticas.values()) {
+            estadistica.reiniciarEstadisticas();
+        }
+
+        for (Enfrentamiento enf : enfrentamientos) {
+                Resultado r = enf.getResultado();
+                System.out.println("Resultado del enfrentamiento: " + r);
+
+            if (r != null && getResultadoClass().isInstance(r)) {
+                R resultado = (R) r;
+                T p1 = (T) enf.getParticipante1();
+                T p2 = (T) enf.getParticipante2();
+
+                if (tablaEstadisticas.containsKey(p1)) {
+                    tablaEstadisticas.get(p1).registrarResultado(resultado, p1, true);
+                }
+                if (tablaEstadisticas.containsKey(p2)) {
+                    tablaEstadisticas.get(p2).registrarResultado(resultado, p2, false);
+                }
+            }
+        }
+    }
+
+
+
+    protected Class<?> getResultadoClass() {
+        return Resultado.class;
     }
 }

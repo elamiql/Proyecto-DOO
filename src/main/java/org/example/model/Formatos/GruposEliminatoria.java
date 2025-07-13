@@ -40,7 +40,7 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
     /**
      * Generador del calendario para la fase eliminatoria posterior a la fase de grupos.
      */
-    private Eliminatoria<T> generadorEliminatorias;
+   // private Eliminatoria<T> generadorEliminatorias;
 
     /**
      * Constructor que inicializa los grupos y parámetros del torneo.
@@ -140,12 +140,11 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
             clasificadosOrdenados.add(grupo1.get(1));
 
         }
-
-        if (clasificadosOrdenados.size() > 1) {
-            generadorEliminatorias = new Eliminatoria<>(clasificadosOrdenados, false);
+/* if (clasificadosOrdenados.size() > 1) {
+            generadorEliminatorias = new Eliminatoria<>(clasificadosOrdenados, false,);
             generadorEliminatorias.generarCalendario();
             enfrentamientos.addAll(generadorEliminatorias.getEnfrentamientos());
-        }
+        }*/
     }
 
     /**
@@ -174,17 +173,21 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
                 System.out.println("  " + e);
             }
         }
-
+        /*
         // Imprimir fase eliminatoria
         if (generadorEliminatorias != null) {
             System.out.println("\n--- FASE ELIMINATORIA ---");
             generadorEliminatorias.imprimirBracket();
         }
-    }
 
+         */
+    }
+/*
     public Eliminatoria<T> getGeneradorEliminatorias(){
         return generadorEliminatorias;
     }
+
+ */
 
     public List<List<T>> getGrupos(){
         return grupos;

@@ -119,15 +119,22 @@ public class Liga<T extends Participante> extends GenerarCalendario<T> {
         this.tablaEstadisticas = tablaEstadisticas;
     }
     public void actualizarEstadisticasDesdeResultados() {
+
+       for (EstadisticasFutbol estadistica : tablaEstadisticas.values()) {
+            estadistica.reiniciarEstadisticas();
+        }
+
+
+
         for (Enfrentamiento enf : enfrentamientos) {
             if (enf.getResultado() instanceof ResultadoFutbol resultado) {
                 Participante p1 = enf.getParticipante1();
                 Participante p2 = enf.getParticipante2();
 
-                // Registrar para ambos
                 if (tablaEstadisticas.containsKey(p1)) {
                     tablaEstadisticas.get(p1).registrarResultado(resultado, p1, true);
                 }
+
                 if (tablaEstadisticas.containsKey(p2)) {
                     tablaEstadisticas.get(p2).registrarResultado(resultado, p2, false);
                 }

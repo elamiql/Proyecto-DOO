@@ -25,6 +25,11 @@ import org.example.model.Participante.Jugador;
  * Grupos con eliminatoria
  * </p>
  * </p>
+ *
+ * @see Torneo
+ * @see Jugador
+ * @see org.example.enums.Formato
+ * @see org.example.interfaces.Disciplina
  */
 public class TorneoIndividual extends Torneo<Jugador> {
 
@@ -105,7 +110,7 @@ public class TorneoIndividual extends Torneo<Jugador> {
                 break;
 
             case ELIMINATORIA:
-                generadorActivo = new Eliminatoria<>(getParticipantes(), true);
+                generadorActivo = new Eliminatoria<>(getParticipantes(), true,disciplina);
                 break;
 
             case GRUPOS_CON_ELIMINATORIA:

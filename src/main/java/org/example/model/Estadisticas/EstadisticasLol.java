@@ -87,4 +87,11 @@ public class EstadisticasLol extends EstadisticasParticipante<Participante, Resu
                 ", Dragones: " + dragonesTotales +
                 ", Barones: " + baronesTotales;
     }
+    public void reiniciarEstadisticas(){
+        super.reiniciarEstadisticas();
+        this.killsTotales = 0;
+        this. torresTotales= 0;
+        this.dragonesTotales=0;
+        this.baronesTotales=0;
+    }
 }

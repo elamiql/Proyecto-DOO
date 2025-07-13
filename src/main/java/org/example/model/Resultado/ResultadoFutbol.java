@@ -109,4 +109,5 @@ public class ResultadoFutbol implements Resultado {
     public Participante getVisitante() {
         return visitante;
     }
+
 }

@@ -14,7 +14,7 @@ import java.util.*;
 public class Main3 {
     public static void main(String[] args) {
         ArrayList<Equipo> mundialEquipos = new ArrayList<>();
-
+        /*
         // Grupos del Mundial de Qatar 2022
         String[][] gruposQatar = {
                 {"Paises Bajos", "Senegal", "Ecuador", "Qatar"},        // Grupo A
@@ -116,5 +116,7 @@ public class Main3 {
             System.out.println("\n=== CAMPEÓN DEL MUNDIAL ===");
             System.out.println("🏆 " + finalMatch.getGanador().getNombre());
         }
+
+         */
     }
 }

@@ -66,4 +66,8 @@ public class EstadisticaTenisDeMesa extends EstadisticasParticipante<Participant
                 ", P: " + getPerdidos() +
                 ", Ptos: " + getPuntos();
     }
+    public void reiniciarEstadisticas(){
+        super.reiniciarEstadisticas();
+
+    }
 }

@@ -313,4 +313,20 @@ public class EstadisticasTenis extends EstadisticasParticipante<Participante, Re
     public boolean isUltimaFueVictoria() {
         return ultimaFueVictoria;
     }
+    public void reiniciarEstadisticas(){
+        super.reiniciarEstadisticas();
+        this.setsGanados = 0;
+        this.setsPerdidos = 0;
+        this.juegosGanados = 0;
+        this.juegosPerdidos = 0;
+        this.partidosGanadosEnTiebreak = 0;
+        this.partidosPerdidosEnTiebreak = 0;
+        this.setsGanadosEnTiebreak = 0;
+        this.setsPerdidosEnTiebreak = 0;
+        this.rachaVictoriasActual = 0;
+        this.rachaVictoriasMaxima = 0;
+        this.rachaDerrotasActual = 0;
+        this.rachaDerrotasMaxima = 0;
+
+    }
 }

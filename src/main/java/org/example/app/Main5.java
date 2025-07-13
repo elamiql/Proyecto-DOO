@@ -70,7 +70,7 @@ public class Main5 {
         // Crear torneo Champions
         TorneoEquipo torneoChampions = new TorneoEquipo(
                 "Champions 2025",
-                Deporte.TENIS_DE_MESA  ,
+                Deporte.FUTBOL  ,
                 "01-07-2025 20:00",
                 Formato.LIGA,
                 "1"
@@ -81,12 +81,8 @@ public class Main5 {
             torneoChampions.addParticipante(equipo);
         }
 
-        // Generar calendario eliminatoria para Champions
-        GenerarCalendario<Equipo> generador = new Eliminatoria<>(torneoChampions.getParticipantes(), true);
-        generador.generarCalendario();
 
-        // Asignar enfrentamientos generados al torneoChampions (si tu clase TorneoEquipo tiene este metodo)
-        torneoChampions.setEnfrentamientos(generador.getEnfrentamientos());
+
 
         // Agregar torneos al gestor
         GestorTorneos.agregarTorneo(torneoTest);

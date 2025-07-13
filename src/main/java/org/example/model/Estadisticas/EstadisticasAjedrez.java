@@ -71,4 +71,8 @@ public class EstadisticasAjedrez extends EstadisticasParticipante<Participante, 
                 getPerdidos(),
                 getGanados() * 1.0 + getEmpatados() * 0.5);
     }
+    public void reiniciarEstadisticas(){
+        super.reiniciarEstadisticas();
+
+    }
 }

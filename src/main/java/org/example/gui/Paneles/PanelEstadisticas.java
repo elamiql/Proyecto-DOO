@@ -5,6 +5,7 @@ import org.example.gui.Otros.Imagen;
 import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Enfrentamientos.GenerarCalendario;
 import org.example.model.Estadisticas.*;
+import org.example.model.Formatos.Eliminatoria;
 import org.example.model.Formatos.Liga;
 import org.example.model.Participante.Participante;
 import org.example.model.Resultado.*;
@@ -19,19 +20,6 @@ import java.util.List;
 
 import static org.example.enums.Formato.LIGA;
 
-/**
- * {@code PanelEstadisticas} es un panel gráfico que permite visualizar las estadísticas
- * individuales o grupales de los participantes de un torneo, dependiendo del formato
- * (liga o eliminación directa) y la disciplina (ajedrez, fútbol, tenis, etc.).
- * <p>
- * Para torneos tipo liga, muestra una tabla de posiciones ordenada por puntos y
- * diferencia de goles. Para formatos de eliminación, permite seleccionar un participante
- * y visualizar sus estadísticas acumuladas.
- * </p>
- *
- * <p>Este panel utiliza un fondo personalizado, una lista desplegable de participantes,
- * un área de texto para mostrar resultados, y botones para ver estadísticas y volver.</p>
- */
 public class PanelEstadisticas extends PanelFondo {
 
     private final JFrame frame;
@@ -41,11 +29,6 @@ public class PanelEstadisticas extends PanelFondo {
     private JTextArea areaEstadisticas;
     private JButton botonVer;
 
-    /**
-     * Crea un nuevo {@code PanelEstadisticas} para el torneo dado.
-     * @param frame  el {@link JFrame} contenedor principal.
-     * @param torneo el {@link Torneo} cuyas estadísticas se mostrarán.
-     */
     public PanelEstadisticas(JFrame frame, Torneo torneo) {
         super(Imagen.cargarImagen("/Fondos/Fondo2.jpg"));
         this.frame = frame;
@@ -56,10 +39,6 @@ public class PanelEstadisticas extends PanelFondo {
         configurarEventos();
     }
 
-    /**
-     * Inicializa los componentes de la interfaz como la lista desplegable de participantes,
-     * el botón para ver estadísticas y el área de texto para resultados.
-     */
     private void inicializarComponentes() {
         comboParticipantes = new JComboBox<>();
         for (Object p : torneo.getParticipantes()) {
@@ -75,11 +54,6 @@ public class PanelEstadisticas extends PanelFondo {
         areaEstadisticas.setWrapStyleWord(true);
     }
 
-    /**
-     * Configura el layout del panel, agregando los componentes al lugar correspondiente
-     * (parte superior, central e inferior). En formato liga, se omite la selección
-     * individual y se muestran todas las estadísticas.
-     */
     private void configurarLayout() {
         setLayout(new BorderLayout());
 
@@ -122,10 +96,7 @@ public class PanelEstadisticas extends PanelFondo {
         add(panelInferior, BorderLayout.SOUTH);
     }
 
-    /**
-     * Configura los eventos del panel, en particular el evento del botón "Ver estadísticas"
-     * para mostrar las estadísticas del participante seleccionado.
-     */
+
     private void configurarEventos() {
         botonVer.addActionListener((ActionEvent e) -> {
             Participante seleccionado = (Participante) comboParticipantes.getSelectedItem();
@@ -135,14 +106,6 @@ public class PanelEstadisticas extends PanelFondo {
         });
     }
 
-    /**
-     * Muestra las estadísticas correspondientes al participante dado.
-     * <p>
-     * Si el torneo es de tipo liga, muestra la tabla completa.
-     * En caso contrario, muestra las estadísticas individuales del participante.
-     * </p>
-     * @param p el {@link Participante} cuyas estadísticas se mostrarán.
-     */
     private void mostrarEstadisticas(Participante p) {
         if (torneo.getFormato() == LIGA) {
             mostrarEstadisticasLiga();
@@ -150,32 +113,18 @@ public class PanelEstadisticas extends PanelFondo {
             mostrarEstadisticasEliminatoria(p);
         }
     }
-    /**
-     * Muestra la tabla de estadísticas del torneo en formato liga.
-     * <p>
-     * Las estadísticas se ordenan por puntos obtenidos y diferencia de goles.
-     * </p>
-     */
     private void mostrarEstadisticasLiga() {
         StringBuilder resultado = new StringBuilder();
         GenerarCalendario<?> generador = torneo.getGeneradorActivo();
 
         if (generador instanceof Liga<?> liga) {
-            liga.actualizarEstadisticasDesdeResultados();
 
-            // Obtener las estadísticas y ordenarlas por puntos y diferencia de goles
+            // Obtener las estadísticas y ordenarlas por puntos (de mayor a menor)
             List<Map.Entry<Participante, EstadisticasFutbol>> listaOrdenada =
                     new ArrayList<>(liga.getTablaEstadisticas().entrySet());
 
-            listaOrdenada.sort((e1, e2) -> {
-                int cmp = Integer.compare(e2.getValue().getPuntos(), e1.getValue().getPuntos());
-                if (cmp == 0) {
-                    int dif1 = e1.getValue().getDiferenciaGoles();
-                    int dif2 = e2.getValue().getDiferenciaGoles();
-                    cmp = Integer.compare(dif2, dif1); // mayor diferencia primero
-                }
-                return cmp;
-            });
+            listaOrdenada.sort((e1, e2) ->
+                    Integer.compare(e2.getValue().getPuntos(), e1.getValue().getPuntos()));
 
             // Mostrar participantes ordenados por posición
             int posicion = 1;
@@ -198,76 +147,45 @@ public class PanelEstadisticas extends PanelFondo {
     }
 
 
-    /**
-     * Muestra las estadísticas individuales del participante dado para torneos que
-     * no son de formato liga.
-     * <p>
-     * Este metodo maneja varias disciplinas (Fútbol, Ajedrez, Tenis, LOL, etc.) y
-     * genera los objetos de estadísticas adecuados para cada una.
-     * </p>
-     *
-     * @param p el participante seleccionado.
-     */
+
     private void mostrarEstadisticasEliminatoria(Participante p) {
         String disciplina = torneo.getDisciplina().getNombre().toUpperCase();
         StringBuilder resultado = new StringBuilder();
+        GenerarCalendario<?> generador = torneo.getGeneradorActivo();
+
+        if (!(generador instanceof Eliminatoria<?, ?, ?> eliminatoria)) {
+            areaEstadisticas.setText("No se pudo recuperar la eliminatoria activa.");
+            return;
+        }
+
+
+        Object estadistica = eliminatoria.getTablaEstadisticas().get(p);
+        if (estadistica == null) {
+            areaEstadisticas.setText("No hay estadísticas registradas para este participante.");
+            return;
+        }
 
         switch (disciplina) {
             case "FUTBOL", "FIFA" -> {
-                EstadisticasFutbol estadisticas = new EstadisticasFutbol(p);
-                for (Object obj : torneo.getEnfrentamientos()) {
-                    Enfrentamiento enf = (Enfrentamiento) obj;
-                    if (enf.getResultado() instanceof ResultadoFutbol) {
-                        estadisticas.registrarResultado((ResultadoFutbol) enf.getResultado(), p, enf.getParticipante1().equals(p));
-                    }
-                }
-                resultado.append(estadisticas.toTablaString());
+                EstadisticasFutbol ef = (EstadisticasFutbol) estadistica;
+                resultado.append(ef.toTablaString());
             }
-
             case "AJEDREZ" -> {
-                EstadisticasAjedrez estadisticas = new EstadisticasAjedrez(p);
-                for (Object obj : torneo.getEnfrentamientos()) {
-                    Enfrentamiento enf = (Enfrentamiento) obj;
-                    if (enf.getResultado() instanceof ResultadoAjedrez) {
-                        estadisticas.registrarResultado((ResultadoAjedrez) enf.getResultado(), p, enf.getParticipante1().equals(p));
-                    }
-                }
-                resultado.append(estadisticas.toTablaString());
+                EstadisticasAjedrez ea = (EstadisticasAjedrez) estadistica;
+                resultado.append(ea.toTablaString());
             }
-
             case "TENIS" -> {
-                EstadisticasTenis estadisticas = new EstadisticasTenis(p);
-                for (Object obj : torneo.getEnfrentamientos()) {
-                    Enfrentamiento enf = (Enfrentamiento) obj;
-                    if (enf.getResultado() instanceof ResultadoTenis) {
-                        estadisticas.registrarResultado((ResultadoTenis) enf.getResultado(), p, enf.getParticipante1().equals(p));
-                    }
-                }
-                resultado.append(estadisticas.getEstadisticasCompletas());
+                EstadisticasTenis et = (EstadisticasTenis) estadistica;
+                resultado.append(et.getEstadisticasCompletas());
             }
-
             case "TENIS_DE_MESA" -> {
-                EstadisticaTenisDeMesa estadisticas = new EstadisticaTenisDeMesa(p);
-                for (Object obj : torneo.getEnfrentamientos()) {
-                    Enfrentamiento enf = (Enfrentamiento) obj;
-                    if (enf.getResultado() instanceof ResultadoTenisDeMesa) {
-                        estadisticas.registrarResultado((ResultadoTenisDeMesa) enf.getResultado(), p, enf.getParticipante1().equals(p));
-                    }
-                }
-                resultado.append(estadisticas.toTablaString());
+                EstadisticaTenisDeMesa etm = (EstadisticaTenisDeMesa) estadistica;
+                resultado.append(etm.toTablaString());
             }
-
             case "LOL" -> {
-                EstadisticasLol estadisticas = new EstadisticasLol(p);
-                for (Object obj : torneo.getEnfrentamientos()) {
-                    Enfrentamiento enf = (Enfrentamiento) obj;
-                    if (enf.getResultado() instanceof ResultadoLol) {
-                        estadisticas.registrarResultado((ResultadoLol) enf.getResultado(), p, enf.getParticipante1().equals(p));
-                    }
-                }
-                resultado.append(estadisticas.toTablaString());
+                EstadisticasLol el = (EstadisticasLol) estadistica;
+                resultado.append(el.toTablaString());
             }
-
             default -> {
                 resultado.append("Disciplina no soportada.");
             }
@@ -275,6 +193,8 @@ public class PanelEstadisticas extends PanelFondo {
 
         areaEstadisticas.setText(resultado.toString());
     }
+
+
 
 }
 

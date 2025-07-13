@@ -32,4 +32,6 @@ public interface Estadisticas<T, R> {
      * @return una cadena con los datos estadísticos formateados.
      */
     String toTablaString();
+
+    void reiniciarEstadisticas();
 }

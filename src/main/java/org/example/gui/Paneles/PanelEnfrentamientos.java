@@ -2,20 +2,26 @@ package org.example.gui.Paneles;
 
 
 import org.example.command.CambiarPanelCommand;
+import org.example.enums.Formato;
 import org.example.gui.Otros.BotonBuilder;
 import org.example.gui.Otros.Imagen;
+import org.example.interfaces.Resultado;
 import org.example.model.Apuesta;
 import org.example.model.Enfrentamientos.Enfrentamiento;
-import org.example.model.Estadisticas.*;
+import org.example.model.Enfrentamientos.GenerarCalendario;
+
+import org.example.model.Formatos.Eliminatoria;
+import org.example.model.Formatos.Liga;
 import org.example.model.Participante.Equipo;
 import org.example.model.Participante.Jugador;
 import org.example.model.Participante.Participante;
-import org.example.model.Participante.ParticipantePlaceholder;
+
 import org.example.model.Resultado.*;
 import org.example.model.torneo.Torneo;
 
+
 import javax.swing.*;
-import javax.swing.border.Border;
+
 import java.awt.*;
 import java.util.List;
 
@@ -210,6 +216,18 @@ public class PanelEnfrentamientos extends PanelFondo {
                 String claveIngresada = new String(passwordField.getPassword());
                 if (claveIngresada.equals(torneo.getContraseña())) {
                     registrarGanador(e, seleccionado);
+                    GenerarCalendario<?> generador = torneo.getGeneradorActivo();
+                    if (torneo.getFormato() == Formato.LIGA) {
+                        if (generador instanceof Liga<?> liga) {
+                            liga.actualizarEstadisticasDesdeResultados();
+                        }
+                    } else {
+                        if (generador instanceof Eliminatoria<?, ?, ?> eliminatoria) {
+                            eliminatoria.actualizarEstadisticasDesdeResultados();
+
+                        }
+                    }
+
                 } else {
                     JOptionPane.showMessageDialog(frame,
                             "Contraseña incorrecta.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -237,11 +255,13 @@ public class PanelEnfrentamientos extends PanelFondo {
 
             e.setGanador(ganador); // Registrar al ganador normalmente
 
-            String nombreGanadorLimpio = limpiarNombreGanador(ganador.getNombre());
+            // Crear el patrón para buscar en enfrentamientos posteriores
             String patron = "Ganador " + e.getParticipante1().getNombre() + " vs " + e.getParticipante2().getNombre();
 
-            actualizarEnfrentamientosPosteriores(patron, nombreGanadorLimpio);
+            // CAMBIO PRINCIPAL: Pasar el participante ganador real en lugar del nombre limpio
+            actualizarEnfrentamientosPosteriores(patron, ganador);
 
+            String nombreGanadorLimpio = limpiarNombreGanador(ganador.getNombre());
             JOptionPane.showMessageDialog(frame, "Ganador registrado: " + nombreGanadorLimpio);
         }
 
@@ -258,201 +278,133 @@ public class PanelEnfrentamientos extends PanelFondo {
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
 
-    /**
-     * Registra las estadísticas de un {@link Enfrentamiento} de acuerdo al tipo de torneo.
-     *
-     * @param e el enfrentamiento actual.
-     * @param p el participante ganador.
-     */
+
     private boolean registrarEstadisticas(Enfrentamiento e, Participante p) {
         if (torneo.getFormato() == LIGA) {
-            return registrarEstadisticas2(e, p);
+            return registrarEstadisticas2(e);
         } else {
             return registrarEstadisticas1(e, p);
         }
     }
 
-    /**
-     * Registra las estadísticas de un enfrentamiento en un torneo que no es de tipo liga.
-     * Varía según la disciplina del torneo.
-     *
-     * @param e el enfrentamiento actual.
-     * @param ganador el participante que ganó el enfrentamiento .
-     */
     private boolean registrarEstadisticas1(Enfrentamiento e, Participante ganador) {
         try {
             String disciplina = torneo.getDisciplina().getNombre();
 
             Participante p1 = e.getParticipante1();
             Participante p2 = e.getParticipante2();
+            Resultado resultado;
 
             switch (disciplina) {
+                case "FUTBOL" -> {
+                    int goles1 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p1.getNombre()));
+                    int goles2 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p2.getNombre()));
+                    resultado = new ResultadoFutbol(p1, p2, goles1, goles2);
+                    if (!resultado.esValido()) {
+                        JOptionPane.showMessageDialog(null, "Goles inválidos.");
+                        return false;
+                    }
+                }
 
                 case "AJEDREZ" -> {
-                    ResultadoAjedrez resultadoAjedrez;
                     if (ganador == null) {
-                        resultadoAjedrez = new ResultadoAjedrez(p1, p2, 0.5, 0.5);
+                        resultado = new ResultadoAjedrez(p1, p2, 0.5, 0.5);
                     } else if (ganador.equals(p1)) {
-                        resultadoAjedrez = new ResultadoAjedrez(p1, p2, 1.0, 0.0);
+                        resultado = new ResultadoAjedrez(p1, p2, 1.0, 0.0);
                     } else {
-                        resultadoAjedrez = new ResultadoAjedrez(p1, p2, 0.0, 1.0);
+                        resultado = new ResultadoAjedrez(p1, p2, 0.0, 1.0);
                     }
-
-                    e.setResultado(resultadoAjedrez);
-
-                    new EstadisticasAjedrez(p1).registrarResultado(resultadoAjedrez, p1, true);
-                    new EstadisticasAjedrez(p2).registrarResultado(resultadoAjedrez, p2, false);
-                    return true;
                 }
 
                 case "TENIS" -> {
                     int maxSets = 5;
-                    ResultadoTenis resultadoTenis = new ResultadoTenis(p1, p2, maxSets);
+                    ResultadoTenis r = new ResultadoTenis(p1, p2, maxSets);
+                    int setsP1 = 0, setsP2 = 0;
 
-                    int setsJ1 = 0;
-                    int setsJ2 = 0;
-                    int i = 0;
+                    for (int i = 0; i < maxSets; i++) {
+                        int j1 = Integer.parseInt(JOptionPane.showInputDialog("Juegos " + p1.getNombre() + " en set " + (i + 1)));
+                        int j2 = Integer.parseInt(JOptionPane.showInputDialog("Juegos " + p2.getNombre() + " en set " + (i + 1)));
+                        r.agregarSet(i, j1, j2);
+                        if (j1 > j2) setsP1++;
+                        else if (j2 > j1) setsP2++;
 
-                    while (i < maxSets && setsJ1 < (maxSets / 2 + 1) && setsJ2 < (maxSets / 2 + 1)) {
-                        String inputJ1 = JOptionPane.showInputDialog(frame, "Juegos ganados por " + p1.getNombre() + " en set " + (i + 1));
-                        String inputJ2 = JOptionPane.showInputDialog(frame, "Juegos ganados por " + p2.getNombre() + " en set " + (i + 1));
-
-                        if (inputJ1 == null || inputJ2 == null) {
-                            JOptionPane.showMessageDialog(frame, "Ingreso cancelado.");
-                            return false;
-                        }
-
-                        int juegosJ1 = Integer.parseInt(inputJ1);
-                        int juegosJ2 = Integer.parseInt(inputJ2);
-
-                        resultadoTenis.agregarSet(i, juegosJ1, juegosJ2);
-
-                        if (juegosJ1 > juegosJ2) {
-                            setsJ1++;
-                        } else if (juegosJ2 > juegosJ1) {
-                            setsJ2++;
-                        }
-
-                        i++;
+                        if (setsP1 > maxSets / 2 || setsP2 > maxSets / 2) break;
                     }
 
-                    if (!resultadoTenis.esValido()) {
-                        JOptionPane.showMessageDialog(frame, "Resultado inválido: nadie ganó la mayoría de sets.", "Error", JOptionPane.ERROR_MESSAGE);
+                    if (!r.esValido()) {
+                        JOptionPane.showMessageDialog(null, "Resultado de tenis inválido.");
                         return false;
                     }
 
-                    e.setResultado(resultadoTenis);
-
-                    new EstadisticasTenis(p1).registrarResultado(resultadoTenis, p1, true);
-                    new EstadisticasTenis(p2).registrarResultado(resultadoTenis, p2, false);
-                    return true;
-
+                    resultado = r;
                 }
-
 
                 case "TENIS_DE_MESA" -> {
                     int maxSets = 5;
-                    ResultadoTenisDeMesa resultadoT = new ResultadoTenisDeMesa(p1, p2, maxSets);
+                    ResultadoTenisDeMesa r = new ResultadoTenisDeMesa(p1, p2, maxSets);
+                    int setsP1 = 0, setsP2 = 0;
 
-                    int setsJ1 = 0;
-                    int setsJ2 = 0;
-                    int i = 0;
+                    for (int i = 0; i < maxSets; i++) {
+                        int p1Set = Integer.parseInt(JOptionPane.showInputDialog("Puntos de " + p1.getNombre() + " en set " + (i + 1)));
+                        int p2Set = Integer.parseInt(JOptionPane.showInputDialog("Puntos de " + p2.getNombre() + " en set " + (i + 1)));
 
-                    while (i < maxSets && setsJ1 < (maxSets / 2 + 1) && setsJ2 < (maxSets / 2 + 1)) {
-                        String inputJ1 = JOptionPane.showInputDialog(frame, "Puntos de " + p1.getNombre() + " en set " + (i + 1));
-                        String inputJ2 = JOptionPane.showInputDialog(frame, "Puntos de " + p2.getNombre() + " en set " + (i + 1));
-
-                        if (inputJ1 == null || inputJ2 == null) {
-                            JOptionPane.showMessageDialog(frame, "Ingreso cancelado.");
+                        if (!r.esSetValido(p1Set, p2Set)) {
+                            JOptionPane.showMessageDialog(null, "Set inválido.");
                             return false;
                         }
 
-                        int puntosJ1 = Integer.parseInt(inputJ1);
-                        int puntosJ2 = Integer.parseInt(inputJ2);
-                        boolean p = resultadoT.esSetValido(puntosJ1, puntosJ2);
-                        if (!p) {
-                            JOptionPane.showMessageDialog(frame, "Set invalido.", "Error", JOptionPane.ERROR_MESSAGE);
-                            return false;
-                        }
-                        resultadoT.agregarSet(i, puntosJ1, puntosJ2);
+                        r.agregarSet(i, p1Set, p2Set);
+                        if (p1Set > p2Set) setsP1++;
+                        else if (p2Set > p1Set) setsP2++;
 
-                        if (puntosJ1 > puntosJ2) {
-                            setsJ1++;
-                        } else if (puntosJ2 > puntosJ1) {
-                            setsJ2++;
-                        }
-
-                        i++;
+                        if (setsP1 > maxSets / 2 || setsP2 > maxSets / 2) break;
                     }
 
-                    if (!resultadoT.esValido()) {
-                        JOptionPane.showMessageDialog(frame, "Resultado inválido.", "Error", JOptionPane.ERROR_MESSAGE);
+                    if (!r.esValido()) {
+                        JOptionPane.showMessageDialog(null, "Resultado de Tenis de Mesa inválido.");
                         return false;
                     }
 
-                    e.setResultado(resultadoT);
-
-                    new EstadisticaTenisDeMesa(p1).registrarResultado(resultadoT, p1, true);
-                    new EstadisticaTenisDeMesa(p2).registrarResultado(resultadoT, p2, false);
-                    return true;
+                    resultado = r;
                 }
 
                 case "LOL" -> {
-                    int kills1 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Kills de " + p1.getNombre()));
-                    int kills2 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Kills de " + p2.getNombre()));
-                    int torres1 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Torres destruidas por " + p1.getNombre()));
-                    int torres2 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Torres destruidas por " + p2.getNombre()));
-                    int dragones1 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Dragones asesinados por " + p1.getNombre()));
-                    int dragones2 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Dragones asesinados por " + p2.getNombre()));
-                    int barones1 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Barones asesinados por " + p1.getNombre()));
-                    int barones2 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Barones asesinados por " + p2.getNombre()));
+                    int kills1 = Integer.parseInt(JOptionPane.showInputDialog("Kills de " + p1.getNombre()));
+                    int kills2 = Integer.parseInt(JOptionPane.showInputDialog("Kills de " + p2.getNombre()));
+                    int torres1 = Integer.parseInt(JOptionPane.showInputDialog("Torres destruidas por " + p1.getNombre()));
+                    int torres2 = Integer.parseInt(JOptionPane.showInputDialog("Torres destruidas por " + p2.getNombre()));
+                    int dragones1 = Integer.parseInt(JOptionPane.showInputDialog("Dragones de " + p1.getNombre()));
+                    int dragones2 = Integer.parseInt(JOptionPane.showInputDialog("Dragones de " + p2.getNombre()));
+                    int barones1 = Integer.parseInt(JOptionPane.showInputDialog("Barones de " + p1.getNombre()));
+                    int barones2 = Integer.parseInt(JOptionPane.showInputDialog("Barones de " + p2.getNombre()));
 
-                    ResultadoLol resultadoLol = new ResultadoLol(p1, p2);
-                    resultadoLol.registrarEstadisticas(kills1, kills2, torres1, torres2, dragones1, dragones2, barones1, barones2, ganador);
-
-                    e.setResultado(resultadoLol);
-
-                    new EstadisticasLol(p1).registrarResultado(resultadoLol, p1, true);
-                    new EstadisticasLol(p2).registrarResultado(resultadoLol, p2, false);
-                    return true;
+                    ResultadoLol r = new ResultadoLol(p1, p2);
+                    r.registrarEstadisticas(kills1, kills2, torres1, torres2, dragones1, dragones2, barones1, barones2, ganador);
+                    resultado = r;
                 }
 
                 default -> {
-                    int goles1 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Goles de " + p1.getNombre()));
-                    int goles2 = Integer.parseInt(JOptionPane.showInputDialog(frame, "Goles de " + p2.getNombre()));
-
-                    ResultadoFutbol resultadoFutbol = new ResultadoFutbol(p1, p2, goles1, goles2);
-
-                    if (!resultadoFutbol.esValido()) {
-                        JOptionPane.showMessageDialog(frame, "Los goles deben ser números no negativos.", "Error", JOptionPane.ERROR_MESSAGE);
-                        return false;
-                    }
-
-                    e.setResultado(resultadoFutbol);
-
-                    new EstadisticasFutbol(p1).registrarResultado(resultadoFutbol, p1, true);
-                    new EstadisticasFutbol(p2).registrarResultado(resultadoFutbol, p2, false);
-                    return true;
+                    JOptionPane.showMessageDialog(null, "Disciplina no reconocida.");
+                    return false;
                 }
             }
 
+            e.registrarResultado(resultado);
+
+            System.out.println(e.getResultado());
+            return true;
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Por favor ingresa solo números.", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(frame, "Error al ingresar estadísticas. Verifica los datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al registrar estadísticas: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+
         return false;
     }
 
-    /**
-     * Registra las estadísticas de un enfrentamiento en un torneo de tipo liga.
-     *
-     * <p>Solicita al usuario los puntos obtenidos por cada participante y registra
-     * el resultado como un {@link ResultadoFutbol}, sin importar la disciplina real.</p>
-     *
-     * @param e el enfrentamiento actual.
-     * @param p el participante que llamó al metodo.
-     * @return {@code true} si el registro fue exitoso; {@code false} si hubo errores o entradas inválidas.
-     */
-    private boolean registrarEstadisticas2(Enfrentamiento e, Participante p) {
+
+    private boolean registrarEstadisticas2(Enfrentamiento e) {
         try {
             Participante p1 = e.getParticipante1();
             Participante p2 = e.getParticipante2();
@@ -485,32 +437,36 @@ public class PanelEnfrentamientos extends PanelFondo {
     /**
      * Actualiza los nombres de los enfrentamientos futuros que dependen del resultado actual.
      * @param patron el texto identificador del enfrentamiento original.
-     * @param nombreGanadorLimpio el nombre que reemplazará al patrón.
+     *
      */
-    private void actualizarEnfrentamientosPosteriores(String patron, String nombreGanadorLimpio) {
+    private void actualizarEnfrentamientosPosteriores(String patron, Participante ganadorReal) {
         List<Enfrentamiento> enfrentamientos = torneo.getEnfrentamientos();
+
 
         for (Enfrentamiento enf : enfrentamientos) {
             boolean actualizado = false;
 
-            // Verificar participante 1
+
             if (enf.getParticipante1() != null) {
                 String nombreActual1 = enf.getParticipante1().getNombre();
                 if (nombreActual1.equals(patron) || nombreActual1.contains(patron)) {
-                    String nuevoNombre1 = nombreActual1.replace(patron, nombreGanadorLimpio);
-                    enf.setParticipante1(new ParticipantePlaceholder(nuevoNombre1));
+                    System.out.println("Reemplazando participante 1: " + nombreActual1 + " -> " + ganadorReal.getNombre());
+                    enf.setParticipante1(ganadorReal);
                     actualizado = true;
                 }
             }
 
-            // Verificar participante 2
             if (enf.getParticipante2() != null) {
                 String nombreActual2 = enf.getParticipante2().getNombre();
                 if (nombreActual2.equals(patron) || nombreActual2.contains(patron)) {
-                    String nuevoNombre2 = nombreActual2.replace(patron, nombreGanadorLimpio);
-                    enf.setParticipante2(new ParticipantePlaceholder(nuevoNombre2));
+                    System.out.println("Reemplazando participante 2: " + nombreActual2 + " -> " + ganadorReal.getNombre());
+                    enf.setParticipante2(ganadorReal);
                     actualizado = true;
                 }
+            }
+
+            if (actualizado) {
+                System.out.println("Enfrentamiento actualizado: " + enf.getParticipante1().getNombre() + " vs " + enf.getParticipante2().getNombre());
             }
         }
     }

@@ -100,4 +100,5 @@ public class ResultadoAjedrez implements Resultado {
     public Double getPuntosJugador2() {
         return puntosJugador2;
     }
+
 }

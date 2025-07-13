@@ -18,6 +18,11 @@ import java.util.ArrayList;
  * <p>
  * Permite crear torneos con diferentes configuraciones de número de grupos y cantidad de clasificados por grupo,
  * especialmente útil para formatos con fase de grupos y eliminación.
+ *
+ * @see Torneo
+ * @see Equipo
+ * @see org.example.enums.Formato
+ * @see org.example.interfaces.Disciplina
  */
 public class TorneoEquipo extends Torneo<Equipo> {
 
@@ -104,7 +109,7 @@ public class TorneoEquipo extends Torneo<Equipo> {
                 generadorActivo = new Liga<>(getParticipantes(), true);
             }
             case ELIMINATORIA -> {
-                generadorActivo = new Eliminatoria<>(getParticipantes(), true);
+                generadorActivo = new Eliminatoria<>(getParticipantes(), true,disciplina);
             }
             case GRUPOS_CON_ELIMINATORIA -> {
                 if (numGrupos <= 0 || clasificadosPorGrupo <= 0) {
