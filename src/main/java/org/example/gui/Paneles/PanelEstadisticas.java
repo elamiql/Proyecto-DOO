@@ -205,16 +205,22 @@ public class PanelEstadisticas extends PanelFondo {
             return;
         }
 
-
         Object estadistica = eliminatoria.getTablaEstadisticas().get(p);
         if (estadistica == null) {
             areaEstadisticas.setText("No hay estadísticas registradas para este participante.");
             return;
         }
 
+        resultado.append("📊 Estadísticas de ").append(p.getNombre().toUpperCase()).append("\n");
+        resultado.append("═══════════════════════════════\n");
+
         switch (disciplina) {
-            case "FUTBOL", "FIFA" -> {
+            case "FUTBOL" -> {
                 EstadisticasFutbol ef = (EstadisticasFutbol) estadistica;
+                resultado.append(ef.toTablaString());
+            }
+            case "FIFA" -> {
+                EstadisticasFifa ef = (EstadisticasFifa) estadistica;
                 resultado.append(ef.toTablaString());
             }
             case "AJEDREZ" -> {
@@ -234,12 +240,15 @@ public class PanelEstadisticas extends PanelFondo {
                 resultado.append(el.toTablaString());
             }
             default -> {
-                resultado.append("Disciplina no soportada.");
+                resultado.append(" Disciplina no soportada.");
             }
         }
 
+        resultado.append("\n═══════════════════════════════");
+
         areaEstadisticas.setText(resultado.toString());
     }
+
 
 
 

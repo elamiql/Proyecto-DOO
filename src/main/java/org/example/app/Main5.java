@@ -71,7 +71,7 @@ public class Main5 {
         // Crear torneo Champions
         TorneoEquipo torneoChampions = new TorneoEquipo(
                 "Champions 2025",
-                Deporte.TENIS_DE_MESA,
+                Videojuegos.FIFA    ,
                 "01-07-2025 20:00",
                 Formato.ELIMINATORIA,
                 "1"

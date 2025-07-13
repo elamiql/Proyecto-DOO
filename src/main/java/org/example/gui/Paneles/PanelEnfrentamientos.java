@@ -23,6 +23,8 @@ import org.example.model.torneo.Torneo;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import static org.example.enums.Formato.ELIMINATORIA;
@@ -161,6 +163,38 @@ public class PanelEnfrentamientos extends PanelFondo {
             btnApostar.addActionListener(ae -> apostarEnEnfrentamiento(e, lbl));
         }
 
+        JPopupMenu menuContextual = new JPopupMenu();
+
+        JMenuItem itemGanador = new JMenuItem("Seleccionar Ganador");
+        itemGanador.addActionListener(ev -> seleccionarGanador(e));
+
+        JMenuItem itemApostar = new JMenuItem("Apostar");
+        itemApostar.addActionListener(ev -> apostarEnEnfrentamiento(e, lbl));
+
+        menuContextual.add(itemGanador);
+        menuContextual.add(itemApostar);
+
+        if (e.isFinalizado()) {
+            itemGanador.setEnabled(false);
+            itemApostar.setEnabled(false);
+        }
+        panelEnfrentamiento.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                mostrarMenu(me);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent me) {
+                mostrarMenu(me);
+            }
+
+            private void mostrarMenu(MouseEvent me) {
+                if (me.isPopupTrigger()) {
+                    menuContextual.show(me.getComponent(), me.getX(), me.getY());
+                }
+            }
+        });
         return panelEnfrentamiento;
     }
 
@@ -253,27 +287,36 @@ public class PanelEnfrentamientos extends PanelFondo {
                     ? e.getParticipante1()
                     : e.getParticipante2();
 
-            e.setGanador(ganador); // Registrar al ganador normalmente
+            e.setGanador(ganador);
 
-            // Crear el patrón para buscar en enfrentamientos posteriores
+
             String patron = "Ganador " + e.getParticipante1().getNombre() + " vs " + e.getParticipante2().getNombre();
 
-            // CAMBIO PRINCIPAL: Pasar el participante ganador real en lugar del nombre limpio
+
             actualizarEnfrentamientosPosteriores(patron, ganador);
 
             String nombreGanadorLimpio = limpiarNombreGanador(ganador.getNombre());
             JOptionPane.showMessageDialog(frame, "Ganador registrado: " + nombreGanadorLimpio);
         }
 
-        // Resolver apuestas si corresponde
         for (Apuesta apuesta : apuestas) {
             if (apuesta.getEnfrentamiento().equals(e)) {
-                int ganancia = apuesta.resolver(ganador); // puede ser null si fue empate
+                int ganancia = apuesta.resolver(ganador);
                 puntosUsuario += ganancia;
                 JOptionPane.showMessageDialog(frame, "Resultado de la apuesta: " + ganancia + " puntos");
                 break;
             }
         }
+        if (todosFinalizados()) {
+            if (torneo.getFormato() == Formato.ELIMINATORIA && ganador != null) {
+                String nombreGanador = limpiarNombreGanador(ganador.getNombre());
+                JOptionPane.showMessageDialog(frame,
+                        "🏆 ¡El torneo ha finalizado!\nGanador del torneo: " + nombreGanador,
+                        "Torneo Finalizado",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+
 
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
@@ -317,6 +360,15 @@ public class PanelEnfrentamientos extends PanelFondo {
                     int goles1 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p1.getNombre()));
                     int goles2 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p2.getNombre()));
                     resultado = new ResultadoFutbol(p1, p2, goles1, goles2,ganador);
+                    if (!resultado.esValido()) {
+                        JOptionPane.showMessageDialog(null, "Goles inválidos.");
+                        return false;
+                    }
+                }
+                case "FIFA" -> {
+                    int goles1 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p1.getNombre()));
+                    int goles2 = Integer.parseInt(JOptionPane.showInputDialog("Goles de " + p2.getNombre()));
+                    resultado = new ResultadoFifa(p1, p2, goles1, goles2,ganador);
                     if (!resultado.esValido()) {
                         JOptionPane.showMessageDialog(null, "Goles inválidos.");
                         return false;
@@ -448,7 +500,7 @@ public class PanelEnfrentamientos extends PanelFondo {
 
             ResultadoFutbol resultado = new ResultadoFutbol(p1, p2, puntos1, puntos2,ganador);
 
-            // Usar el método esValido() para validar
+
             if (!resultado.esValido()) {
                 JOptionPane.showMessageDialog(frame, "Los datos ingresados no son válidos.", "Error de validación", JOptionPane.ERROR_MESSAGE);
                 return false;
@@ -642,5 +694,12 @@ public class PanelEnfrentamientos extends PanelFondo {
             JOptionPane.showMessageDialog(frame, "Entrada inválida. Debe ser un número.");
         }
     }
+    /**
+     * Verifica si todos los enfrentamientos del torneo están finalizados.
+     */
+    private boolean todosFinalizados() {
+        return torneo.getEnfrentamientos().stream().allMatch(Enfrentamiento::isFinalizado);
+    }
+
 
 }
