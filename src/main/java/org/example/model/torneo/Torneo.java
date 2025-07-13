@@ -12,6 +12,7 @@ import org.example.model.Participante.Participante;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 
 /**
  * Clase abstracta que representa los torneos
@@ -210,6 +211,9 @@ public abstract class Torneo <T extends Participante>{
         return generadorActivo;
     }
 
+    public ArrayList<T> getJugadores() {
+        return participantes;
+    }
 }
 
 

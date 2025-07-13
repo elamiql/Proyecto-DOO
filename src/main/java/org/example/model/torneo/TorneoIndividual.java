@@ -110,11 +110,11 @@ public class TorneoIndividual extends Torneo<Jugador> {
                 break;
 
             case ELIMINATORIA:
-                generadorActivo = new Eliminatoria<>(getParticipantes(), true,disciplina);
+                generadorActivo = new Eliminatoria<>(getParticipantes(), true, disciplina);
                 break;
 
             case GRUPOS_CON_ELIMINATORIA:
-                generadorActivo = new GruposEliminatoria<>(getParticipantes(), numGrupos, clasificadosPorGrupo);
+                generadorActivo = new GruposEliminatoria<>(getParticipantes(), numGrupos, clasificadosPorGrupo, disciplina);
                 break;
 
             default:

@@ -1,5 +1,6 @@
 package org.example.model.Formatos;
 
+import org.example.interfaces.Disciplina;
 import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Enfrentamientos.GenerarCalendario;
 import org.example.model.Participante.Participante;
@@ -40,7 +41,9 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
     /**
      * Generador del calendario para la fase eliminatoria posterior a la fase de grupos.
      */
-   // private Eliminatoria<T> generadorEliminatorias;
+    private Eliminatoria<T, ?, ?> generadorEliminatorias;
+
+    private Disciplina disciplina;
 
     /**
      * Constructor que inicializa los grupos y parámetros del torneo.
@@ -49,12 +52,13 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
      * @param numeroGrupos        Cantidad de grupos en la fase de grupos.
      * @param clasificadosPorGrupo Número de participantes que clasifican por grupo.
      */
-    public GruposEliminatoria(ArrayList<T> participantes, int numeroGrupos, int clasificadosPorGrupo){
+    public GruposEliminatoria(ArrayList<T> participantes, int numeroGrupos, int clasificadosPorGrupo, Disciplina disciplina){
         super(participantes);
         this.numeroGrupos = numeroGrupos;
         this.clasificadosPorGrupo = clasificadosPorGrupo;
         this.grupos = new ArrayList<>();
         this.generadoresGrupos = new ArrayList<>();
+        this.disciplina = disciplina;
     }
 
     /**
@@ -140,11 +144,11 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
             clasificadosOrdenados.add(grupo1.get(1));
 
         }
-/* if (clasificadosOrdenados.size() > 1) {
-            generadorEliminatorias = new Eliminatoria<>(clasificadosOrdenados, false,);
-            generadorEliminatorias.generarCalendario();
-            enfrentamientos.addAll(generadorEliminatorias.getEnfrentamientos());
-        }*/
+         if (clasificadosOrdenados.size() > 1) {
+             generadorEliminatorias = new Eliminatoria<>(clasificadosOrdenados, disciplina);
+             generadorEliminatorias.generarCalendario();
+             enfrentamientos.addAll(generadorEliminatorias.getEnfrentamientos());
+         }
     }
 
     /**
@@ -173,21 +177,19 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
                 System.out.println("  " + e);
             }
         }
-        /*
+
         // Imprimir fase eliminatoria
         if (generadorEliminatorias != null) {
             System.out.println("\n--- FASE ELIMINATORIA ---");
             generadorEliminatorias.imprimirBracket();
         }
 
-         */
     }
-/*
-    public Eliminatoria<T> getGeneradorEliminatorias(){
+
+    public Eliminatoria<?, ?, ?> getGeneradorEliminatorias(){
         return generadorEliminatorias;
     }
 
- */
 
     public List<List<T>> getGrupos(){
         return grupos;
@@ -200,4 +202,5 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
     public int getNumeroGrupos(){
         return numeroGrupos;
     }
+
 }

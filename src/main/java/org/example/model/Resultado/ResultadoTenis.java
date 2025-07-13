@@ -168,41 +168,29 @@ public class ResultadoTenis implements Resultado {
             return false;
         }
 
-
         for (int i = 0; i < maxSets; i++) {
             int juegosJ1 = juegosSetsJugador1[i];
             int juegosJ2 = juegosSetsJugador2[i];
 
-            if (juegosJ1 == 0 && juegosJ2 == 0) {
-                continue;
-            }
-            if (juegosJ1 > 7 || juegosJ2 > 7) {
-                return false;
-            }
-            if (juegosJ1 == 7 && (juegosJ2 != 5 && juegosJ2 != 6)) {
-                return false;
-            }
-            if (juegosJ2 == 7 && (juegosJ1 != 5 && juegosJ1 != 6)) {
-                return false;
-            }
+            if (juegosJ1 == 0 && juegosJ2 == 0) continue;
+            if (juegosJ1 > 7 || juegosJ2 > 7) return false;
+            if (juegosJ1 == 7 && (juegosJ2 != 5 && juegosJ2 != 6)) return false;
+            if (juegosJ2 == 7 && (juegosJ1 != 5 && juegosJ1 != 6)) return false;
             if (juegosJ1 < 6 && juegosJ2 < 6) {
-                if (juegosJ1 < 4 && juegosJ2 < 4) {
-                    return false;
-                }
+                if (juegosJ1 < 4 && juegosJ2 < 4) return false;
             }
         }
 
+        // Solo válido si el partido terminó con un ganador
         if (ganador != null) {
             if (ganador.equals(jugador1)) {
                 return setsJugador1 >= necesarios && setsJugador2 < necesarios;
             } else if (ganador.equals(jugador2)) {
                 return setsJugador2 >= necesarios && setsJugador1 < necesarios;
             }
-        } else {
-            return setsJugador1 < necesarios && setsJugador2 < necesarios;
         }
 
-        return false;
+        return false; // ahora partidos no terminados son inválidos
     }
 
     // Getters y Setters

@@ -129,6 +129,15 @@ public class ResultadoFutbol implements Resultado {
      */
     @Override
     public Participante getGanador(){
+
+        if (golesLocal < 0){
+            return null;
+        }
+
+        if (golesVisitante < 0){
+            return null;
+        }
+
         if (golesLocal > golesVisitante){
             return local;
         }

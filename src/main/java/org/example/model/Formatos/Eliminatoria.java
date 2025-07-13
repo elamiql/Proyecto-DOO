@@ -37,7 +37,7 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
      * @param requierePotenciaDeDos indica si la cantidad de participantes debe ser potencia de 2
      * @param disciplina disciplina del torneo (usada para generar estadísticas)
      */
-    public Eliminatoria(ArrayList<T> participantes, boolean requierePotenciaDeDos,Disciplina disciplina) {
+    public Eliminatoria(ArrayList<T> participantes, boolean requierePotenciaDeDos, Disciplina disciplina) {
         super(participantes);
         this.requierePotenciaDeDos = requierePotenciaDeDos;
         this.bracket = new ArrayList<>();
@@ -55,8 +55,8 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
      * @param participantes lista de participantes
      * @param disciplina disciplina del torneo
      */
-    public Eliminatoria(ArrayList<T> participantes,Disciplina disciplina) {
-        this(participantes, false,disciplina);
+    public Eliminatoria(ArrayList<T> participantes, Disciplina disciplina) {
+        this(participantes, false, disciplina);
     }
 
     /**
@@ -235,4 +235,9 @@ public class Eliminatoria<T extends Participante, E extends Estadisticas<T, R>, 
     protected Class<?> getResultadoClass() {
         return Resultado.class;
     }
+
+    public List<List<Enfrentamiento>> getRondas(){
+        return bracket;
+    }
+
 }
