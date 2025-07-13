@@ -258,7 +258,12 @@ public class PanelEnfrentamientos extends PanelFondo {
         new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute();
     }
 
-
+    /**
+     * Registra las estadísticas de un {@link Enfrentamiento} de acuerdo al tipo de torneo.
+     *
+     * @param e el enfrentamiento actual.
+     * @param p el participante ganador.
+     */
     private boolean registrarEstadisticas(Enfrentamiento e, Participante p) {
         if (torneo.getFormato() == LIGA) {
             return registrarEstadisticas2(e, p);
@@ -267,6 +272,13 @@ public class PanelEnfrentamientos extends PanelFondo {
         }
     }
 
+    /**
+     * Registra las estadísticas de un enfrentamiento en un torneo que no es de tipo liga.
+     * Varía según la disciplina del torneo.
+     *
+     * @param e el enfrentamiento actual.
+     * @param ganador el participante que ganó el enfrentamiento .
+     */
     private boolean registrarEstadisticas1(Enfrentamiento e, Participante ganador) {
         try {
             String disciplina = torneo.getDisciplina().getNombre();
@@ -430,6 +442,16 @@ public class PanelEnfrentamientos extends PanelFondo {
         return false;
     }
 
+    /**
+     * Registra las estadísticas de un enfrentamiento en un torneo de tipo liga.
+     *
+     * <p>Solicita al usuario los puntos obtenidos por cada participante y registra
+     * el resultado como un {@link ResultadoFutbol}, sin importar la disciplina real.</p>
+     *
+     * @param e el enfrentamiento actual.
+     * @param p el participante que llamó al metodo.
+     * @return {@code true} si el registro fue exitoso; {@code false} si hubo errores o entradas inválidas.
+     */
     private boolean registrarEstadisticas2(Enfrentamiento e, Participante p) {
         try {
             Participante p1 = e.getParticipante1();

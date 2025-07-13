@@ -11,9 +11,6 @@ import org.example.model.Participante.Participante;
  * así como los participantes correspondientes.
  *
  * Valida que los goles no sean negativos y que los participantes no sean nulos.
- *
- * @see Resultado
- * @see Participante
  */
 public class ResultadoFifa implements Resultado {
 

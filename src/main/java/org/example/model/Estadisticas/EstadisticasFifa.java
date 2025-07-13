@@ -8,10 +8,6 @@ import org.example.model.Resultado.ResultadoFifa;
  * Estadísticas de un participante en un torneo FIFA.
  * Usa sistema de puntuación FIFA (3 puntos victoria, 1 empate, 0 derrota).
  * Registra goles a favor, goles en contra, partidos ganados, empatados y perdidos.
- *
- * @see EstadisticasParticipante
- * @see ResultadoFifa
- * @see Participante
  */
 public class EstadisticasFifa extends EstadisticasParticipante<Participante, ResultadoFifa> {
     private int golesFavor;
