@@ -124,10 +124,11 @@ public class PanelParticipante extends PanelFondo {
         String filtroDisciplina = (String) filtroDisciplinaCombo.getSelectedItem();
         String filtroFormato = (String) filtroFormatoCombo.getSelectedItem();
 
-        // Filtros
+
         if (filtroEstado != null) {
             switch (filtroEstado) {
-                case "Por empezar" -> torneos = torneos.stream().filter(t -> !t.isActivo()).collect(Collectors.toList());
+                case "Por empezar" ->
+                        torneos = torneos.stream().filter(t -> !t.isActivo()).collect(Collectors.toList());
                 case "Empezados" -> torneos = torneos.stream().filter(Torneo::isActivo).collect(Collectors.toList());
             }
         }
@@ -148,20 +149,27 @@ public class PanelParticipante extends PanelFondo {
             JPanel panelTorneo = new JPanel(new BorderLayout(10, 10));
             panelTorneo.setOpaque(false);
 
-            JLabel etiqueta = new JLabel(torneo.toString());
-            etiqueta.setForeground(Color.WHITE);
+            String estado = torneo.isActivo() ? "Activo" : "Por empezar";
+            String htmlTexto = "<html>" +
+                    "<div style='font-family:Segoe UI; color:white;'>" +
+                    "<b style='font-size:14pt; color:#00bfff;'>" + torneo.getNombre() + "</b><br>" +
+                    "<span style='font-size:11pt;'>Disciplina: <b>" + torneo.getDisciplina().getNombre() + "</b></span><br>" +
+                    "<span>Formato: <b>" + torneo.getFormato().name() + "</b></span><br>" +
+                    "<span>Estado: <b style='color:" + (torneo.isActivo() ? "#4CAF50" : "#f44336") + ";'>" + estado + "</b></span><br>" +
+                    "</div>" +
+                    "</html>";
+
+            JLabel etiqueta = new JLabel(htmlTexto);
+
             JButton btnVer = BotonBuilder.crearBoton("Ver", new Color(0, 153, 204),
                     () -> new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute());
 
             panelTorneo.add(etiqueta, BorderLayout.CENTER);
             panelTorneo.add(btnVer, BorderLayout.EAST);
-            panelTorneo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+            panelTorneo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
             panelLista.add(panelTorneo);
         }
-
-        panelLista.revalidate();
-        panelLista.repaint();
     }
 
     /**
