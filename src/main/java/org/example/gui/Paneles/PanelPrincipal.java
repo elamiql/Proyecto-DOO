@@ -1,7 +1,7 @@
 package org.example.gui.Paneles;
 
 import org.example.command.CambiarPanelCommand;
-import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Builder;
 import org.example.gui.Otros.Imagen;
 
 
@@ -35,10 +35,10 @@ public class PanelPrincipal extends PanelFondo {
         gbc.gridx = 0;
 
 
-        JButton btnCrearTorneo = BotonBuilder.crearBoton("➕ Crear Torneo", new Color(30, 144, 255),
+        JButton btnCrearTorneo = Builder.crearBoton("➕ Crear Torneo", new Color(30, 144, 255),
                 () -> new CambiarPanelCommand(frame, new PanelOrganizador(frame)).execute());
 
-        JButton btnInscribirse = BotonBuilder.crearBoton("🏆 Ver Torneos", new Color(50, 205, 50),
+        JButton btnInscribirse = Builder.crearBoton("🏆 Ver Torneos", new Color(50, 205, 50),
                 () -> new CambiarPanelCommand(frame, new PanelParticipante(frame)).execute());
 
         gbc.gridy = 0;

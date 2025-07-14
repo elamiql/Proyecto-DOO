@@ -4,7 +4,7 @@ import org.example.command.CambiarPanelCommand;
 import org.example.enums.Deporte;
 import org.example.enums.Videojuegos;
 import org.example.enums.Formato;
-import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Builder;
 import org.example.gui.Otros.Imagen;
 import org.example.model.torneo.GestorTorneos;
 import org.example.model.torneo.Torneo;
@@ -56,9 +56,9 @@ public class PanelParticipante extends PanelFondo {
         JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelSuperior.setOpaque(false);
 
-        filtroEstadoCombo = BotonBuilder.crearComboBox(new String[]{"Todos", "Por empezar", "Empezados"});
-        filtroDisciplinaCombo = BotonBuilder.crearComboBox(getDisciplinas());
-        filtroFormatoCombo = BotonBuilder.crearComboBox(getFormatos());
+        filtroEstadoCombo = Builder.crearComboBox(new String[]{"Todos", "Por empezar", "Empezados"});
+        filtroDisciplinaCombo = Builder.crearComboBox(getDisciplinas());
+        filtroFormatoCombo = Builder.crearComboBox(getFormatos());
 
         filtroEstadoCombo.addActionListener(e -> cargarTorneos());
         filtroDisciplinaCombo.addActionListener(e -> cargarTorneos());
@@ -106,7 +106,7 @@ public class PanelParticipante extends PanelFondo {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotones.setOpaque(false);
 
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelPrincipal(frame));
+        JButton btnVolver = Builder.crearBotonVolver(frame, new PanelPrincipal(frame));
         panelBotones.add(btnVolver);
 
         add(panelBotones, BorderLayout.SOUTH);
@@ -161,7 +161,7 @@ public class PanelParticipante extends PanelFondo {
 
             JLabel etiqueta = new JLabel(htmlTexto);
 
-            JButton btnVer = BotonBuilder.crearBoton("Ver", new Color(0, 153, 204),
+            JButton btnVer = Builder.crearBoton("Ver", new Color(0, 153, 204),
                     () -> new CambiarPanelCommand(frame, new PanelDetalleTorneo(frame, torneo)).execute());
 
             panelTorneo.add(etiqueta, BorderLayout.CENTER);

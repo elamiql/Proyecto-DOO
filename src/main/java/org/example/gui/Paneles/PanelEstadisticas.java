@@ -1,6 +1,6 @@
 package org.example.gui.Paneles;
 
-import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Builder;
 import org.example.gui.Otros.Imagen;
 import org.example.model.Enfrentamientos.GenerarCalendario;
 import org.example.model.Estadisticas.*;
@@ -58,7 +58,7 @@ public class PanelEstadisticas extends PanelFondo {
      */
     private void inicializarComponentes() {
         ArrayList<Participante> participantes = torneo.getParticipantes();
-        comboParticipantes = BotonBuilder.crearComboBox(participantes.toArray(new Participante[0]));
+        comboParticipantes = Builder.crearComboBox(participantes.toArray(new Participante[0]));
         botonVer = new JButton("Ver estadísticas");
 
         areaEstadisticas = new JTextArea(20, 45);
@@ -108,7 +108,7 @@ public class PanelEstadisticas extends PanelFondo {
         JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelInferior.setOpaque(false);
 
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame, torneo));
+        JButton btnVolver = Builder.crearBotonVolver(frame, new PanelDetalleTorneo(frame, torneo));
         panelInferior.add(btnVolver);
 
         add(panelInferior, BorderLayout.SOUTH);

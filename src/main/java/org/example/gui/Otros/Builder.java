@@ -12,7 +12,7 @@ import java.awt.*;
  * con una apariencia y comportamiento predefinidos, facilitando la reutilización y la consistencia
  * en la interfaz gráfica de usuario.</p>
  */
-public class BotonBuilder {
+public class Builder {
 
     /**
      * Crea un botón personalizado con estilo y una acción asociada.
@@ -73,6 +73,20 @@ public class BotonBuilder {
         comboBox.setPreferredSize(new Dimension(200, 30));
         return comboBox;
     }
+    /**
+     * Crea un JLabel estilizado para ser usado como título destacado en la interfaz.
+     *
+     * @param texto el texto del título.
+     * @return un {@link JLabel} centrado, con fuente grande, color destacado y borde inferior decorativo.
+     */
+    public static JLabel crearTitulo(String texto) {
+        JLabel titulo = new JLabel(texto.toUpperCase(), SwingConstants.CENTER);
+        titulo.setFont(new Font("Serif", Font.BOLD, 32));
+        titulo.setForeground(new Color(0x2E86C1));
+        titulo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0xAED6F1)));
+        return titulo;
+    }
+
 
 }
 

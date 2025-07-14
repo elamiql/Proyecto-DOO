@@ -1,7 +1,7 @@
 package org.example.gui.Paneles;
 
 import org.example.command.CambiarPanelCommand;
-import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Builder;
 import org.example.exceptions.DatosInvalidosException;
 import org.example.gui.Otros.Imagen;
 import org.example.model.Participante.Equipo;
@@ -56,10 +56,8 @@ public class PanelDetalleTorneo extends PanelFondo{
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        JLabel nombreTorneo = new JLabel(torneo.getNombre().toUpperCase(), SwingConstants.CENTER);
-        nombreTorneo.setFont(new Font("Serif", Font.BOLD, 32));
-        nombreTorneo.setForeground(new Color(0x2E86C1));
-        nombreTorneo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0xAED6F1)));
+        JLabel nombreTorneo = Builder.crearTitulo(torneo.getNombre());
+
 
 
         JLabel formatoDisciplina = new JLabel(
@@ -129,20 +127,20 @@ public class PanelDetalleTorneo extends PanelFondo{
     private JPanel crearPanelBotones() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panel.setOpaque(false);
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelParticipante(frame));
+        JButton btnVolver = Builder.crearBotonVolver(frame, new PanelParticipante(frame));
 
         if (torneo.isActivo()) {
-            JButton btnEnfrentamientos = BotonBuilder.crearBoton("Ver Enfrentamientos", new Color(0, 123, 255), () ->
+            JButton btnEnfrentamientos = Builder.crearBoton("Ver Enfrentamientos", new Color(0, 123, 255), () ->
                     new CambiarPanelCommand(frame, new PanelEnfrentamientos(frame, torneo)).execute());
 
-            JButton btnEstadisticas = BotonBuilder.crearBoton("Ver Estadísticas", new Color(255, 193, 7), () ->
+            JButton btnEstadisticas = Builder.crearBoton("Ver Estadísticas", new Color(255, 193, 7), () ->
                     new CambiarPanelCommand(frame, new PanelEstadisticas(frame, torneo)).execute());
 
             panel.add(btnVolver);
             panel.add(btnEnfrentamientos);
             panel.add(btnEstadisticas);
         } else {
-            JButton btnInscribirse = BotonBuilder.crearBoton("Inscribirse", new Color(40, 167, 69), this::accionInscribirse);
+            JButton btnInscribirse = Builder.crearBoton("Inscribirse", new Color(40, 167, 69), this::accionInscribirse);
             panel.add(btnInscribirse);
             panel.add(btnVolver);
         }

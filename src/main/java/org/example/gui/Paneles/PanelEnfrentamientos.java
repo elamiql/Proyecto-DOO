@@ -3,7 +3,7 @@ package org.example.gui.Paneles;
 
 import org.example.command.CambiarPanelCommand;
 import org.example.enums.Formato;
-import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Builder;
 import org.example.gui.Otros.Imagen;
 import org.example.interfaces.Resultado;
 import org.example.model.Apuesta;
@@ -593,7 +593,7 @@ public class PanelEnfrentamientos extends PanelFondo {
      * Inicializa el panel inferior con el botón para volver al detalle del torneo.
      */
     private void inicializarPanelAbajo() {
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelDetalleTorneo(frame,torneo));
+        JButton btnVolver = Builder.crearBotonVolver(frame, new PanelDetalleTorneo(frame,torneo));
 
         JPanel panelAbajo = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelAbajo.setOpaque(false);
@@ -612,9 +612,7 @@ public class PanelEnfrentamientos extends PanelFondo {
         panelSuperior.setOpaque(false);
 
 
-        JLabel titulo = new JLabel("Enfrentamientos del Torneo", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 26));
-        titulo.setForeground(new Color(0x2E86C1));
+        JLabel titulo = Builder.crearTitulo("Enfrentamientos");
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         titulo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

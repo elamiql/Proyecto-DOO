@@ -5,7 +5,7 @@ import org.example.command.CrearTorneoCommand;
 import org.example.enums.Deporte;
 import org.example.enums.Formato;
 import org.example.enums.Videojuegos;
-import org.example.gui.Otros.BotonBuilder;
+import org.example.gui.Otros.Builder;
 import org.example.gui.Otros.Imagen;
 import org.example.interfaces.Disciplina;
 import org.example.model.torneo.GestorTorneos;
@@ -57,10 +57,7 @@ public class PanelOrganizador extends PanelFondo {
      * Inicializa el título del panel.
      */
     private void initTitulo() {
-        JLabel labelTitulo = new JLabel("Crear Nuevo Torneo", SwingConstants.CENTER);
-        labelTitulo.setFont(new Font("Serif", Font.BOLD, 32));
-        labelTitulo.setForeground(new Color(0x2E86C1));
-        labelTitulo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0xAED6F1)));
+        JLabel labelTitulo = Builder.crearTitulo("Crear nuevo torneo");
         labelTitulo.setOpaque(false);
         add(labelTitulo, BorderLayout.NORTH);
     }
@@ -80,10 +77,10 @@ public class PanelOrganizador extends PanelFondo {
         agregarCampo(panelFormulario, gbc, 0, "Nombre:", txtNombre = new JTextField(20));
         agregarCampo(panelFormulario, gbc, 1, "Fecha (dd-MM-yyyy HH:mm):", txtFecha = new JTextField(20));
 
-        cmbDisciplina = BotonBuilder.crearComboBox(getTodasDisciplinas().toArray(new Disciplina[0]));
+        cmbDisciplina = Builder.crearComboBox(getTodasDisciplinas().toArray(new Disciplina[0]));
         agregarCampo(panelFormulario, gbc, 2, "Disciplina:", cmbDisciplina);
 
-        cmbFormato = BotonBuilder.crearComboBox(Formato.values());
+        cmbFormato = Builder.crearComboBox(Formato.values());
         agregarCampo(panelFormulario, gbc, 3, "Formato:", cmbFormato);
 
         radioIndividual = new JRadioButton("Individual", true);
@@ -115,8 +112,8 @@ public class PanelOrganizador extends PanelFondo {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBotones.setOpaque(false);
 
-        JButton btnVolver = BotonBuilder.crearBotonVolver(frame, new PanelPrincipal(frame));
-        JButton btnConfirmar = BotonBuilder.crearBoton("Confirmar", new Color(0, 153, 76), this::confirmarTorneo);
+        JButton btnVolver = Builder.crearBotonVolver(frame, new PanelPrincipal(frame));
+        JButton btnConfirmar = Builder.crearBoton("Confirmar", new Color(0, 153, 76), this::confirmarTorneo);
 
         panelBotones.add(btnVolver);
         panelBotones.add(btnConfirmar);
