@@ -34,15 +34,13 @@ public class PanelPrincipal extends PanelFondo {
         gbc.insets = new Insets(20, 10, 20, 10);
         gbc.gridx = 0;
 
-        // Botón para crear torneos (para organizadores)
+
         JButton btnCrearTorneo = BotonBuilder.crearBoton("➕ Crear Torneo", new Color(30, 144, 255),
                 () -> new CambiarPanelCommand(frame, new PanelOrganizador(frame)).execute());
 
-        // Botón para ver torneos e inscribirse (para participantes)
         JButton btnInscribirse = BotonBuilder.crearBoton("🏆 Ver Torneos", new Color(50, 205, 50),
                 () -> new CambiarPanelCommand(frame, new PanelParticipante(frame)).execute());
 
-        // Agregar botones al panel con layout
         gbc.gridy = 0;
         add(btnCrearTorneo, gbc);
 

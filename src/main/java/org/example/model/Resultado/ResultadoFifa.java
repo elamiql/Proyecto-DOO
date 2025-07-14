@@ -92,15 +92,12 @@ public class ResultadoFifa implements Resultado {
      */
     @Override
     public boolean esValido() {
-        // Los goles no pueden ser negativos
+
         if (golesLocal < 0 || golesVisitante < 0) {
             return false;
         }
 
-        // Validar que los goles sean números razonables (opcional)
-        if (golesLocal > 50 || golesVisitante > 50) {
-            return false;
-        }
+
 
 
         if (ganador != null) {

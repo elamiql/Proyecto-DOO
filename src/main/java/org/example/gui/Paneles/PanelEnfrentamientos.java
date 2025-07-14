@@ -12,8 +12,7 @@ import org.example.model.Enfrentamientos.GenerarCalendario;
 
 import org.example.model.Formatos.Eliminatoria;
 import org.example.model.Formatos.Liga;
-import org.example.model.Participante.Equipo;
-import org.example.model.Participante.Jugador;
+
 import org.example.model.Participante.Participante;
 
 import org.example.model.Resultado.*;

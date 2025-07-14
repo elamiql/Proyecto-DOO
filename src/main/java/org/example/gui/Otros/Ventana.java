@@ -39,21 +39,24 @@ public class Ventana extends JFrame {
      * Establece {@link PanelPrincipal} como panel inicial.
      *
      */
-    public Ventana(){
+    public Ventana() {
         super("Sistema de torneos");
         generarTorneosConEquiposDeEjemplo();
-        // Inicia el actualizador que actualiza el estado de los torneos cada 1 segundo.
+
+
         ActualizadorEstadoTorneos actualizador = new ActualizadorEstadoTorneos(1_000);
         actualizador.iniciar();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 800);
-        setLocationRelativeTo(null);
+
+
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         // Carga el panel principal
         setContentPane(new PanelPrincipal(this));
         setVisible(true);
     }
+
     /**
      * Genera torneos prederteminados para iniciar la aplicacion.
      */

@@ -2,13 +2,11 @@ package org.example.gui.Paneles;
 
 import org.example.gui.Otros.BotonBuilder;
 import org.example.gui.Otros.Imagen;
-import org.example.model.Enfrentamientos.Enfrentamiento;
 import org.example.model.Enfrentamientos.GenerarCalendario;
 import org.example.model.Estadisticas.*;
 import org.example.model.Formatos.Eliminatoria;
 import org.example.model.Formatos.Liga;
 import org.example.model.Participante.Participante;
-import org.example.model.Resultado.*;
 import org.example.model.torneo.Torneo;
 
 import javax.swing.*;
@@ -65,7 +63,7 @@ public class PanelEstadisticas extends PanelFondo {
 
         areaEstadisticas = new JTextArea(20, 45);
         areaEstadisticas.setEditable(false);
-        areaEstadisticas.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        areaEstadisticas.setFont(new Font("Monospaced", Font.PLAIN, 20));
         areaEstadisticas.setLineWrap(true);
         areaEstadisticas.setWrapStyleWord(true);
     }
@@ -159,22 +157,26 @@ public class PanelEstadisticas extends PanelFondo {
 
         if (generador instanceof Liga<?> liga) {
 
-            // Obtener las estadísticas y ordenarlas por puntos (de mayor a menor)
             List<Map.Entry<Participante, EstadisticasFutbol>> listaOrdenada =
                     new ArrayList<>(liga.getTablaEstadisticas().entrySet());
 
             listaOrdenada.sort((e1, e2) ->
                     Integer.compare(e2.getValue().getPuntos(), e1.getValue().getPuntos()));
+            resultado.append("📊 Tabla de Posiciones - Liga\n");
+            resultado.append("=============================================================================\n");
+            resultado.append(String.format("%-4s %-20s %3s %3s %3s %3s %3s %3s %4s %3s\n",
+                    "Pos", "Jugador", "PJ", "PG", "PE", "PP", "PA", "PC", "DP", "P"));
+            resultado.append("-----------------------------------------------------------------------------\n");
 
-            // Mostrar participantes ordenados por posición
             int posicion = 1;
             for (Map.Entry<Participante, EstadisticasFutbol> entry : listaOrdenada) {
                 Participante participante = entry.getKey();
                 EstadisticasFutbol estadisticas = entry.getValue();
 
-                resultado.append(posicion).append(". ")
-                        .append(participante.getNombre()).append("\n")
-                        .append(estadisticas.toTablaString()).append("\n\n");
+                resultado.append(String.format("%-4d %-20s %s",
+                        posicion,
+                        participante.getNombre(),
+                        estadisticas.toTablaString()));
 
                 posicion++;
             }
@@ -185,6 +187,8 @@ public class PanelEstadisticas extends PanelFondo {
 
         areaEstadisticas.setText(resultado.toString());
     }
+
+
 
     /**
      * Muestra las estadísticas individuales de un participante en torneos de eliminación directa.

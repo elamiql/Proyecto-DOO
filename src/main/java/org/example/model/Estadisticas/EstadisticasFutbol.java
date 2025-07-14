@@ -95,8 +95,7 @@ public class EstadisticasFutbol extends EstadisticasParticipante<Participante, R
      */
     @Override
     public String toTablaString() {
-        return String.format("%-20s | %2d | %2d | %2d | %2d | %3d | %3d | %4d | %3d",
-                getParticipante(),
+        return String.format("%3d %3d %3d %3d %3d %3d %4d %3d\n",
                 getPartidosJugados(),
                 getGanados(),
                 getEmpatados(),

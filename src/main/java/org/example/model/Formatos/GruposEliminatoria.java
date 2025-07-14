@@ -159,7 +159,7 @@ public class GruposEliminatoria<T extends Participante> extends GenerarCalendari
     public void imprimirCalendario() {
         System.out.println("=== Calendario Grupos + Eliminatoria ===");
 
-        // Imprimir fase de grupos
+
         System.out.println("\n--- FASE DE GRUPOS ---");
         for (int i = 0; i < grupos.size(); i++) {
             System.out.println("\nGrupo " + (char)('A' + i) + ":");
